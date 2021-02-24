@@ -1,8 +1,12 @@
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:repairservice/widgets/item_card.dart';
 
-import '../../utils/ui/extensions.dart';
+import 'package:repairservice/widgets/item_menu.dart';
+import 'package:repairservice/widgets/item_news_card.dart';
+import '../../utils//ui/extensions.dart';
+import 'components/list_of_category.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,64 +16,80 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      child: InkWell(
-        onTap: () {},
-        child: Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.all(kDefaultPadding),
-              decoration: BoxDecoration(
-                  color: kPrimaryColor,
-                  borderRadius: BorderRadius.circular(15)),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        child: CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              AssetImage("assets/images/user_2.png"),
-                        ),
-                      ),
-                      SizedBox(width: kDefaultPadding / 2),
-                      Expanded(
-                        child: Text.rich(
-                          TextSpan(
-                            text: "Xin chào \n",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: kTextColor,
-                            ),
+    Size _size = MediaQuery.of(context).size;
+    return SafeArea(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Container(
+          color: kBgDarkColor,
+          child: Column(
+            children: [
+              UserCard(),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+                child: Column(
+                  children: [
+                    ListCategories(size: _size).addNeumorphism(
+                      blurRadius: 10,
+                      borderRadius: 10,
+                      offset: Offset(5, 5),
+                      topShadowColor: Colors.white60,
+                      bottomShadowColor: Color(0xFF234395).withOpacity(0.15),
+                    ),
+                    SizedBox(
+                      height: kDefaultPadding,
+                    ),
+                    Container(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              TextSpan(
-                                text: 'Hello',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      color: Colors.white,
-                                    ),
-                              ),
+                              Text.rich(TextSpan(text: 'Ưu đãi cho bạn')),
                             ],
                           ),
-                        ),
+                          SizedBox(
+                            height: kDefaultPadding,
+                          ),
+                          SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: List.generate(
+                                    10, (index) => ItemNewsCard()),
+                              )),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    SizedBox(
+                      height: kDefaultPadding,
+                    ),
+                    Container(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text.rich(TextSpan(text: 'tin tức nổi bật')),
+                            ],
+                          ),
+                          SizedBox(
+                            height: kDefaultPadding,
+                          ),
+                          SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: List.generate(
+                                    10, (index) => ItemNewsCard()),
+                              )),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ).addNeumorphism(
-              blurRadius: 15,
-              borderRadius: 15,
-              offset: Offset(5, 5),
-              topShadowColor: Colors.white60,
-              bottomShadowColor: Color(0xFF234395).withOpacity(0.15),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
