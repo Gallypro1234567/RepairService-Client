@@ -8,7 +8,7 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Center(
       child: Text('Trang AccountScreen'),
     );
   }

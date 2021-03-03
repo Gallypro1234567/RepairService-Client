@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/widgets/item_card.dart';
 
-import 'package:repairservice/widgets/item_menu.dart';
 import 'package:repairservice/widgets/item_news_card.dart';
 import '../../utils//ui/extensions.dart';
 import 'components/list_of_category.dart';
@@ -70,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text.rich(TextSpan(text: 'tin tức nổi bật')),
+                              Text.rich(TextSpan(text: 'Tin tức nổi bật')),
                             ],
                           ),
                           SizedBox(

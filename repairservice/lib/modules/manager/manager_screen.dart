@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
- 
 
 class ManagerScreen extends StatefulWidget {
   @override
@@ -10,6 +9,6 @@ class ManagerScreen extends StatefulWidget {
 class _ManagerScreenState extends State<ManagerScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Center(child: Text('Trang quan ly cong viec'));
   }
 }

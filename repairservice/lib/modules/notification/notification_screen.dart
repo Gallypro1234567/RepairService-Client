@@ -8,7 +8,7 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Center(
       child: Text('Trang Thông báo'),
     );
   }

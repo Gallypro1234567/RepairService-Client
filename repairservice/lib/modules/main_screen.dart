@@ -1,3 +1,4 @@
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/modules/home/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,22 +35,16 @@ class _MainScreenState extends State<MainScreen> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.home_outlined,
+                  FontAwesome.home,
                 ),
                 label: "Home"),
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home_outlined,
-                ),
-                label: "Lịch"),
+                icon: Icon(FontAwesome.calendar), label: "Lịch"),
+            BottomNavigationBarItem(
+                icon: Icon(FontAwesome.bell_o), label: "Thông báo"),
             BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.home_outlined,
-                ),
-                label: "Thông báo"),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home_outlined,
+                  FontAwesome.user_o,
                 ),
                 label: "Tôi"),
           ],
