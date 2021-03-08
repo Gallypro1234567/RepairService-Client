@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/widgets/item_menu.dart';
+import '../../../utils//ui/extensions.dart';
 
 class ListCategories extends StatefulWidget {
   const ListCategories({
@@ -42,7 +43,7 @@ class _ListCategoriesState extends State<ListCategories> {
             child: GridView.count(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              crossAxisCount: 4,
+              crossAxisCount: 3,
               children: List.generate(10, (index) {
                 return ItemMenu();
               }),
@@ -50,6 +51,12 @@ class _ListCategoriesState extends State<ListCategories> {
           ),
         ],
       ),
+    ).addNeumorphism(
+      blurRadius: 10,
+      borderRadius: 10,
+      offset: Offset(5, 5),
+      topShadowColor: Colors.white60,
+      bottomShadowColor: Color(0xFF234395).withOpacity(0.15),
     );
   }
 }

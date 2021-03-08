@@ -1,11 +1,16 @@
+import 'package:flutter/gestures.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/widgets/item_card.dart';
 
 import 'package:repairservice/widgets/item_news_card.dart';
-import '../../utils//ui/extensions.dart';
+import 'package:repairservice/widgets/title_text.dart';
+
+import '../../utils/ui/extensions.dart';
 import 'components/list_of_category.dart';
+import 'models/home_models.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,83 +18,72 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Widget _listofNewsWidget() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      width: AppTheme.fullWidth(context),
+      height: AppTheme.fullWidth(context) * .8,
+      child: GridView(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 1,
+            //childAspectRatio: 1 / 2,
+            mainAxisSpacing: 30,
+            crossAxisSpacing: 20),
+        //padding: EdgeInsets.only(left: 10),
+        scrollDirection: Axis.horizontal,
+        children: news
+            .map(
+              (n) => NewsCard(
+                news: n,
+              ).ripple(() {},
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+            )
+            .toList(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
-    return SafeArea(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Container(
-          color: kBgDarkColor,
-          child: Column(
-            children: [
-              UserCard(),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-                child: Column(
-                  children: [
-                    ListCategories(size: _size).addNeumorphism(
-                      blurRadius: 10,
-                      borderRadius: 10,
-                      offset: Offset(5, 5),
-                      topShadowColor: Colors.white60,
-                      bottomShadowColor: Color(0xFF234395).withOpacity(0.15),
-                    ),
-                    SizedBox(
-                      height: kDefaultPadding,
-                    ),
-                    Container(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text.rich(TextSpan(text: 'Ưu đãi cho bạn')),
-                            ],
-                          ),
-                          SizedBox(
-                            height: kDefaultPadding,
-                          ),
-                          SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: List.generate(
-                                    10, (index) => ItemNewsCard()),
-                              )),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: kDefaultPadding,
-                    ),
-                    Container(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text.rich(TextSpan(text: 'Tin tức nổi bật')),
-                            ],
-                          ),
-                          SizedBox(
-                            height: kDefaultPadding,
-                          ),
-                          SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: List.generate(
-                                    10, (index) => ItemNewsCard()),
-                              )),
-                        ],
-                      ),
-                    ),
-                  ],
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      dragStartBehavior: DragStartBehavior.down,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          UserCard(),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListCategories(size: _size),
+                SizedBox(
+                  height: kDefaultPadding,
                 ),
-              ),
-            ],
+                TitleText(
+                  text: "Tin khuyến mãi",
+                  fontSize: 16,
+                ),
+                _listofNewsWidget(),
+                SizedBox(
+                  height: kDefaultPadding,
+                ),
+                TitleText(
+                  text: "Tin tức nổi bật",
+                  fontSize: 16,
+                ),
+                _listofNewsWidget(),
+                SizedBox(
+                  height: kDefaultPadding,
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

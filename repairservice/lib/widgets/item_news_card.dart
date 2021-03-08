@@ -1,95 +1,109 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:repairservice/config/themes/constants.dart';
+import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/modules/home/models/home_models.dart';
+import 'package:repairservice/widgets/title_text.dart';
+
 import '../utils/ui/extensions.dart';
 
-class ItemNewsCard extends StatelessWidget {
+class NewsCard extends StatelessWidget {
+  final News news;
+  final VoidCallback press;
+  const NewsCard({Key key, this.news, this.press}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    Size _size = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.only(right: kDefaultPadding),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                color: kBgDarkColor, borderRadius: BorderRadius.circular(10)),
-            child: Material(
-              type: MaterialType.card,
-              borderRadius: BorderRadius.circular(10),
-              child: InkWell(
-                  onTap: () {
-                    print('Hello World');
-                  },
-                  borderRadius: BorderRadius.circular(10),
-                  child: Stack(
-                    // decoration: BoxDecoration(
-                    //     color: kBgDarkColor,
-                    //     borderRadius: BorderRadius.circular(10)),
+    return Container(
+      decoration: BoxDecoration(
+        color: kBgDarkColor,
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      //padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Stack(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(news.image),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Column(
-                        children: [
-                          Container(
-                            width: 220,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage("assets/images/image_04.jpg"),
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              TitleText(
+                                text: news.name,
+                                fontSize: 12,
                               ),
-                            ),
+                              TitleText(
+                                text: news.caption,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ],
                           ),
-                          Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.only(
-                                    left: kDefaultPadding,
-                                    right: kDefaultPadding,
-                                    top: kDefaultPadding / 2,
-                                  ),
-                                  child: Text.rich(TextSpan(
-                                      text:
-                                          "Chương trình khuyến mãi abc  - giá rẻ nhất \n",
-                                      children: [
-                                        TextSpan(text: 'abc def #### \n'),
-                                      ])),
-                                ),
-                                InkWell(
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                        left: kDefaultPadding,
-                                        right: kDefaultPadding,
-                                        bottom: kDefaultPadding / 2),
-                                    child: Text.rich(TextSpan(
-                                      text: 'Xem chi tiet',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2
-                                          .copyWith(
-                                            color: Colors.orange[800],
-                                          ),
-                                    )),
-                                  ),
-                                )
-                              ],
-                            ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10)),
                           ),
-                        ],
-                      )
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TitleText(
+                                text: "Xem chi tiết",
+                                fontSize: 14,
+                                color: LightColor.orange,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
-                  ).addNeumorphism(
-                    blurRadius: 15,
-                    borderRadius: 15,
-                    offset: Offset(5, 5),
-                    topShadowColor: Colors.white60,
-                    bottomShadowColor: Color(0xFF234395).withOpacity(0.15),
-                  )),
-            ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
+    ).addNeumorphism(
+      blurRadius: 15,
+      borderRadius: 15,
+      offset: Offset(5, 5),
+      topShadowColor: Colors.white60,
+      bottomShadowColor: Color(0xFF234395).withOpacity(0.15),
     );
   }
 }
