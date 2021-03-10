@@ -1,14 +1,10 @@
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:repairservice/config/themes/light_theme.dart';
-import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/modules/home/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:repairservice/modules/home/home_screen.dart';
+import 'package:repairservice/modules/user/account_screen.dart';
 import 'package:repairservice/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
-import 'package:repairservice/widgets/title_text.dart';
-import '../utils/ui/extensions.dart';
-import 'user_profile/account_screen.dart';
+
 import 'manager/manager_screen.dart';
 import 'notification/notification_screen.dart';
 
@@ -36,9 +32,7 @@ class _MainPageState extends State<MainPage> {
     NotificationScreen(),
     AccountScreen(),
   ];
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _main(List<Widget> children) {
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -54,7 +48,7 @@ class _MainPageState extends State<MainPage> {
                         duration: Duration(milliseconds: 300),
                         switchInCurve: Curves.easeInToLinear,
                         switchOutCurve: Curves.easeOutBack,
-                        child: _children[_selectedIndex],
+                        child: children[_selectedIndex],
                       ),
                     ),
                   ],
@@ -70,5 +64,10 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _main(_children);
   }
 }

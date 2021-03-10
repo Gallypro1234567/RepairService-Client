@@ -44,7 +44,7 @@ class _ListCategoriesState extends State<ListCategories> {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               crossAxisCount: 3,
-              children: List.generate(10, (index) {
+              children: List.generate(3, (index) {
                 return ItemMenu();
               }),
             ),

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
-import 'package:repairservice/config/themes/theme_config.dart';
+
 import 'package:repairservice/modules/home/models/home_models.dart';
 import 'package:repairservice/widgets/title_text.dart';
 

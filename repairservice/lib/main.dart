@@ -1,6 +1,7 @@
 import 'package:google_fonts/google_fonts.dart';
+import 'package:repairservice/config/routes/routes.dart';
 import 'package:repairservice/modules/main_screen.dart';
-import 'package:repairservice/modules/main_screen.dart';
+
 import 'package:flutter/material.dart';
 
 import 'config/themes/theme_config.dart';
@@ -22,7 +23,9 @@ class MyApp extends StatelessWidget {
         ),
       ),
       // theme: ThemeData(),
-      home: MainPage(),
+
+      routes: Routes.getRoute(),
+      initialRoute: "/",
     );
   }
 }
