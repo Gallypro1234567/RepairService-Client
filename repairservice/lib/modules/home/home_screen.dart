@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       width: AppTheme.fullWidth(context),
       height: AppTheme.fullWidth(context) * .8,
+      color: LightColor.lightGrey,
       child: GridView(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 1,

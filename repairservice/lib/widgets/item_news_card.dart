@@ -102,7 +102,7 @@ class NewsCard extends StatelessWidget {
       blurRadius: 15,
       borderRadius: 15,
       offset: Offset(5, 5),
-      topShadowColor: Colors.white60,
+      topShadowColor: LightColor.lightGrey,
       bottomShadowColor: Color(0xFF234395).withOpacity(0.15),
     );
   }
