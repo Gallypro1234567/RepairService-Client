@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -7,8 +9,10 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/user/models/user_category_model.dart';
 
 import 'package:repairservice/modules/user_history_work/user_history_work_screen.dart';
-
+import 'package:repairservice/utils/ui/animations/Scale_route.dart';
+import 'package:repairservice/utils/ui/animations/slide_bottom_to_top_route.dart';
 import 'package:repairservice/utils/ui/animations/slide_enter_exit_route.dart';
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 
 import '../../utils/ui/extensions.dart';
 
@@ -18,6 +22,7 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  String _message;
   Widget _userAvt() {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -62,6 +67,21 @@ class _AccountScreenState extends State<AccountScreen> {
     ).ripple(() {});
   }
 
+  int _count = 0;
+  final List<Widget> _children = [
+    UserHistoryWork(
+      title: "123",
+    ),
+    UserHistoryWork(
+      title: "456",
+    ),
+    UserHistoryWork(
+      title: "789",
+    ),
+    UserHistoryWork(
+      title: "924",
+    ),
+  ];
   Widget _itemCategory(index) {
     return Container(
       height: AppTheme.fullWidth(context) * .15,
@@ -91,36 +111,81 @@ class _AccountScreenState extends State<AccountScreen> {
         ),
       ),
     ).ripple(() {
-      Navigator.push(context,
-          EnterExitRoute(exitPage: widget, enterPage: UserHistoryWork()));
+      Navigator.push(
+          context,
+          SlideFadeRoute(
+              page: UserHistoryWork(
+            title: userCategory[index].category,
+          )));
     });
   }
 
+  ScrollController _scrollController;
   Widget _userCategory() {
     return ListView.builder(
+      //controller: _scrollController,
+      physics: NeverScrollableScrollPhysics(),
       itemCount: userCategory.length,
-      itemBuilder: (context, index) => _itemCategory(index),
+      itemBuilder: (context, index) => Material(child: _itemCategory(index)),
     );
+  }
+
+  String message;
+  bool isScrollPosition;
+  _scrollListener() {
+    if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      print("reach the bottom");
+    } else {
+      print("reach the top");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // _scrollController = ScrollController();
+    // _scrollController.addListener(_scrollListener);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: LightColor.lightGrey,
-      ),
-      child: Column(
+    return RefreshIndicator(
+      color: LightColor.orange,
+      child: ListView(
+        physics: AlwaysScrollableScrollPhysics(),
         children: [
-          Expanded(flex: 1, child: _userAvt()),
-          Expanded(
-            flex: 8,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: _userCategory(),
+          Container(
+            height: AppTheme.fullHeight(context),
+            decoration: BoxDecoration(
+              color: LightColor.lightGrey,
             ),
-          )
+            child: Column(
+              children: [
+                Expanded(flex: 1, child: _userAvt()),
+                Expanded(
+                  flex: 8,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: _userCategory(),
+                  ),
+                )
+              ],
+            ),
+          ),
         ],
       ),
+      onRefresh: () async {
+        Completer<Null> completer = new Completer<Null>();
+        await Future.delayed(Duration(seconds: 2)).then((onvalue) {
+          completer.complete();
+          setState(() {
+            _message = 'Refreshed';
+          });
+        });
+        return completer.future;
+      },
     );
   }
 }

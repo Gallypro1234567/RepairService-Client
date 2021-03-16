@@ -28,13 +28,26 @@ class EnterExitRoute extends PageRouteBuilder {
               //   ).animate(animation),
               //   child: exitPage,
               // ),
-              SlideTransition(
-                position: new Tween<Offset>(
-                  begin: const Offset(0.0, 0.1),
-                  end: Offset.zero,
-                ).animate(animation),
+              // SlideTransition(
+              //   position: new Tween<Offset>(
+              //     begin: const Offset(0.0, 0.1),
+              //     end: Offset.zero,
+              //   ).animate(animation),
+              //   child: enterPage,
+              // )
+
+              ScaleTransition(
+                scale: Tween<double>(
+                  begin: 0.0,
+                  end: 1.0,
+                ).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.bounceInOut,
+                  ),
+                ),
                 child: enterPage,
-              )
+              ),
             ],
           ),
         );

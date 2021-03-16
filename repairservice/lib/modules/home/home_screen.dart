@@ -1,4 +1,5 @@
-import 'package:flutter/gestures.dart';
+import 'dart:async';
+
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:repairservice/widgets/item_news_card.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 import '../../utils/ui/extensions.dart';
-import 'components/list_of_category.dart';
+import '../home_work_categories/list_work_categories.dart';
 import 'models/home_models.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -52,23 +53,28 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
-    return Container(
-      decoration: BoxDecoration(color: LightColor.lightGrey),
-      child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        dragStartBehavior: DragStartBehavior.down,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            UserCard(),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-              child: Column(
+    return RefreshIndicator(
+      onRefresh: () async {
+        Completer<Null> completer = new Completer<Null>();
+        await Future.delayed(Duration(seconds: 2)).then((onvalue) {
+          completer.complete();
+          setState(() {});
+        });
+        return completer.future;
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+        decoration: BoxDecoration(color: LightColor.lightGrey),
+        child: ListView(
+            clipBehavior: Clip.hardEdge,
+            physics: AlwaysScrollableScrollPhysics(),
+            children: [
+              UserCard(),
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListCategories(size: _size),
+                  ListWorkCategories(size: _size),
                   SizedBox(
                     height: kDefaultPadding,
                   ),
@@ -90,9 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
+            ]),
       ),
     );
   }

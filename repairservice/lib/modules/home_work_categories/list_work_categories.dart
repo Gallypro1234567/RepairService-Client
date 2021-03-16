@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
-import 'package:repairservice/widgets/item_menu.dart';
-import '../../../utils//ui/extensions.dart';
+import 'package:repairservice/modules/home/models/home_category_model.dart';
+import 'package:repairservice/widgets/item_work_categories_card.dart';
+import '../../utils/ui/extensions.dart';
 
-class ListCategories extends StatefulWidget {
-  const ListCategories({
+class ListWorkCategories extends StatefulWidget {
+  const ListWorkCategories({
     Key key,
     @required Size size,
   })  : _size = size,
@@ -14,10 +15,10 @@ class ListCategories extends StatefulWidget {
   final Size _size;
 
   @override
-  _ListCategoriesState createState() => _ListCategoriesState();
+  _ListWorkCategoriesState createState() => _ListWorkCategoriesState();
 }
 
-class _ListCategoriesState extends State<ListCategories> {
+class _ListWorkCategoriesState extends State<ListWorkCategories> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,13 +42,12 @@ class _ListCategoriesState extends State<ListCategories> {
           ),
           Container(
             child: GridView.count(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              crossAxisCount: 3,
-              children: List.generate(3, (index) {
-                return ItemMenu();
-              }),
-            ),
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                crossAxisCount: 3,
+                children: workCategories
+                    .map((e) => ItemWorkCategories(title: e.name))
+                    .toList()),
           ),
         ],
       ),
