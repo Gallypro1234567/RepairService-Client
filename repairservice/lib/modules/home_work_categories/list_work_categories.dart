@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/modules/home/models/home_category_model.dart';
-import 'package:repairservice/widgets/item_work_categories_card.dart';
+import 'package:repairservice/modules/home_work_categories/item_work_categories_card.dart';
 import '../../utils/ui/extensions.dart';
 
 class ListWorkCategories extends StatefulWidget {

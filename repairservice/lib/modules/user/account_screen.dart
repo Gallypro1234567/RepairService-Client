@@ -121,14 +121,6 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   ScrollController _scrollController;
-  Widget _userCategory() {
-    return ListView.builder(
-      //controller: _scrollController,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: userCategory.length,
-      itemBuilder: (context, index) => Material(child: _itemCategory(index)),
-    );
-  }
 
   String message;
   bool isScrollPosition;
@@ -153,28 +145,26 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       color: LightColor.orange,
-      child: ListView(
-        physics: AlwaysScrollableScrollPhysics(),
-        children: [
-          Container(
-            height: AppTheme.fullHeight(context),
-            decoration: BoxDecoration(
-              color: LightColor.lightGrey,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+        decoration: BoxDecoration(color: LightColor.lightGrey),
+        child: ListView(
+          clipBehavior: Clip.hardEdge,
+          physics: AlwaysScrollableScrollPhysics(),
+          children: [
+            _userAvt(),
+            SizedBox(
+              height: kDefaultPadding,
             ),
-            child: Column(
-              children: [
-                Expanded(flex: 1, child: _userAvt()),
-                Expanded(
-                  flex: 8,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: _userCategory(),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
+            Column(
+              children: userCategory
+                  .map((e) =>
+                      Material(child: _itemCategory(userCategory.indexOf(e))))
+                  .toList(),
+            )
+          ],
+        ),
       ),
       onRefresh: () async {
         Completer<Null> completer = new Completer<Null>();

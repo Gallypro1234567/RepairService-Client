@@ -44,8 +44,11 @@ extension OnPressed on Widget {
             right: 0,
             top: 0,
             bottom: 0,
-            child: FlatButton(
-                shape: RoundedRectangleBorder(borderRadius: borderRadius),
+            child: TextButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(borderRadius: borderRadius),
+                  primary: Colors.black,
+                ),
                 onPressed: () {
                   if (onPressed != null) {
                     onPressed();

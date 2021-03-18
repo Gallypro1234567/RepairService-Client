@@ -3,6 +3,8 @@
    <application
         android:label="repairservice"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyAiA_ejnKbVsmFT5wYR9mDYQu8BcUVPaCE"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
