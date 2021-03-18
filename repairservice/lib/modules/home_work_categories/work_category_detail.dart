@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/modules/schedule_to_repair/schedule_form.dart';
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/widgets/title_text.dart';
 import '../../utils/ui/extensions.dart';
 
 class WorkCategoriesDetail extends StatefulWidget {
@@ -14,6 +17,46 @@ class WorkCategoriesDetail extends StatefulWidget {
 }
 
 class _WorkCategoriesDetailState extends State<WorkCategoriesDetail> {
+  Widget _listWork() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: kDefaultPadding,
+        ),
+        height: AppTheme.fullHeight(context) * 0.14,
+        decoration: BoxDecoration(
+            border: Border.all(color: LightColor.lightblack, width: 0.1),
+            color: LightColor.lightGrey,
+            shape: BoxShape.rectangle),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            SizedBox(
+              height: 60,
+              width: 60,
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: AssetImage("assets/images/man.png"),
+              ),
+            ),
+            SizedBox(
+              width: kDefaultPadding / 2,
+            ),
+            Expanded(
+                child: TitleText(
+              text: "Lắp nguyên bộ máy lạnh treo tường 1 - 1.5hp",
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            )),
+          ],
+        ),
+      ).ripple(() {
+        Navigator.push(context, SlideFadeRoute(page: ScheduleScreen()));
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -55,30 +98,7 @@ class _WorkCategoriesDetailState extends State<WorkCategoriesDetail> {
               Expanded(
                 child: ListView.builder(
                   itemCount: 10,
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: kDefaultPadding,
-                      ),
-                      height: AppTheme.fullHeight(context) * 0.14,
-                      decoration: BoxDecoration(
-                          color: index % 2 == 0
-                              ? Colors.grey
-                              : Colors.orangeAccent,
-                          shape: BoxShape.rectangle),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(
-                            Icons.ac_unit,
-                            color: Colors.white,
-                          ),
-                          Expanded(child: Text(widget.title)),
-                        ],
-                      ),
-                    ).ripple(() {}),
-                  ),
+                  itemBuilder: (context, index) => _listWork(),
                 ),
               ),
             ],
