@@ -53,6 +53,13 @@ class _WorkCategoriesDetailState extends State<WorkCategoriesDetail> {
         ),
       ).ripple(() {
         Navigator.push(context, SlideFadeRoute(page: ScheduleScreen()));
+        // Navigator.of(context, rootNavigator: true).push(
+        //   new CupertinoPageRoute(
+        //     builder: (c) {
+        //       return new ScheduleScreen();
+        //     },
+        //   ),
+        // );
       }),
     );
   }
@@ -80,8 +87,11 @@ class _WorkCategoriesDetailState extends State<WorkCategoriesDetail> {
               TextFormField(
                 scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
                 decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      borderSide: BorderSide(color: Colors.grey)),
                   focusColor: LightColor.grey,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0.0),
+                  contentPadding: EdgeInsets.only(top: kDefaultPadding / 2),
                   focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0)),
                       borderSide: BorderSide(color: Colors.grey)),
@@ -97,7 +107,7 @@ class _WorkCategoriesDetailState extends State<WorkCategoriesDetail> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: 10,
+                  itemCount: 20,
                   itemBuilder: (context, index) => _listWork(),
                 ),
               ),
