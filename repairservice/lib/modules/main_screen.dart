@@ -1,14 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:repairservice/config/themes/constants.dart';
+import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/modules/home/home_provider.dart';
 
 import 'package:repairservice/modules/home/home_screen.dart';
 import 'package:repairservice/modules/user/account_screen.dart';
 import 'package:repairservice/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
+import 'package:repairservice/widgets/title_text.dart';
 
+import '../core/auth/login/login_screen.dart';
 import 'manager/manager_screen.dart';
 import 'notification/notification_screen.dart';
+import '../utils/ui/extensions.dart';
 
 class MainPage extends StatefulWidget {
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => MainPage());
+  }
   MainPage({Key key}) : super(key: key);
 
   @override
@@ -27,7 +38,7 @@ class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
   final List<Widget> _children = [
-    HomeScreen(),
+    HomeProvider(),
     ManagerScreen(),
     NotificationScreen(),
     AccountScreen(),
@@ -69,5 +80,6 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return _main(_children);
+    //return LoginScreen();
   }
 }

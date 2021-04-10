@@ -1,30 +1,18 @@
-import 'package:google_fonts/google_fonts.dart';
-import 'package:repairservice/config/routes/routes.dart';
-
+ 
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'config/themes/theme_config.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';  
+import 'package:repairservice/repository/authentication_repository.dart';
+import 'package:repairservice/repository/user_repository/user_repository.dart';
+import 'package:repairservice/simple_bloc_observer.dart'; 
+import 'app.dart';
 
 void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: AppTheme.lightTheme.copyWith(
-        textTheme: GoogleFonts.muliTextTheme(
-          Theme.of(context).textTheme,
-        ),
-      ),
-      // theme: ThemeData(),
-
-      routes: Routes.getRoute(),
-      initialRoute: "/",
-    );
-  }
+   EquatableConfig.stringify = kDebugMode;
+   Bloc.observer = SimpleBlocObserver();
+  runApp(MyApp(
+    authenticationRepository: AuthenticationRepository(),
+    userRepository: UserRepository(),
+  ));
 }

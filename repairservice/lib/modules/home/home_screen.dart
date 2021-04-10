@@ -1,10 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/core/auth/login/bloc/login_bloc.dart';
+import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/home_work_categories/item_work_categories_card.dart';
 import 'package:repairservice/widgets/item_card.dart';
 
 import 'package:repairservice/widgets/item_news_card.dart';
@@ -12,6 +16,7 @@ import 'package:repairservice/widgets/title_text.dart';
 
 import '../../utils/ui/extensions.dart';
 import '../home_work_categories/list_work_categories.dart';
+import 'models/home_category_model.dart';
 import 'models/home_models.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,6 +25,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _scrollController = ScrollController();
+  HomeBloc _homeBloc;
+
   Widget _listofNewsWidget() {
     return Container(
       width: AppTheme.fullWidth(context),
@@ -50,9 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Size _size = MediaQuery.of(context).size;
+  Widget abc(_size, state) {
     return RefreshIndicator(
       onRefresh: () async {
         Completer<Null> completer = new Completer<Null>();
@@ -74,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListWorkCategories(size: _size),
+                  _listServices(_size, state),
                   SizedBox(
                     height: kDefaultPadding,
                   ),
@@ -100,4 +106,68 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    Size _size = MediaQuery.of(context).size;
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        switch (state.status) {
+          case HomeStatus.failure:
+            return const Center(child: Text("state.message"));
+          case HomeStatus.success:
+            if (state.services.isEmpty) {
+              return const Center(child: Text('no services'));
+            }
+            return abc(_size, state);
+          case HomeStatus.loading:
+            return const Center(child: Text("Loading"));
+          default:
+            return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  Widget _listServices(_size, state) {
+    return Container(
+      decoration: BoxDecoration(
+          color: kBgDarkColor, borderRadius: BorderRadius.circular(10)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            height: _size.height * 0.08,
+            decoration: BoxDecoration(
+                color: Colors.orange[800],
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                )),
+            child: Center(child: Text('Dịch vụ nổi bật ')),
+          ),
+          SizedBox(
+            height: kDefaultPadding / 2,
+          ),
+          Container(
+            child: GridView.count(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                crossAxisCount: 3,
+                children: workCategories
+                    .map((e) => ItemWorkCategories(title: e.name))
+                    .toList()),
+          ),
+        ],
+      ),
+    ).addNeumorphism(
+      blurRadius: 10,
+      borderRadius: 10,
+      offset: Offset(5, 5),
+      topShadowColor: Colors.white60,
+      bottomShadowColor: Color(0xFF234395).withOpacity(0.15),
+    );
+  }
 }
+
+ 
