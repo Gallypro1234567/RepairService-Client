@@ -5,8 +5,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/schedule_to_repair/choose_address.dart';
-import 'package:repairservice/modules/user/models/user_category_model.dart';
-import 'package:repairservice/modules/user_history_work/user_history_work_screen.dart';
+
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../utils/ui/extensions.dart';

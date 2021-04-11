@@ -3,14 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/core/auth/login/bloc/login_bloc.dart';
-
-import 'package:repairservice/core/auth/login/components/textfield_container.dart';
-
-import 'package:repairservice/core/auth/register/register_screen.dart';
-import 'package:repairservice/modules/main_screen.dart';
-import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
-
+import 'package:repairservice/core/user/login/bloc/login_bloc.dart'; 
+import 'package:repairservice/core/user/login/components/textfield_container.dart'; 
+import 'package:repairservice/core/user/register/register_screen.dart'; 
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart'; 
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:formz/formz.dart';
 import '../../../../utils/ui/extensions.dart';
@@ -65,38 +61,7 @@ class _LoginFormState extends State<LoginForm> {
                       _PasswordInput(),
                       SizedBox(
                         height: kDefaultPadding,
-                      ),
-                      // Padding(
-                      //   padding:
-                      //       EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      //   child: Container(
-                      //     height: AppTheme.fullHeight(context) * 0.08,
-                      //     width: AppTheme.fullWidth(context),
-                      //     decoration: BoxDecoration(
-                      //       borderRadius: BorderRadius.circular(5),
-                      //       gradient: LinearGradient(
-                      //           colors: [
-                      //             Colors.tealAccent[700],
-                      //             Colors.teal[400],
-                      //           ],
-                      //           begin: const FractionalOffset(0.0, 0.0),
-                      //           end: const FractionalOffset(0.0, 1.0),
-                      //           stops: [0.0, 1.0],
-                      //           tileMode: TileMode.clamp),
-                      //     ),
-                      //     child: Center(
-                      //       child: TitleText(
-                      //         text: "Đăng Nhập",
-                      //         fontSize: 16,
-                      //         fontWeight: FontWeight.w400,
-                      //         color: Colors.white,
-                      //       ),
-                      //     ),
-                      //   ).ripple(() {
-
-                      //   }),
-                      // ),
-                      //
+                      ), 
                       _LoginButton(),
                       SizedBox(
                         height: kDefaultPadding,

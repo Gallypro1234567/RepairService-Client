@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:repairservice/core/auth/login/models/login_pasword.dart';
-import 'package:repairservice/core/auth/login/models/login_phone.dart';
+import 'package:repairservice/core/user/login/models/login_pasword.dart';
+import 'package:repairservice/core/user/login/models/login_phone.dart';
 import 'package:repairservice/repository/authentication_repository.dart';
 
 part 'login_event.dart';

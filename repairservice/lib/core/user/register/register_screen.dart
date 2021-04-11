@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/core/auth/register/register_detail.dart';
+import 'package:repairservice/core/user/register/register_detail.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/text_field_container.dart';
 import 'package:repairservice/widgets/title_text.dart';

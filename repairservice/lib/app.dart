@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart'; 
  
-import 'package:repairservice/core/auth/login/login_screen.dart';
+import 'package:repairservice/core/user/login/login_screen.dart';
  
 import 'package:repairservice/repository/authentication_repository.dart';
 import 'package:repairservice/repository/user_repository/user_repository.dart';
 import 'config/themes/theme_config.dart';
-import 'core/Authentication/bloc/authentication_bloc.dart';
+
+import 'core/auth/bloc/authentication_bloc.dart';
 import 'modules/main_screen.dart';
 import 'modules/splash/splash_page.dart';
 

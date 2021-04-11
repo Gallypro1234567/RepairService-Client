@@ -12,9 +12,9 @@ class AuthenticationRepository {
     var pref = await SharedPreferences.getInstance();
     if (pref.getString("token") != null) {
       await logIn(phone: "0938879910", password: "123456");
+      
       yield* _controller.stream;
     } else {
-      await Future<void>.delayed(const Duration(seconds: 1));
       yield AuthenticationStatus.unauthenticated;
       yield* _controller.stream;
     }

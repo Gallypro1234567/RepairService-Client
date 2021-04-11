@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
-import 'package:repairservice/config/themes/constants.dart';
-import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 
 class Background extends StatelessWidget {
