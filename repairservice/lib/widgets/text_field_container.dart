@@ -18,7 +18,7 @@ class TextFieldContainer extends StatelessWidget {
       this.hindText,
       this.icon,
       this.onchanged,
-      this.isPassword,
+      this.isPassword = false,
       this.keyboard,
       this.initialValue,
       this.controller,

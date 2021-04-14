@@ -30,9 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } else if (event is LoginSubmitted) {
       yield* _mapLoginSubmittedToState(event, state);
     } else if (event is LogOuttSubmitted) {
-      yield* _mapLogOutSubmittedToState(event, state);
-    } else if (event is NavigateRegistertSubmit) {
-      yield* _mapNavigatorPushtoRegisterSubmitToState(event, state);
+      yield* _mapLogOutSubmitToState(event, state);
     }
   }
 
@@ -62,8 +60,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (response.statusCode == 200) {
           yield state.copyWith(
               status: FormzStatus.submissionSuccess,
-              statusCode: response.statusCode); 
-         
+              statusCode: response.statusCode);
         } else if (response.statusCode == 400) {
           yield state.copyWith(
               status: FormzStatus.submissionFailure,
@@ -79,11 +76,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       }
     }
   }
-
-  _mapLogOutSubmittedToState(LogOuttSubmitted event, LoginState state) {
-    _authenticationRepository.logOut();
+ 
+  Stream<LoginState> _mapLogOutSubmitToState(
+      LogOuttSubmitted event, LoginState state) async* {
+    yield state.copyWith(status: FormzStatus.submissionInProgress);
+    try {
+      await _authenticationRepository.logOut();
+      yield state.copyWith(status: FormzStatus.submissionSuccess);
+    } on Exception catch (_) {
+      yield state.copyWith(status: FormzStatus.submissionFailure);
+    }
   }
-
-  _mapNavigatorPushtoRegisterSubmitToState(
-      NavigateRegistertSubmit event, LoginState state) {}
 }

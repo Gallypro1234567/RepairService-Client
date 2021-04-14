@@ -1,5 +1,7 @@
 part of 'register_bloc.dart';
 
+
+
 class RegisterState extends Equatable {
   const RegisterState(
       {this.status = FormzStatus.pure,
@@ -7,30 +9,29 @@ class RegisterState extends Equatable {
       this.phone = const PhoneRegister.pure(),
       this.password = const PasswordRegister.pure(),
       this.verifyPassword = const PasswordVerifyRegister.pure(),
-      this.isCustomer = true});
+      this.userType = UserType.customer});
   final FormzStatus status;
   final FullnameRegister fullname;
   final PhoneRegister phone;
   final PasswordRegister password;
   final PasswordVerifyRegister verifyPassword;
-  final bool isCustomer;
+  final UserType userType;
   @override
   List<Object> get props =>
-      [status, fullname, phone, password, verifyPassword, isCustomer];
-
+      [status, fullname, phone, password, verifyPassword, userType];
   RegisterState copyWith(
       {FormzStatus status,
       FullnameRegister fullname,
       PhoneRegister phone,
       PasswordRegister password,
       PasswordVerifyRegister verifyPassword,
-      final bool isCustomer}) {
+      UserType userType}) {
     return RegisterState(
         status: status ?? this.status,
         fullname: fullname ?? this.fullname,
         phone: phone ?? this.phone,
         password: password ?? this.password,
         verifyPassword: verifyPassword ?? this.verifyPassword,
-        isCustomer: isCustomer ?? this.isCustomer);
+        userType: userType ?? this.userType);
   }
 }

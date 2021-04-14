@@ -1,6 +1,4 @@
-import 'dart:async';
-import 'dart:convert';
-
+import 'dart:async'; 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
@@ -9,20 +7,19 @@ import 'package:repairservice/core/user/register/models/register_password.dart';
 import 'package:repairservice/core/user/register/models/register_password_verify.dart';
 import 'package:repairservice/core/user/register/models/register_phone.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/repository/user_repository/models/user_register_model.dart';
-import 'package:repairservice/repository/user_repository/user_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+ 
 
 part 'register_event.dart';
 part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  RegisterBloc({UserRepository userRepository})
-      : _userRepository = userRepository,
+  RegisterBloc({AuthenticationRepository repository})
+      : _repository = repository,
         super(RegisterState());
 
-  final UserRepository _userRepository;
-  final _controller = StreamController<AuthenticationStatus>();
+  final AuthenticationRepository _repository;
   @override
   Stream<RegisterState> mapEventToState(
     RegisterEvent event,
@@ -40,6 +37,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       yield _mapRegisterVerifyPasswordChangedToState(event, state);
     } else if (event is RegisterButtonSubmitted) {
       yield* _mapRegisterButtonSubmittedToState(event, state);
+    } else if (event is RegisterRadioCustomerChanged) {
+      yield state.copyWith(userType: event.value);
     }
   }
 
@@ -74,17 +73,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       RegisterButtonSubmitted event, RegisterState state) async* {
     yield state.copyWith(status: FormzStatus.submissionInProgress);
     try {
-      var response = await _userRepository.register(new RegisterModel(
-          fullname: state.fullname.value,
-          password: state.password.value,
-          phone: state.phone.value,
-          isCustomer: state.isCustomer));
+      var response = await _repository.register(new RegisterModel(
+        fullname: state.fullname.value,
+        password: state.password.value,
+        phone: state.phone.value,
+        isCustomer: state.userType == UserType.customer ? true : false,
+      ));
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        var pref = await SharedPreferences.getInstance();
-        pref.setString("token", data["token"]);
-        pref.setString("phone", state.phone.value);
-        pref.setString("password", state.password.value); 
         yield state.copyWith(status: FormzStatus.submissionSuccess);
       } else {
         yield state.copyWith(status: FormzStatus.submissionFailure);

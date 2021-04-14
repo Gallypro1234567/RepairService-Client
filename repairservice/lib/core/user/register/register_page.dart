@@ -11,6 +11,7 @@ import 'package:repairservice/core/auth/my_elevated_button.dart';
 import 'package:repairservice/core/user/login/components/textfield_container.dart';
 import 'package:repairservice/core/user/register/bloc/register_bloc.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 
 import 'package:repairservice/widgets/text_field_container.dart';
@@ -24,8 +25,10 @@ class RegisterPage extends StatefulWidget {
   _RegisterPageState createState() => _RegisterPageState();
 }
 
+enum SingingCharacter { lafayette, jefferson }
+
 class _RegisterPageState extends State<RegisterPage> {
-  final _controller = StreamController<AuthenticationStatus>();
+  SingingCharacter _character = SingingCharacter.lafayette;
   @override
   Widget build(BuildContext context) {
     return BlocListener<RegisterBloc, RegisterState>(
@@ -36,13 +39,22 @@ class _RegisterPageState extends State<RegisterPage> {
               ..showSnackBar(
                 const SnackBar(content: Text('Đã có lỗi xảy ra')),
               );
-          } else if (state.status.isSubmissionSuccess) {
-            _controller.add(AuthenticationStatus.authenticated);
           }
         },
         child: Scaffold(
           body: LoginBackground(
             children: [
+              Positioned(
+                top: kDefaultPadding * 2,
+                left: 0,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back),
+                  color: Colors.black,
+                ),
+              ),
               Positioned(
                 // left: 0,
                 // right: 0,
@@ -79,14 +91,34 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: kDefaultPadding,
                         ),
                         _RegisterVerifyPasswordInput(),
-                        RadioListTile(
-                          value: 1,
-                          groupValue: 1,
-                          selected: false,
-                          title: Text("Khách Hàng"),
-                          onChanged: (value) {},
+                        BlocBuilder<RegisterBloc, RegisterState>(
+                          builder: (context, state) {
+                            return RadioListTile(
+                              title: Text("Khách Hàng"),
+                              value: UserType.customer,
+                              groupValue: state.userType,
+                              onChanged: (UserType value) {
+                                context
+                                    .read<RegisterBloc>()
+                                    .add(RegisterRadioCustomerChanged(value));
+                              },
+                            );
+                          },
                         ),
-
+                        BlocBuilder<RegisterBloc, RegisterState>(
+                          builder: (context, state) {
+                            return RadioListTile(
+                              title: Text("Thợ"),
+                              value: UserType.worker,
+                              groupValue: state.userType,
+                              onChanged: (UserType value) {
+                                 context
+                                    .read<RegisterBloc>()
+                                    .add(RegisterRadioCustomerChanged(value));
+                              },
+                            );
+                          },
+                        ),
                         SizedBox(
                           height: kDefaultPadding,
                         ),

@@ -37,8 +37,9 @@ class AppProvider extends StatelessWidget {
           create: (context) => VerifyPhoneBloc()..add(VerifyPhoneInitial()),
         ),
         BlocProvider(
-          create: (context) => RegisterBloc(userRepository: UserRepository())
-            ..add(RegisterInitial()),
+          create: (context) =>
+              RegisterBloc(repository: RepositoryProvider.of<AuthenticationRepository>(context))
+                ..add(RegisterInitial()),
         ),
       ], child: AppView()),
     );

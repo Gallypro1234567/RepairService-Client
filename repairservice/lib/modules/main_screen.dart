@@ -5,7 +5,7 @@ import 'package:repairservice/core/user/register/bloc/register_bloc.dart';
 import 'package:repairservice/modules/home/home_provider.dart';
 import 'package:repairservice/modules/home/home_screen.dart';
 
-import 'package:repairservice/modules/user/account_screen.dart';
+import 'package:repairservice/modules/user/user_manager_page.dart';
 import 'package:repairservice/repository/home_repository/home_repository.dart';
 import 'package:repairservice/repository/user_repository/user_repository.dart';
 import 'package:repairservice/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
@@ -40,7 +40,7 @@ class _MainPageState extends State<MainPage> {
     HomePage(),
     ManagerScreen(),
     NotificationScreen(),
-    AccountScreen(),
+    UserManagerPage(),
   ];
 
   Widget _main(List<Widget> children) {
