@@ -23,6 +23,9 @@ class UserRepository {
         return body.map((dynamic json) {
           return UserDetail(
             fullname: json["Name"] as String,
+            phone: json["Name"] as String,
+            email: json["Name"] as String,
+            address: json["Name"] as String,
             // phone: json["Phone"] as String,
             // sex: json["Sex"] as int == 1
             //     ? Sex.male

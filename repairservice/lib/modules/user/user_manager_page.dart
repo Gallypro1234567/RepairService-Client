@@ -6,6 +6,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
+import 'package:repairservice/modules/user_profile/bloc/userprofile_bloc.dart';
 import 'package:repairservice/modules/user_profile/user_profile_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import '../../utils/ui/extensions.dart';

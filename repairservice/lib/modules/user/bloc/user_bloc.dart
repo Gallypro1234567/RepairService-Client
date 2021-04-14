@@ -24,6 +24,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } else if (event is UserFetchDataSuccessed) {
       yield* _mapUserFetchDataSuccessedToState(event, state);
     }
+    
   }
 
   Stream<UserState> _mapUserFetchDataSuccessedToState(

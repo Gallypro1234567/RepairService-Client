@@ -8,6 +8,8 @@ import 'core/auth/bloc/authentication_bloc.dart';
 import 'core/user/login/bloc/login_bloc.dart';
 import 'core/user/register/bloc/register_bloc.dart';
 import 'core/user/verifyphone/bloc/verifyphone_bloc.dart';
+import 'modules/user/bloc/user_bloc.dart';
+import 'modules/user_profile/bloc/userprofile_bloc.dart';
 
 class AppProvider extends StatelessWidget {
   final AuthenticationRepository authenticationRepository;
@@ -37,10 +39,19 @@ class AppProvider extends StatelessWidget {
           create: (context) => VerifyPhoneBloc()..add(VerifyPhoneInitial()),
         ),
         BlocProvider(
-          create: (context) =>
-              RegisterBloc(repository: RepositoryProvider.of<AuthenticationRepository>(context))
-                ..add(RegisterInitial()),
+          create: (context) => RegisterBloc(
+              repository:
+                  RepositoryProvider.of<AuthenticationRepository>(context))
+            ..add(RegisterInitial()),
         ),
+        // User Page
+        BlocProvider(
+            create: (_) => UserBloc(userRepository: UserRepository())
+              ..add(UserFetchDataSuccessed())),
+        // Usser Profile Update
+        BlocProvider(
+            create: (_) => UserProfileBloc(userRepository: UserRepository())
+              ..add(UserProfileFetched())),
       ], child: AppView()),
     );
   }

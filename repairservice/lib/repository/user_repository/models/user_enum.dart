@@ -1,2 +1,2 @@
 enum UserType { customer, worker }
-enum Sex { male, female, orther }
+enum Sex { empty, male, female, orther }
