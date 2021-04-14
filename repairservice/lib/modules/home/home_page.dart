@@ -11,7 +11,7 @@ import 'package:shimmer/shimmer.dart';
 import 'components/home_background.dart';
 import 'components/preferentials_horizontal_view.dart';
 import 'components/service_gridview.dart';
-import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+
 
 class HomePage extends StatefulWidget {
   @override

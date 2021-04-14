@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
  
-import 'package:repairservice/modules/home/home_screen.dart';
+import 'package:repairservice/modules/home/home_page.dart';
 import 'package:repairservice/core/user/register/register_page.dart';
  
 import 'package:repairservice/modules/main_screen.dart';

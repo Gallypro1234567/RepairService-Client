@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/core/user/register/bloc/register_bloc.dart';
-import 'package:repairservice/modules/home/home_provider.dart';
-import 'package:repairservice/modules/home/home_screen.dart';
+
+import 'package:repairservice/modules/home/home_page.dart';
+import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 
 import 'package:repairservice/modules/user/user_manager_page.dart';
 import 'package:repairservice/repository/home_repository/home_repository.dart';
@@ -49,7 +50,10 @@ class _MainPageState extends State<MainPage> {
         BlocProvider(
             create: (_) => HomeBloc(
                   homeRepository: HomeRepository(),
-                )..add(HomeFetched())), 
+                )..add(HomeFetched())),
+        BlocProvider(
+            create: (_) => UserBloc(userRepository: UserRepository())
+              ..add(UserFetchDataSuccessed())),
       ],
       child: Scaffold(
         body: SafeArea(

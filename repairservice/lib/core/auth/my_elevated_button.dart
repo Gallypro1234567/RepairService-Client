@@ -14,7 +14,8 @@ class MyElevatedButton extends StatelessWidget {
     Key key,
     this.isValidated,
     this.title,
-    this.onPressed, this.color,
+    this.onPressed,
+    this.color,
   }) : super(key: key);
 
   @override
@@ -29,7 +30,7 @@ class MyElevatedButton extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
         child: Container(
-            height: AppTheme.fullHeight(context) * 0.08,
+            height: AppTheme.fullHeight(context) * 0.06,
             width: AppTheme.fullWidth(context) * 0.6,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
             child: Center(

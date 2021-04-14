@@ -9,6 +9,7 @@ import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'package:repairservice/modules/user_profile/user_profile_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import '../../utils/ui/extensions.dart';
+import 'bloc/user_bloc.dart';
 import 'components/user_action_container.dart';
 import 'components/user_avartar_container.dart';
 
@@ -25,6 +26,29 @@ class _UserManagerPageState extends State<UserManagerPage> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        switch (state.status) {
+          case UserStatus.loading:
+            return const CircularProgressIndicator();
+          case UserStatus.success:
+            return UserWidget(state: state);
+          default:
+            return Center(
+              child: Text("Error Loading data"),
+            );
+        }
+      },
+    );
+  }
+}
+
+class UserWidget extends StatelessWidget {
+  final UserState state;
+
+  const UserWidget({Key key, this.state}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
@@ -32,7 +56,7 @@ class _UserManagerPageState extends State<UserManagerPage> {
       child: Column(
         children: [
           UserAvartarContainer(
-            title: "Tran Van A",
+            title: state.user.fullname,
             imageUrl: "assets/images/user_2.png",
           ).ripple(() {
             Navigator.push(context, SlideFadeRoute(page: UserProfilePage()));
@@ -55,17 +79,28 @@ class _UserManagerPageState extends State<UserManagerPage> {
           UserActionContainer(
             title: "Hỗ trợ ",
           ).ripple(() {}),
-          BlocBuilder<LoginBloc, LoginState>(
-            builder: (context, state) {
-              return UserActionContainer(
-                title: "Đăng xuất ",
-              ).ripple(() {
-                context.read<LoginBloc>().add(LogOuttSubmitted());
-              });
-            },
-          ),
+          _LogOutSubmitted(),
         ],
       ),
+    );
+  }
+}
+
+class _LogOutSubmitted extends StatelessWidget {
+  const _LogOutSubmitted({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        return UserActionContainer(
+          title: "Đăng xuất ",
+        ).ripple(() {
+          context.read<LoginBloc>().add(LogOuttSubmitted());
+        });
+      },
     );
   }
 }

@@ -6,3 +6,7 @@ abstract class UserEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+class UserInitial extends UserEvent{}
+class UserFetchDataSuccessed extends UserEvent{}
+class UserFetchDataLoading extends UserEvent{}
+class UserFetchDataFailure extends UserEvent{}
