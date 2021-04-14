@@ -29,6 +29,10 @@ class LoginSubmitted extends LoginEvent {
   const LoginSubmitted();
 }
 
+class NavigateRegistertSubmit extends LoginEvent {
+  const NavigateRegistertSubmit();
+}
+
 class LogOuttSubmitted extends LoginEvent {
   const LogOuttSubmitted();
 }

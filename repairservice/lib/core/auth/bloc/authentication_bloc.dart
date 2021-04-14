@@ -1,9 +1,8 @@
- 
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:repairservice/repository/authentication_repository.dart';
+import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
 import 'package:repairservice/repository/user_repository/models/user.dart';
 import 'package:repairservice/repository/user_repository/user_repository.dart';
 
@@ -14,9 +13,9 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
-     AuthenticationRepository authenticationRepository,
-     UserRepository userRepository,
-  })   : _authenticationRepository = authenticationRepository,
+    AuthenticationRepository authenticationRepository,
+    UserRepository userRepository,
+  })  : _authenticationRepository = authenticationRepository,
         _userRepository = userRepository,
         super(const AuthenticationState.unknown()) {
     _authenticationStatusSubscription = _authenticationRepository.status.listen(
@@ -26,8 +25,9 @@ class AuthenticationBloc
 
   final AuthenticationRepository _authenticationRepository;
   final UserRepository _userRepository;
-  
-  StreamSubscription<AuthenticationStatus> //late StreamSubscription<AuthenticationStatus>
+
+  StreamSubscription<
+          AuthenticationStatus> //late StreamSubscription<AuthenticationStatus>
       _authenticationStatusSubscription;
 
   @override
@@ -66,7 +66,7 @@ class AuthenticationBloc
 
   Future<User> _tryGetUser() async {
     try {
-      final user = await _userRepository.getUser();
+      final user = new User("adsadb");
       return user;
     } on Exception {
       return null;

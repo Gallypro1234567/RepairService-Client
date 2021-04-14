@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 
-class Background extends StatelessWidget {
+class LoginBackground extends StatelessWidget {
   final List<Widget> children;
-  const Background({
+  const LoginBackground({
     Key key,
-     this.children,
+    this.children,
   }) : super(key: key);
 
   @override
@@ -17,6 +17,7 @@ class Background extends StatelessWidget {
       height: AppTheme.fullHeight(context),
       decoration: BoxDecoration(),
       child: Stack(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
         alignment: Alignment.center,
         children: children,
       ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 
-
 class TextFieldContainerBloc extends StatelessWidget {
   final String hindText;
   final IconData icon;
@@ -15,6 +14,7 @@ class TextFieldContainerBloc extends StatelessWidget {
   final Function(String) validator;
   final bool readOnly;
   final bool invalid;
+  final String errorText;
   const TextFieldContainerBloc(
       {Key key,
       this.hindText,
@@ -26,7 +26,8 @@ class TextFieldContainerBloc extends StatelessWidget {
       this.controller,
       this.validator,
       this.readOnly = false,
-      this.invalid})
+      this.invalid,
+      this.errorText})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -48,12 +49,23 @@ class TextFieldContainerBloc extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
             borderSide: BorderSide(color: Colors.grey)),
-        prefixIcon: Icon(
-          icon,
-          color: Colors.grey,
+        // focusedErrorBorder: OutlineInputBorder(
+        //     borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        //     borderSide: BorderSide(color: Colors.deepOrange, width: 2)),
+        prefixIcon: Container(
+          margin: EdgeInsets.symmetric(
+              vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 4),
+          decoration: BoxDecoration(
+              border: Border(
+                  right: BorderSide(
+                      color: invalid ? Colors.red : Colors.grey, width: 1.5))),
+          child: Icon(
+            icon,
+            color: invalid ? Colors.red : Colors.grey,
+          ),
         ),
-        hintText: hindText,
-        errorText: invalid ? 'invalid username' : null,
+        hintText: invalid ? null : hindText,
+        errorText: errorText,
       ),
     );
   }
