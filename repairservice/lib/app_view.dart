@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
+import 'package:repairservice/repository/user_repository/models/user.dart';
 import 'package:repairservice/repository/user_repository/user_repository.dart';
 import 'config/themes/theme_config.dart';
 
@@ -11,6 +13,7 @@ import 'core/user/login/login_page.dart';
 import 'core/user/verifyphone/bloc/verifyphone_bloc.dart';
 import 'modules/main_screen.dart';
 import 'modules/splash/splash_page.dart';
+import 'modules/user/bloc/user_bloc.dart';
 
 class AppView extends StatefulWidget {
   const AppView({
@@ -43,6 +46,8 @@ class _AppViewState extends State<AppView> {
           listener: (context, state) {
             switch (state.status) {
               case AuthenticationStatus.authenticated:
+                context.read<HomeBloc>().add(HomeFetched());
+                context.read<UserBloc>().add(UserFetch());
                 _navigator.pushAndRemoveUntil(
                     MainPage.route(), (route) => false);
                 break;

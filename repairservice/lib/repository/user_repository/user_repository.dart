@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:repairservice/repository/user_repository/user_model.dart';
@@ -38,6 +39,48 @@ class UserRepository {
         }).first;
       }
       return null;
+    } on Exception catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<http.StreamedResponse> modifyOfUserProfile(
+      {String fullname,
+      int sex,
+      String email,
+      String address,
+      String oldpassword,
+      String newpassword,
+      File file}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+
+    var jsonencoder = json.encode({
+      "Fullname": fullname,
+      "Sex": sex,
+      "Email": email,
+      "Address": address,
+      "OldPassword": oldpassword,
+      "NewPassword": newpassword
+    });
+    Map<String, String> headers = {"Authorization": "bearer $token"};
+    try {
+      // var request = await  http.post(
+      //   Uri.http("repairservice.somee.com", "/api/user/update"),
+      //   headers: headers,
+      //   body: jsonencoder,
+      // );
+      // if (request.statusCode == 200) {}
+      // return request;
+      var uri = Uri.http("repairservice.somee.com", "/api/user/update");
+      var request = http.MultipartRequest('POST', uri);
+      request.files.add(http.MultipartFile(
+          'picture', file.readAsBytes().asStream(), file.lengthSync(),
+          filename: file.path.split("/").last));
+      var res = await request.send();
+
+      return res;
     } on Exception catch (e) {
       print(e);
       return null;

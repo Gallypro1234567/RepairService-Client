@@ -40,7 +40,7 @@ class ServiceGridview extends StatelessWidget {
                 crossAxisCount: 3,
                 crossAxisSpacing: 2,
                 children:
-                    model.map((e) => ServiceContainer(title: e.name)).toList()),
+                    model.map((e) => ServiceContainer(title: e.name, imageUrl: e.imageUrl,)).toList()),
           ),
         ],
       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
-import 'package:repairservice/modules/user_profile/bloc/userprofile_bloc.dart';
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 
 class UserProfileInput extends StatelessWidget {
   final IconData prefixIcon;

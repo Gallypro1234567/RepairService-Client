@@ -61,4 +61,12 @@ class UserProfileVerifyPasswordChanged extends UserProfileEvent {
   UserProfileVerifyPasswordChanged(this.value);
 }
 
+// Image
+class UserProfileImageLoading extends UserProfileEvent {}
+
+class UserProfileImageChanged extends UserProfileEvent {
+  final ImageSource imageSource;
+  UserProfileImageChanged(this.imageSource);
+}
+
 class UserProfileUpdateSubmitted extends UserProfileEvent {}

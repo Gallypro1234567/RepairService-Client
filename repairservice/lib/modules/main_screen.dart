@@ -45,45 +45,34 @@ class _MainPageState extends State<MainPage> {
   ];
 
   Widget _main(List<Widget> children) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-            create: (_) => HomeBloc(
-                  homeRepository: HomeRepository(),
-                )..add(HomeFetched())),
-        BlocProvider(
-            create: (_) => UserBloc(userRepository: UserRepository())
-              ..add(UserFetchDataSuccessed())),
-      ],
-      child: Scaffold(
-        body: SafeArea(
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              SingleChildScrollView(
-                child: Container(
-                  height: MediaQuery.of(context).size.height - 50,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: AnimatedSwitcher(
-                          duration: Duration(milliseconds: 300),
-                          switchInCurve: Curves.easeInToLinear,
-                          switchOutCurve: Curves.easeOutBack,
-                          child: children[_selectedIndex],
-                        ),
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            SingleChildScrollView(
+              child: Container(
+                height: MediaQuery.of(context).size.height - 50,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: Duration(milliseconds: 300),
+                        switchInCurve: Curves.easeInToLinear,
+                        switchOutCurve: Curves.easeOutBack,
+                        child: children[_selectedIndex],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: CustomBottomNavigationBar(
-                      onIconPresedCallback: onBottomIconPressed))
-            ],
-          ),
+            ),
+            Positioned(
+                bottom: 0,
+                right: 0,
+                child: CustomBottomNavigationBar(
+                    onIconPresedCallback: onBottomIconPressed))
+          ],
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
+import 'package:repairservice/repository/home_repository/home_repository.dart';
 import 'package:repairservice/repository/user_repository/user_repository.dart';
 
 import 'app_view.dart';
@@ -8,6 +9,7 @@ import 'core/auth/bloc/authentication_bloc.dart';
 import 'core/user/login/bloc/login_bloc.dart';
 import 'core/user/register/bloc/register_bloc.dart';
 import 'core/user/verifyphone/bloc/verifyphone_bloc.dart';
+import 'modules/home/bloc/home_bloc.dart';
 import 'modules/user/bloc/user_bloc.dart';
 import 'modules/user_profile/bloc/userprofile_bloc.dart';
 
@@ -46,12 +48,16 @@ class AppProvider extends StatelessWidget {
         ),
         // User Page
         BlocProvider(
-            create: (_) => UserBloc(userRepository: UserRepository())
-              ..add(UserFetchDataSuccessed())),
+            create: (_) =>
+                UserBloc(userRepository: UserRepository())..add(UserFetch())),
         // Usser Profile Update
         BlocProvider(
             create: (_) => UserProfileBloc(userRepository: UserRepository())
               ..add(UserProfileFetched())),
+        BlocProvider(
+            create: (_) => HomeBloc(
+                  homeRepository: HomeRepository(),
+                )..add(HomeFetched())),
       ], child: AppView()),
     );
   }

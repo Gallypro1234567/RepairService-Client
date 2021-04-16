@@ -20,31 +20,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is HomeFetched) {
-      yield await _mapPostFetchedToState(state);
+      yield* _mapPostFetchedToState(state);
     } else if (event is HomeRefesh) {
       yield* _mapRefeshedToState(state);
     }
   }
 
-  Future<HomeState> _mapPostFetchedToState(HomeState state) async {
-    if (state.hasReachedMax) return state;
+  Stream<HomeState> _mapPostFetchedToState(HomeState state) async* {
+    if (state.hasReachedMax) yield state;
 
-    try {
-      final services = await _homeRepository.fetchService();
-      final preferentials = await _homeRepository.fetchPreferential();
-      return state.copyWith(
-        status: HomeStatus.success,
-        services: services,
-        preferentials: preferentials,
-        hasReachedMax: false,
-      );
-    } on Exception catch (e) {
-      return state.copyWith(status: HomeStatus.failure, message: e.toString());
-    }
-  }
-
-  Stream<HomeState> _mapRefeshedToState(HomeState state) async* {
-    yield state.copyWith(status: HomeStatus.loading);
     try {
       final services = await _homeRepository.fetchService();
       final preferentials = await _homeRepository.fetchPreferential();
@@ -52,6 +36,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         status: HomeStatus.success,
         services: services,
         preferentials: preferentials,
+        hasReachedMax: false,
+      );
+    } on Exception catch (e) {
+      yield state.copyWith(status: HomeStatus.failure, message: e.toString());
+    }
+  }
+
+  Stream<HomeState> _mapRefeshedToState(HomeState state) async* {
+    yield state.copyWith(status: HomeStatus.loading);
+    try {
+      final services = await _homeRepository.fetchService();
+
+      final preferentials = await _homeRepository.fetchPreferential();
+      yield state.copyWith(
+        status: HomeStatus.success,
+        preferentials: preferentials,
+        services: services,
         hasReachedMax: false,
       );
     } on Exception catch (e) {

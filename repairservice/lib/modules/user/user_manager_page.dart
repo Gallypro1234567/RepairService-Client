@@ -27,19 +27,24 @@ class _UserManagerPageState extends State<UserManagerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case UserStatus.loading:
-            return const CircularProgressIndicator();
-          case UserStatus.success:
-            return UserWidget(state: state);
-          default:
-            return Center(
-              child: Text("Error Loading data"),
-            );
-        }
+    return BlocListener<UserBloc, UserState>(
+      listener: (context, state) {
+        
       },
+      child: BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case UserStatus.loading:
+              return const CircularProgressIndicator();
+            case UserStatus.success:
+              return UserWidget(state: state);
+            default:
+              return Center(
+                child: Text("Error Loading data"),
+              );
+          }
+        },
+      ),
     );
   }
 }

@@ -1,9 +1,9 @@
-import 'dart:ui'; 
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
-import 'package:repairservice/repository/home_repository/models/preferential_model.dart'; 
+import 'package:repairservice/repository/home_repository/models/preferential_model.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 import '../../../utils/ui/extensions.dart';
@@ -33,8 +33,9 @@ class PreferentialContainer extends StatelessWidget {
                   margin: EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
                     image: DecorationImage(
+                      repeat: ImageRepeat.repeat,
                       fit: BoxFit.cover,
-                      image: AssetImage(model.imageUrl),
+                      image: NetworkImage(model.imageUrl),
                     ),
                   ),
                 ),

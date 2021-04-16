@@ -9,6 +9,8 @@ abstract class UserEvent extends Equatable {
 
 class UserInitial extends UserEvent {}
 
+class UserFetch extends UserEvent {}
+
 class UserFetchDataSuccessed extends UserEvent {}
 
 class UserFetchDataLoading extends UserEvent {}

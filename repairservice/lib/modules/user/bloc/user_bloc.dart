@@ -17,18 +17,31 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Stream<UserState> mapEventToState(
     UserEvent event,
   ) async* {
-    if (event is UserFetchDataLoading) {
+    if (event is UserFetch) {
+      yield* _mapUserFetchToState(event, state);
+    } else if (event is UserFetchDataLoading) {
       yield state.copyWith(status: UserStatus.loading);
     } else if (event is UserFetchDataFailure) {
       yield state.copyWith(status: UserStatus.failure);
     } else if (event is UserFetchDataSuccessed) {
-      yield* _mapUserFetchDataSuccessedToState(event, state);
+      yield state.copyWith(status: UserStatus.success);
     }
-    
   }
 
   Stream<UserState> _mapUserFetchDataSuccessedToState(
       UserFetchDataSuccessed event, UserState state) async* {
+    yield state.copyWith(status: UserStatus.loading);
+    try {
+      var user = await _userRepository.fetchUser();
+
+      yield state.copyWith(status: UserStatus.success, user: user);
+    } on Exception catch (e) {
+      yield state.copyWith(status: UserStatus.failure, message: e.toString());
+    }
+  }
+
+  Stream<UserState> _mapUserFetchToState(
+      UserFetch event, UserState state) async* {
     yield state.copyWith(status: UserStatus.loading);
     try {
       var user = await _userRepository.fetchUser();
