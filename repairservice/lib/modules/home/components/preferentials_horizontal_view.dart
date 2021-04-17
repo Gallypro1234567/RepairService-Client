@@ -21,12 +21,7 @@ class PreferentialHorizontalView extends StatelessWidget {
       color: LightColor.lightGrey,
       child: GridView(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1,
-            //childAspectRatio: 1 / 2,
-            mainAxisSpacing: 30,
-            crossAxisSpacing: 20),
-        //padding: EdgeInsets.only(left: 10),
-
+            crossAxisCount: 1, mainAxisSpacing: 30, crossAxisSpacing: 20),
         scrollDirection: Axis.horizontal,
         children: model
             .map(

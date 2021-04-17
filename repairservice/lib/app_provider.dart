@@ -10,6 +10,7 @@ import 'core/user/login/bloc/login_bloc.dart';
 import 'core/user/register/bloc/register_bloc.dart';
 import 'core/user/verifyphone/bloc/verifyphone_bloc.dart';
 import 'modules/home/bloc/home_bloc.dart';
+import 'modules/post_find_worker/bloc/postfindworker_bloc.dart';
 import 'modules/user/bloc/user_bloc.dart';
 import 'modules/user_profile/bloc/userprofile_bloc.dart';
 
@@ -54,10 +55,16 @@ class AppProvider extends StatelessWidget {
         BlocProvider(
             create: (_) => UserProfileBloc(userRepository: UserRepository())
               ..add(UserProfileFetched())),
+        // Home page
         BlocProvider(
             create: (_) => HomeBloc(
                   homeRepository: HomeRepository(),
                 )..add(HomeFetched())),
+        // Post Find Worker Page
+        BlocProvider(
+            create: (_) => PostFindWorkerBloc(
+                 
+                )..add(PostFindWorkerInitial())),
       ], child: AppView()),
     );
   }

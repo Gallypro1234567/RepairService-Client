@@ -47,7 +47,7 @@ class UserRepository {
 
   Future<http.StreamedResponse> modifyOfUserProfile(
       {String fullname,
-      int sex,
+      String sex,
       String email,
       String address,
       String oldpassword,
@@ -74,9 +74,17 @@ class UserRepository {
       // if (request.statusCode == 200) {}
       // return request;
       var uri = Uri.http("repairservice.somee.com", "/api/user/update");
+
       var request = http.MultipartRequest('POST', uri);
+      request.fields['Fullname'] = fullname;
+      request.fields['Sex'] = sex;
+      request.fields['Email'] = email;
+      request.fields['Address'] = address;
+      request.fields['OldPassword'] = oldpassword;
+      request.fields['NewPassword'] = newpassword;
+
       request.files.add(http.MultipartFile(
-          'picture', file.readAsBytes().asStream(), file.lengthSync(),
+          'File', file.readAsBytes().asStream(), file.lengthSync(),
           filename: file.path.split("/").last));
       var res = await request.send();
 

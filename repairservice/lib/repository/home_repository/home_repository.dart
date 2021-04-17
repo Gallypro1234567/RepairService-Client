@@ -28,7 +28,7 @@ class HomeRepository {
               description: json["Description"] as String,
               createAt: json["CreateAt"] as String,
               imageUrl:
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQdx451yCKe0mdvQ7WwmW4D5ZNDvuSmRJ0Jg&usqp=CAU");
+                  "http://www.repairservice.somee.com" + json["ImageUrl"]);
         }).toList();
       }
       return null;

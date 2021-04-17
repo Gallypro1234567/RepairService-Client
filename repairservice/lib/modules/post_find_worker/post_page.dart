@@ -1,15 +1,21 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/modules/post_find_worker/screens/select_address.dart';
+import 'package:repairservice/modules/user/bloc/user_bloc.dart';
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
+import 'choose_address.dart';
 import 'components/post_actions_listview.dart';
 import 'components/post_button.dart';
 import 'components/post_form_input.dart';
 import 'components/post_search_input.dart';
+import '../../utils/ui/extensions.dart';
 
 class PostPage extends StatelessWidget {
   @override
@@ -74,13 +80,20 @@ class PostPage extends StatelessWidget {
               PostFormInput(
                 title: "Danh mục tin",
                 hintText: "Chưa có thông tin",
-              ),
+              ).ripple(() {
+                Navigator.push(
+                    context, SlideFadeRoute(page: SelectAddressPage()));
+              }),
               SizedBox(
                 height: kDefaultPadding / 2,
               ),
-              PostFormInput(
-                title: "Bạn là",
-                hintText: "Chưa có thông tin",
+              BlocBuilder<UserBloc, UserState>(
+                builder: (context, usestate) {
+                  return PostFormInput(
+                    title: "Bạn là",
+                    hintText: usestate.user.fullname,
+                  );
+                },
               ),
               SizedBox(
                 height: kDefaultPadding / 2,
