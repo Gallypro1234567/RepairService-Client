@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../utils/service/server_hosting.dart' as Host;
 import 'models/user_enum.dart';
 
 class UserRepository {
@@ -15,7 +15,7 @@ class UserRepository {
     Map<String, String> headers = {"Authorization": "bearer $token"};
     try {
       var response = await http.get(
-        Uri.http("repairservice.somee.com", "/api/services"),
+        Uri.http(Host.Server_hosting, "/api/auth/detail"),
         headers: headers,
       );
       var jsons = json.decode(response.body);
@@ -23,18 +23,18 @@ class UserRepository {
         var body = jsons['data'] as List;
         return body.map((dynamic json) {
           return UserDetail(
-            fullname: json["Name"] as String,
-            phone: json["Name"] as String,
-            email: json["Name"] as String,
-            address: json["Name"] as String,
-            // phone: json["Phone"] as String,
-            // sex: json["Sex"] as int == 1
-            //     ? Sex.male
-            //     : json["Sex"] as int == 2
-            //         ? Sex.female
-            //         : Sex.orther,
-            // email: json["Email"] as String,
-            // address: json["Address"] as String,
+            fullname: json["Fullname"] as String,
+            phone: json["Phone"] as String,
+            sex: json["Sex"] as int == 1
+                ? Sex.male
+                : json["Sex"] as int == 2
+                    ? Sex.female
+                    : json["Sex"] as int == 3
+                        ? Sex.orther
+                        : Sex.empty,
+            email: json["Email"] as String,
+            address: json["Address"] as String,
+            imageUrl: json["ImageUrl"] as String,
           );
         }).first;
       }
@@ -66,7 +66,7 @@ class UserRepository {
     });
     Map<String, String> headers = {"Authorization": "bearer $token"};
     try {
-      // var request = await  http.post(
+      // var request = await http.post(
       //   Uri.http("repairservice.somee.com", "/api/user/update"),
       //   headers: headers,
       //   body: jsonencoder,

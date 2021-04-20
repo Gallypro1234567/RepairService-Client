@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:repairservice/repository/user_repository/models/user_register_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../utils/service/server_hosting.dart' as Host;
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
 class AuthenticationRepository {
@@ -17,7 +17,7 @@ class AuthenticationRepository {
       bool hasExpired = JwtDecoder.isExpired(token);
       if (!hasExpired) {
         var phone = pref.getString("phone");
-        var pasword = pref.getString("password");
+        var pasword = pref.getString("password"); 
         await logIn(phone: phone, password: pasword);
         yield* _controller.stream;
       } else {
@@ -34,7 +34,7 @@ class AuthenticationRepository {
     var jsonencoder = json.encode({"Phone": phone, "Password": password});
     Map<String, String> headers = {"Content-Type": "application/json"};
     var response = await http.post(
-        Uri.http("repairservice.somee.com", "/api/auth/login"),
+        Uri.http(Host.Server_hosting, "/api/auth/login"),
         headers: headers,
         body: jsonencoder);
     if (response.statusCode == 200) {
@@ -42,7 +42,9 @@ class AuthenticationRepository {
       var pref = await SharedPreferences.getInstance();
       pref.clear();
       pref.setString("token", data["token"]);
+      pref.setBool("isCustomer", data["isCustomer"] as bool);
       pref.setString("phone", phone);
+      pref.setString("role", "0");
       pref.setString("password", password);
       _controller.add(AuthenticationStatus.authenticated);
     }
@@ -58,7 +60,7 @@ class AuthenticationRepository {
     });
     Map<String, String> headers = {"Content-Type": "application/json"};
     var response = await http.post(
-        Uri.http("repairservice.somee.com", "/api/auth/register"),
+        Uri.http(Host.Server_hosting, "/api/auth/register"),
         headers: headers,
         body: jsonencoder);
     if (response.statusCode == 200) {

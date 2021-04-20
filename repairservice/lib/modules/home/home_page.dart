@@ -12,7 +12,6 @@ import 'components/home_background.dart';
 import 'components/preferentials_horizontal_view.dart';
 import 'components/service_gridview.dart';
 
-
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -22,37 +21,42 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case HomeStatus.failure:
-            return const Center(child: Text("state.message"));
-          case HomeStatus.success:
-            if (state.services.isEmpty) {
-              return const Center(child: Text('no services'));
-            }
-            return _refreshIndicator(_size, context, state);
-          case HomeStatus.loading:
-            return SizedBox(
-              width: 200.0,
-              height: 100.0,
-              child: Shimmer.fromColors(
-                baseColor: Colors.red,
-                highlightColor: Colors.yellow,
-                child: Text(
-                  'Loading',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 40.0,
-                    fontWeight: FontWeight.bold,
+    return Scaffold(
+      appBar: AppBar(
+        leading: Icon(Icons.menu),
+      ),
+      body: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case HomeStatus.failure:
+              return const Center(child: Text("state.message"));
+            case HomeStatus.success:
+              if (state.services.isEmpty) {
+                return const Center(child: Text('no services'));
+              }
+              return _refreshIndicator(_size, context, state);
+            case HomeStatus.loading:
+              return SizedBox(
+                width: 200.0,
+                height: 100.0,
+                child: Shimmer.fromColors(
+                  baseColor: Colors.red,
+                  highlightColor: Colors.yellow,
+                  child: Text(
+                    'Loading',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 40.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-            );
-          default:
-            return const Center(child: CircularProgressIndicator());
-        }
-      },
+              );
+            default:
+              return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 
@@ -72,7 +76,7 @@ class _HomePageState extends State<HomePage> {
   Widget _homeWidget(_size, HomeState state) {
     return HomeBackground(
       children: [
-        UserCard(),
+        //UserCard(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

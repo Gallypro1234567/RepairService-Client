@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../utils/service/server_hosting.dart' as Host;
 import 'models/preferential_model.dart';
 
 class HomeRepository {
@@ -13,9 +13,14 @@ class HomeRepository {
     var token = pref.getString("token");
 
     Map<String, String> headers = {"Authorization": "bearer $token"};
+    Map<String, String> paramters = {
+      "start": "0",
+      "length": "1000",
+      "order": "1"
+    };
     try {
       var response = await http.get(
-        Uri.http("repairservice.somee.com", "/api/services"),
+        Uri.http(Host.Server_hosting, "/api/services", paramters),
         headers: headers,
       );
       var jsons = json.decode(response.body);
@@ -28,7 +33,7 @@ class HomeRepository {
               description: json["Description"] as String,
               createAt: json["CreateAt"] as String,
               imageUrl:
-                  "http://www.repairservice.somee.com" + json["ImageUrl"]);
+                  Uri.http(Host.Server_hosting, json["ImageUrl"]).toString());
         }).toList();
       }
       return null;
@@ -47,9 +52,14 @@ class HomeRepository {
       "Content-Type": "application/json",
       "Authorization": "bearer $token"
     };
+    Map<String, String> paramters = {
+      "start": "0",
+      "length": "1000",
+      "order": "1"
+    };
     try {
       var response = await http.get(
-        Uri.http("repairservice.somee.com", "/api/preferentials"),
+        Uri.http("repairservice.somee.com", "/api/preferentials", paramters),
         headers: headers,
       );
       var jsons = json.decode(response.body);
@@ -61,7 +71,7 @@ class HomeRepository {
             title: json["Title"] as String,
             description: json["Description"] as String,
             imageUrl:
-                "https://lh3.googleusercontent.com/w4eKDqRKJRcqLj7lapc2PEfuXNlpydhJG13DEzpyFaLP82-A28qtlMQ6PZrof8I_6WZRGXQ2dia8yh-yYIlk5fIoarSoE3TqyP_Yo9xZQgtrmF8ms7A9h4OXHsneYvssS7WnV9DX",
+                Uri.http(Host.Server_hosting, json["ImageUrl"]).toString(),
           );
         }).toList();
       }
