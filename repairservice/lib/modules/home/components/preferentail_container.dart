@@ -35,7 +35,9 @@ class PreferentialContainer extends StatelessWidget {
                     image: DecorationImage(
                       repeat: ImageRepeat.repeat,
                       fit: BoxFit.cover,
-                      image: NetworkImage(model.imageUrl),
+                      image: model.imageUrl != null
+                          ? NetworkImage(model.imageUrl)
+                          : null,
                     ),
                   ),
                 ),

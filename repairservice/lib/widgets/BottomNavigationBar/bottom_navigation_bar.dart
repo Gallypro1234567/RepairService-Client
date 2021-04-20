@@ -75,7 +75,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar>
               duration: Duration(milliseconds: 300),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  color: isEnable ? LightColor.orange : Colors.white,
+                  color: isEnable ? LightColor.lightteal : Colors.white,
                   boxShadow: <BoxShadow>[
                     BoxShadow(
                       color: isEnable ? Color(0xfffeece2) : Colors.white,

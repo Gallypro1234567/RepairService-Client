@@ -4,12 +4,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
+import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/service/server_hosting.dart' as Host;
-import 'models/preferential_model.dart';
 
-class HomeRepository {
-  Future<List<Service>> fetchService({String phone, String password}) async {
+class DashboardRepository {
+  Future<List<UserDetail>> fetchCustomer(
+      {String phone, String password}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
 
@@ -28,11 +29,10 @@ class HomeRepository {
       if (response.statusCode == 200) {
         var body = jsons['data'] as List;
         return body.map((dynamic json) {
-          return Service(
-              code: json["Code"] as String,
-              name: json["Name"] as String,
-              description: json["Description"] as String,
-              createAt: json["CreateAt"] as String,
+          return UserDetail(
+              fullname: json["Code"] as String,
+              phone: json["Name"] as String,
+              address: json["Description"] as String,
               imageUrl: json["ImageUrl"] != null
                   ? json["ImageUrl"].toString().length > 0
                       ? Uri.http(Host.Server_hosting, json["ImageUrl"])
@@ -48,31 +48,7 @@ class HomeRepository {
     }
   }
 
-  Future<http.Response> addService(
-      {String name, File file, String description}) async {
-    var pref = await SharedPreferences.getInstance();
-    var token = pref.getString("token");
-    try {
-      var uri = Uri.http(Host.Server_hosting, "/api/services/add");
-
-      var request = http.MultipartRequest('POST', uri);
-      request.headers['Authorization'] = "bearer $token";
-      request.fields['Name'] = name;
-      request.fields['Description'] = description;
-      if (file != null) {
-        request.files.add(http.MultipartFile(
-            'Image', file.readAsBytes().asStream(), file.lengthSync(),
-            filename: file.path.split("/").last));
-      }
-
-      var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-      return response;
-    } on Exception catch (_) {}
-  }
-
-  Future<List<Preferential>> fetchPreferential(
-      {String phone, String password}) async {
+  Future<List<UserDetail>> fetchWorker({String phone, String password}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
 
@@ -87,17 +63,18 @@ class HomeRepository {
     };
     try {
       var response = await http.get(
-        Uri.http("repairservice.somee.com", "/api/preferentials", paramters),
+        Uri.http("repairservice.somee.com", "/api/users/workers", paramters),
         headers: headers,
       );
       var jsons = json.decode(response.body);
       if (response.statusCode == 200) {
         var body = jsons['data'] as List;
         return body.map((dynamic json) {
-          return Preferential(
-              code: json["Code"] as String,
-              title: json["Title"] as String,
-              description: json["Description"] as String,
+          var length = json["ImageUrl"].toString().length;
+          return UserDetail(
+              fullname: json["Fullname"] as String,
+              phone: json["Phone"] as String,
+              email: json["Email"] as String,
               imageUrl: json["ImageUrl"] != null
                   ? json["ImageUrl"].toString().length > 0
                       ? Uri.http(Host.Server_hosting, json["ImageUrl"])

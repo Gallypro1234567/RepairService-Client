@@ -276,109 +276,121 @@ class _ManagerScreenState extends State<ManagerScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: kDefaultPadding),
-          child: TitleText(
-            text: "Quản lý việc",
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: TitleText(
+          text: "Quản lý việc",
+          fontSize: 16,
+          fontWeight: FontWeight.w800,
         ),
-        Expanded(
-          child: DefaultTabController(
-            length: 2,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Scaffold(
-                appBar: TabBar(
-                    indicator: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: LightColor.orange,
-                      //borderRadius: BorderRadius.circular(10)
-                    ),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.grey,
-                    tabs: [
+        centerTitle: true,
+        backgroundColor: Colors.tealAccent[700],
+      ),
+      body: Container(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Padding(
+          //   padding: const EdgeInsets.only(top: kDefaultPadding),
+          //   child: TitleText(
+          //     text: "Quản lý việc",
+          //     fontWeight: FontWeight.w600,
+          //     fontSize: 14,
+          //   ),
+          // ),
+          Expanded(
+            child: DefaultTabController(
+              length: 2,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Scaffold(
+                  appBar: TabBar(
+                      indicator: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color: LightColor.orange,
+                        //borderRadius: BorderRadius.circular(10)
+                      ),
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.grey,
+                      tabs: [
+                        Tab(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.calendar_today),
+                              Text('Lịch'),
+                            ],
+                          ),
+                        ),
+                        Tab(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.view_list),
+                              Text('Danh sách'),
+                            ],
+                          ),
+                        ),
+                      ]),
+                  body: TabBarView(
+                    children: [
                       Tab(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.calendar_today),
-                            Text('Lịch'),
-                          ],
+                        child: RefreshIndicator(
+                          child: Column(
+                            children: [
+                              _buildTableCalendarWithBuilders(),
+                              const SizedBox(height: 8.0),
+                              const SizedBox(height: 8.0),
+                              Expanded(child: _buildEventList()),
+                            ],
+                          ),
+                          onRefresh: () async {
+                            Completer<Null> completer = new Completer<Null>();
+                            await Future.delayed(Duration(seconds: 2))
+                                .then((onvalue) {
+                              completer.complete();
+                              setState(() {});
+                            });
+                            return completer.future;
+                          },
                         ),
                       ),
                       Tab(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.view_list),
-                            Text('Danh sách'),
-                          ],
+                        child: RefreshIndicator(
+                          child: ListView(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            children: [
+                              Container(
+                                height: AppTheme.fullWidth(context),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.rectangle,
+                                    color: Colors.green),
+                              ),
+                            ],
+                          ),
+                          onRefresh: () async {
+                            Completer<Null> completer = new Completer<Null>();
+                            await Future.delayed(Duration(seconds: 2))
+                                .then((onvalue) {
+                              completer.complete();
+                              setState(() {});
+                            });
+                            return completer.future;
+                          },
                         ),
                       ),
-                    ]),
-                body: TabBarView(
-                  children: [
-                    Tab(
-                      child: RefreshIndicator(
-                        child: Column(
-                          children: [
-                            _buildTableCalendarWithBuilders(),
-                            const SizedBox(height: 8.0),
-                            const SizedBox(height: 8.0),
-                            Expanded(child: _buildEventList()),
-                          ],
-                        ),
-                        onRefresh: () async {
-                          Completer<Null> completer = new Completer<Null>();
-                          await Future.delayed(Duration(seconds: 2))
-                              .then((onvalue) {
-                            completer.complete();
-                            setState(() {});
-                          });
-                          return completer.future;
-                        },
-                      ),
-                    ),
-                    Tab(
-                      child: RefreshIndicator(
-                        child: ListView(
-                          physics: AlwaysScrollableScrollPhysics(),
-                          children: [
-                            Container(
-                              height: AppTheme.fullWidth(context),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                  color: Colors.green),
-                            ),
-                          ],
-                        ),
-                        onRefresh: () async {
-                          Completer<Null> completer = new Completer<Null>();
-                          await Future.delayed(Duration(seconds: 2))
-                              .then((onvalue) {
-                            completer.complete();
-                            setState(() {});
-                          });
-                          return completer.future;
-                        },
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    ));
+        ],
+      )),
+    );
   }
 
   Widget _buildTableCalendarWithBuilders() {

@@ -6,7 +6,7 @@ class ServicePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Tài khoản"),
+        title: Text("Service Page"),
         centerTitle: true,
         bottomOpacity: 0.0,
         elevation: 0.0,

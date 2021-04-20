@@ -25,7 +25,7 @@ class UserActionContainer extends StatelessWidget {
           children: [
             Icon(
               Icons.settings,
-              color: LightColor.orange,
+              color: LightColor.lightteal,
             ),
             Expanded(
                 flex: 2,

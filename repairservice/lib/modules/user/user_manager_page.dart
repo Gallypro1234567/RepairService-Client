@@ -9,6 +9,7 @@ import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'package:repairservice/modules/user_profile/bloc/userprofile_bloc.dart';
 import 'package:repairservice/modules/user_profile/user_profile_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/widgets/title_text.dart';
 import '../../utils/ui/extensions.dart';
 import 'bloc/user_bloc.dart';
 import 'components/user_action_container.dart';
@@ -28,9 +29,7 @@ class _UserManagerPageState extends State<UserManagerPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<UserBloc, UserState>(
-      listener: (context, state) {
-        
-      },
+      listener: (context, state) {},
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
           switch (state.status) {
@@ -55,38 +54,50 @@ class UserWidget extends StatelessWidget {
   const UserWidget({Key key, this.state}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
-      decoration: BoxDecoration(color: LightColor.lightGrey),
-      child: Column(
-        children: [
-          UserAvartarContainer(
-            title: state.user.fullname,
-            imageUrl: "assets/images/user_2.png",
-          ).ripple(() {
-            Navigator.push(context, SlideFadeRoute(page: UserProfilePage()));
-          }),
-          SizedBox(
-            height: kDefaultPadding,
-          ),
-          UserActionContainer(
-            title: "Lịch sử công việc",
-          ).ripple(() {}),
-          UserActionContainer(
-            title: "Lịch sử giao dịch",
-          ).ripple(() {}),
-          UserActionContainer(
-            title: "Danh mục yêu thích",
-          ).ripple(() {}),
-          UserActionContainer(
-            title: "Cài đặt",
-          ).ripple(() {}),
-          UserActionContainer(
-            title: "Hỗ trợ ",
-          ).ripple(() {}),
-          _LogOutSubmitted(),
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: TitleText(
+          text: "Thông tin cá nhân",
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+        ),
+        centerTitle: false,
+        backgroundColor: LightColor.lightteal,
+      ),
+      body: Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+        decoration: BoxDecoration(color: LightColor.lightGrey),
+        child: Column(
+          children: [
+            UserAvartarContainer(
+              title: state.user.fullname,
+              imageUrl: "assets/images/user_2.png",
+            ).ripple(() {
+              context.read<UserProfileBloc>().add(UserProfileInitial());
+              Navigator.push(context, SlideFadeRoute(page: UserProfilePage()));
+            }),
+            SizedBox(
+              height: kDefaultPadding,
+            ),
+            UserActionContainer(
+              title: "Lịch sử công việc",
+            ).ripple(() {}),
+            UserActionContainer(
+              title: "Lịch sử giao dịch",
+            ).ripple(() {}),
+            UserActionContainer(
+              title: "Danh mục yêu thích",
+            ).ripple(() {}),
+            UserActionContainer(
+              title: "Cài đặt",
+            ).ripple(() {}),
+            UserActionContainer(
+              title: "Hỗ trợ ",
+            ).ripple(() {}),
+            _LogOutSubmitted(),
+          ],
+        ),
       ),
     );
   }

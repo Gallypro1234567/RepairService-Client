@@ -22,30 +22,13 @@ import 'package:formz/formz.dart';
 class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case UserStatus.empty:
-            return SplashPage();
-          case UserStatus.loading:
-            return SplashPage();
-          case UserStatus.success:
-            return UserProfileView(
-              state: state,
-            );
-          default:
-            return SplashPage();
-        }
-      },
-    );
+    return UserProfileView();
   }
 }
 
 class UserProfileView extends StatelessWidget {
-  final UserState state;
   const UserProfileView({
     Key key,
-    this.state,
   }) : super(key: key);
 
   @override
@@ -76,7 +59,7 @@ class UserProfileView extends StatelessWidget {
           }
         }
         if (state.status == UserProfileStatus.modified) {
-          context.read<UserBloc>().add(UserFetch());
+          context.read<UserProfileBloc>().add(UserProfileInitial());
         }
       },
       child: Scaffold(
@@ -87,54 +70,70 @@ class UserProfileView extends StatelessWidget {
             bottomOpacity: 0.0,
             elevation: 0.0,
           ),
-          body: UserProfileBackground(
-            title: state.user.fullname,
-            onchangedAvatr: () {},
-            children: [
-              _FullnameBlocInput(
-                fullname: state.user.fullname,
-              ),
-              SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              _SexBlocInput(sex: state.user.sex),
-              SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              _EmailBlocInput(email: state.user.email),
-              SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              _AddressBlocInput(address: state.user.address),
-              SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              _PhoneBlocInput(phone: state.user.phone),
-              SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              TitleText(
-                text: "Đổi mật khẩu",
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-              SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              _OldPasswordBlocInput(),
-              SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              _NewPasswordBlocInput(),
-              SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              _VerifyPasswordBlocInput(),
-              SizedBox(
-                height: kDefaultPadding / 2,
-              ),
-              _UpdateProfileBlocButton()
-            ],
+          body: BlocBuilder<UserProfileBloc, UserProfileState>(
+            builder: (context, state) {
+              switch (state.status) {
+                case UserProfileStatus.loading:
+                  return SplashPage();
+                case UserProfileStatus.success:
+                  return UserProfileBackground(
+                    imageUrl: state.imageUrl != null ? state.imageUrl : "",
+                    title: state.fullname.value,
+                    onchangedAvatr: () {},
+                    children: [
+                      _FullnameBlocInput(),
+                      SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                      _SexBlocInput(),
+                      SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                      _EmailBlocInput(),
+                      SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                      _AddressBlocInput(),
+                      SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                      _PhoneBlocInput(phone: state.phone.value),
+                      SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                      TitleText(
+                        text: "Đổi mật khẩu",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                      _OldPasswordBlocInput(),
+                      SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                      _NewPasswordBlocInput(),
+                      SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                      _VerifyPasswordBlocInput(),
+                      SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                      _UpdateProfileBlocButton()
+                    ],
+                  );
+                default:
+                  return Center(
+                    child: TitleText(
+                      text: "Error",
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  );
+              }
+            },
           )),
     );
   }
@@ -156,7 +155,7 @@ class _UpdateProfileBlocButton extends StatelessWidget {
           UserProfileButton(
             key: const Key('loginForm_continue_raisedButton'),
             title: "Cập nhật",
-            color: LightColor.orange,
+            color: LightColor.lightteal,
             onPressed: () {
               context.read<UserProfileBloc>().add(UserProfileUpdateSubmitted());
             },
@@ -263,10 +262,8 @@ class _PhoneBlocInput extends StatelessWidget {
 }
 
 class _AddressBlocInput extends StatelessWidget {
-  final String address;
   const _AddressBlocInput({
     Key key,
-    this.address,
   }) : super(key: key);
 
   @override
@@ -277,7 +274,7 @@ class _AddressBlocInput extends StatelessWidget {
           hintText: "Địa chỉ",
           prefixIcon: Icons.location_on_outlined,
           suffixIcon: Icons.edit_outlined,
-          initialValue: address,
+          initialValue: state.address.value,
           onchanged: (value) {
             context
                 .read<UserProfileBloc>()
@@ -290,21 +287,22 @@ class _AddressBlocInput extends StatelessWidget {
 }
 
 class _EmailBlocInput extends StatelessWidget {
-  final String email;
   const _EmailBlocInput({
     Key key,
-    this.email,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserProfileBloc, UserProfileState>(
       builder: (context, state) {
+        // if (email != null) {
+        //   context.read<UserProfileBloc>().add(UserProfileEmailChanged(email));
+        // }
         return UserProfileInput(
           hintText: "Email",
           prefixIcon: Icons.email_outlined,
           suffixIcon: Icons.edit_outlined,
-          initialValue: email,
+          initialValue: state.email.value,
           onchanged: (value) {
             context.read<UserProfileBloc>().add(UserProfileEmailChanged(value));
           },
@@ -315,10 +313,8 @@ class _EmailBlocInput extends StatelessWidget {
 }
 
 class _SexBlocInput extends StatelessWidget {
-  final Sex sex;
   const _SexBlocInput({
     Key key,
-    this.sex,
   }) : super(key: key);
 
   @override
@@ -329,6 +325,13 @@ class _SexBlocInput extends StatelessWidget {
           hintText: "Giới tính",
           prefixIcon: FontAwesome.venus_mars,
           suffixIcon: Icons.edit_outlined,
+          initialValue: state.sex == Sex.male
+              ? "Nam"
+              : state.sex == Sex.female
+                  ? "Nữ"
+                  : state.sex == Sex.orther
+                      ? "Khác"
+                      : null,
           controller: new TextEditingController(
             text: state.sex == Sex.male
                 ? "Nam"
@@ -338,13 +341,6 @@ class _SexBlocInput extends StatelessWidget {
                         ? "Khác"
                         : null,
           ),
-          initialValue: sex == Sex.male
-              ? "Nam"
-              : sex == Sex.female
-                  ? "Nữ"
-                  : sex == Sex.orther
-                      ? "Khác"
-                      : null,
           onSelected: (value) {
             context.read<UserProfileBloc>().add(UserProfileSexChanged(value));
           },
@@ -369,7 +365,7 @@ class _FullnameBlocInput extends StatelessWidget {
           hintText: "Họ và Tên",
           prefixIcon: Icons.person_outline,
           suffixIcon: Icons.edit_outlined,
-          initialValue: fullname,
+          initialValue: state.fullname.value,
           keyboard: TextInputType.text,
           onchanged: (value) {
             context

@@ -9,8 +9,7 @@ class HomeBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+      padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
       decoration: BoxDecoration(color: LightColor.lightGrey),
       child: ListView(
           clipBehavior: Clip.hardEdge,

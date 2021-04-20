@@ -31,7 +31,8 @@ class AuthenticationRepository {
   }
 
   Future<http.Response> logIn({String phone, String password}) async {
-    var jsonencoder = json.encode({"Phone": phone, "Password": password});
+    var jsonencoder = json.encode({"Phone": "012345678910", "Password": "123456"});
+    //var jsonencoder = json.encode({"Phone": phone, "Password": password});
     Map<String, String> headers = {"Content-Type": "application/json"};
     var response = await http.post(
         Uri.http(Host.Server_hosting, "/api/auth/login"),

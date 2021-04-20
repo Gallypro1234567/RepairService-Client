@@ -4,17 +4,19 @@ import 'package:flutter/material.dart';
 class PostFormInput extends StatelessWidget {
   final String title;
   final String hintText;
-  const PostFormInput({Key key, this.title, this.hintText}) : super(key: key);
+  final Function(String) onChanged;
+  const PostFormInput({Key key, this.title, this.hintText, this.onChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       child: TextFormField(
+        onChanged: onChanged,
         scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
         decoration: InputDecoration(
           labelText: '$title *',
-          hintText: hintText,
+          hintText: hintText, 
           hintStyle: TextStyle(fontWeight: FontWeight.w500),
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),

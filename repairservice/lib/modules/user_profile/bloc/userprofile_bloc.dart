@@ -29,7 +29,14 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   Stream<UserProfileState> mapEventToState(
     UserProfileEvent event,
   ) async* {
-    if (event is UserProfileFetched) {
+    if (event is UserProfileInitial) {
+      // yield state.copyWith(
+      //   fullname: Fullname.dirty(event.fullname),
+      //   sex: event.sex,
+      //   email: Email.dirty(event.email),
+      //   address: Address.dirty(event.address),
+      //   imageUrl: event.imageUrl,
+      // );
       yield* _mapUserProfileFetchedToState(event, state);
     }
     // fullname
@@ -83,12 +90,19 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   }
 
   Stream<UserProfileState> _mapUserProfileFetchedToState(
-      UserProfileFetched event, UserProfileState state) async* {
+      UserProfileInitial event, UserProfileState state) async* {
     yield state.copyWith(status: UserProfileStatus.loading);
     try {
       var user = await _userRepository.fetchUser();
-
-      yield state.copyWith(status: UserProfileStatus.success, data: user);
+      yield state.copyWith(
+          status: UserProfileStatus.success,
+          data: user,
+          fullname: Fullname.dirty(user.fullname),
+          sex: user.sex,
+          email: Email.dirty(user.email),
+          address: Address.dirty(user.address),
+          phone: Phone.dirty(user.phone),
+          imageUrl: user.imageUrl);
     } on Exception catch (_) {
       yield state.copyWith(
         status: UserProfileStatus.failure,
@@ -119,23 +133,27 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     }
     yield state.copyWith(status: UserProfileStatus.loading);
     try {
-      // await _userRepository.modifyOfUserProfile(
-      //     fullname: state.fullname.value,
-      //     sex: state.sex == Sex.male
-      //         ? 1
-      //         : state.sex == Sex.female
-      //             ? 2
-      //             : state.sex == Sex.orther
-      //                 ? 3
-      //                 : 0,
-      //     email: state.email.value,
-      //     address: state.address.value,
-      //     oldpassword: state.oldpassword.value,
-      //     newpassword: state.newPassword.value);
-      yield state.copyWith(
-          status: UserProfileStatus.modified,
-          formzstatus: FormzStatus.submissionSuccess,
-          checkPass: 10);
+      var a = await _userRepository.modifyOfUserProfile(
+          phone: state.phone.value,
+          fullname: state.fullname.value,
+          sex: state.sex == Sex.male
+              ? 1
+              : state.sex == Sex.female
+                  ? 2
+                  : state.sex == Sex.orther
+                      ? 3
+                      : 0,
+          email: state.email.value,
+          address: state.address.value,
+          oldpassword: state.oldpassword.value,
+          newpassword: state.newPassword.value);
+
+      if (a.statusCode == 200) {
+        yield state.copyWith(
+            status: UserProfileStatus.modified,
+            formzstatus: FormzStatus.submissionSuccess,
+            checkPass: 10);
+      }
     } on Exception catch (_) {
       yield state.copyWith(
         status: UserProfileStatus.failure,

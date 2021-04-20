@@ -13,6 +13,7 @@ class UserProfileInput extends StatelessWidget {
   final String initialValue;
   final bool readOnly;
   final bool isCheck;
+  final TextEditingController controller;
   const UserProfileInput({
     Key key,
     this.prefixIcon,
@@ -24,6 +25,7 @@ class UserProfileInput extends StatelessWidget {
     this.initialValue,
     this.readOnly = false,
     this.isCheck = false,
+    this.controller,
   }) : super(key: key);
 
   @override
@@ -32,6 +34,7 @@ class UserProfileInput extends StatelessWidget {
       height: 40,
       width: double.infinity,
       child: TextFormField(
+          controller: controller,
           initialValue: initialValue,
           obscureText: isPassword,
           onChanged: onchanged,

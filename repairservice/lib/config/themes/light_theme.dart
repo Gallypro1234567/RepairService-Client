@@ -22,4 +22,5 @@ class LightColor {
   static const Color black = Color(0xff20262C);
   static const Color lightblack = Color(0xff5F5F60);
   static const Color lightGreen = Color(0xff00b13f);
+  static const Color lightteal = Color(0xff00bfa5);
 }

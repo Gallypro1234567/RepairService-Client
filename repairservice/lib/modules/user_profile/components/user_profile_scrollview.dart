@@ -15,9 +15,9 @@ class UserProfileBackground extends StatelessWidget {
   final String title;
   final List<Widget> children;
   final Function onchangedAvatr;
-
+  final String imageUrl;
   const UserProfileBackground(
-      {Key key, this.title, this.onchangedAvatr, this.children})
+      {Key key, this.title, this.onchangedAvatr, this.children, this.imageUrl})
       : super(key: key);
 
   @override
@@ -50,9 +50,8 @@ class UserProfileBackground extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundImage: state.file != null
                                         ? FileImage(state.file)
-                                        : state.imageUrl != null
-                                            ? Image.network(
-                                                'https://picsum.photos/250?image=9')
+                                        : imageUrl.isNotEmpty
+                                            ? NetworkImage(imageUrl)
                                             : AssetImage(
                                                 "assets/images/user_profile_background.jpg"),
                                   ),
@@ -77,7 +76,7 @@ class UserProfileBackground extends StatelessWidget {
                         child: IconButton(
                             icon: Icon(
                               Icons.camera_alt,
-                              color: LightColor.orange,
+                              color: LightColor.lightteal,
                             ),
                             onPressed: () {
                               Scaffold.of(context).showBottomSheet<void>(

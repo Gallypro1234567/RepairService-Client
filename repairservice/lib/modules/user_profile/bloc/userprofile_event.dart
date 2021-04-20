@@ -8,7 +8,16 @@ abstract class UserProfileEvent extends Equatable {
 }
 
 // load
-class UserProfileFetched extends UserProfileEvent {}
+class UserProfileInitial extends UserProfileEvent {
+  // final String fullname;
+  // final Sex sex;
+  // final String email;
+  // final String address;
+  // final String phone;
+  // final String imageUrl;
+
+  // UserProfileInitial(this.fullname, this.sex, this.email, this.address, this.phone, this.imageUrl);
+}
 
 class UserProfileLoading extends UserProfileEvent {}
 
