@@ -8,6 +8,7 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'package:repairservice/modules/user_profile/bloc/userprofile_bloc.dart';
 import 'package:repairservice/modules/user_profile/user_profile_page.dart';
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../utils/ui/extensions.dart';
@@ -72,7 +73,7 @@ class UserWidget extends StatelessWidget {
           children: [
             UserAvartarContainer(
               title: state.user.fullname,
-              imageUrl: "assets/images/user_2.png",
+              imageUrl: state.user.imageUrl != null ? state.user.imageUrl : "",
             ).ripple(() {
               context.read<UserProfileBloc>().add(UserProfileInitial());
               Navigator.push(context, SlideFadeRoute(page: UserProfilePage()));
@@ -80,9 +81,11 @@ class UserWidget extends StatelessWidget {
             SizedBox(
               height: kDefaultPadding,
             ),
-            UserActionContainer(
-              title: "Lịch sử công việc",
-            ).ripple(() {}),
+            state.user.isCustomer == UserType.customer
+                ? Container()
+                : UserActionContainer(
+                    title: "Lịch sử công việc",
+                  ).ripple(() {}),
             UserActionContainer(
               title: "Lịch sử giao dịch",
             ).ripple(() {}),

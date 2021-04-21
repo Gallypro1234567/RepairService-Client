@@ -46,14 +46,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Stream<HomeState> _mapRefeshedToState(HomeState state) async* {
     yield state.copyWith(status: HomeStatus.loading);
     try {
+      final role = await _homeRepository.getRole();
       final services = await _homeRepository.fetchService();
-
       final preferentials = await _homeRepository.fetchPreferential();
       yield state.copyWith(
         status: HomeStatus.success,
         preferentials: preferentials,
         services: services,
         hasReachedMax: false,
+        role: role,
       );
     } on Exception catch (e) {
       yield state.copyWith(status: HomeStatus.failure, message: e.toString());

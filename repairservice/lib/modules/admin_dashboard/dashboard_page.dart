@@ -40,10 +40,10 @@ class DashboardPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.settings),
-            title: Text('Danh sách thợ đăng ký'),
+            title: Text('Quản lý thợ'),
             onTap: () {
               Navigator.push(
-                  context, SlideFadeRoute(page: ServiceManagerPage()));
+                  context, SlideFadeRoute(page: WorkerManagerPage()));
             },
           ),
           ListTile(
@@ -56,10 +56,10 @@ class DashboardPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.settings),
-            title: Text('Quản lý thợ'),
+            title: Text('Danh sách thợ đăng ký'),
             onTap: () {
               Navigator.push(
-                  context, SlideFadeRoute(page: WorkerManagerPage()));
+                  context, SlideFadeRoute(page: ServiceManagerPage()));
             },
           ),
         ],

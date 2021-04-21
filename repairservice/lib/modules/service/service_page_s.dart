@@ -3,12 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
-import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/modules/post_find_worker/post_find_worker_page.dart';
 import 'package:repairservice/modules/post_find_worker/post_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
-import 'package:repairservice/widgets/title_text.dart';
-import '../../utils/ui/extensions.dart';
+import 'components/item_post_container.dart';
 
 class WorkCategoriesDetail extends StatefulWidget {
   final String title;
@@ -19,105 +16,54 @@ class WorkCategoriesDetail extends StatefulWidget {
 }
 
 class _WorkCategoriesDetailState extends State<WorkCategoriesDetail> {
-  Widget _listWork() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: kDefaultPadding / 2),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: kDefaultPadding,
-        ),
-        height: AppTheme.fullHeight(context) * 0.14,
-        decoration: BoxDecoration(
-            border: Border.all(color: LightColor.lightblack, width: 0.1),
-            color: LightColor.lightGrey,
-            shape: BoxShape.rectangle),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(
-              height: 60,
-              width: 60,
-              child: CircleAvatar(
-                backgroundColor: Colors.transparent,
-                backgroundImage: AssetImage("assets/images/man.png"),
-              ),
-            ),
-            SizedBox(
-              width: kDefaultPadding / 2,
-            ),
-            Expanded(
-                child: TitleText(
-              text: "Lắp nguyên bộ máy lạnh treo tường 1 - 1.5hp",
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            )),
-          ],
-        ),
-      ).ripple(() {
-        Navigator.push(context, SlideFadeRoute(page: PostFindWorkerPage()));
-      }),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Material(
-        child: Scaffold(
+    return Scaffold(
+      backgroundColor: LightColor.lightGrey,
       appBar: AppBar(
-        backgroundColor: LightColor.lightGrey,
-        title: Text(widget.title),
-        centerTitle: true,
+        backgroundColor: LightColor.lightteal,
+        leadingWidth: 30,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back)),
+        title: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          child: TextFormField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.grey)),
+              focusColor: LightColor.grey,
+              contentPadding: EdgeInsets.only(top: kDefaultPadding / 2),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.grey)),
+              prefixIcon: Icon(
+                Icons.search,
+                color: Colors.grey,
+              ),
+              hintText: "Bạn cần tìm dịch vụ gì ?",
+            ),
+          ),
+        ),
         bottomOpacity: 0.0,
         elevation: 0.0,
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: kDefaultPadding, vertical: kDefaultPadding),
-        height: AppTheme.fullHeight(context),
-        decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          color: LightColor.lightGrey,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            TextFormField(
-              scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    borderSide: BorderSide(color: Colors.grey)),
-                focusColor: LightColor.grey,
-                contentPadding: EdgeInsets.only(top: kDefaultPadding / 2),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    borderSide: BorderSide(color: Colors.grey)),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.grey,
-                ),
-                hintText: "Bạn cần tìm dịch vụ gì ?",
-              ),
-            ),
-            SizedBox(
-              height: kDefaultPadding,
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 20,
-                itemBuilder: (context, index) => _listWork(),
-              ),
-            ),
-          ],
-        ),
+      body: ListView.builder(
+        itemCount: 20,
+        itemBuilder: (context, index) => ItemPostContainer(),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: LightColor.orange,
+        backgroundColor: LightColor.lightteal,
         onPressed: () {
           Navigator.push(context, SlideFadeRoute(page: PostPage()));
         },
         child: Center(child: Icon(Entypo.plus)),
       ),
-    ));
+    );
   }
 }

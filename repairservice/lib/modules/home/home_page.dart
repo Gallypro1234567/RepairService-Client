@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/admin_dashboard/dashboard_page.dart';
-import 'package:repairservice/modules/admin_dashboard/screens/worker_manager.dart/worker_manager.dart';
+
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
-import 'package:repairservice/widgets/title_text.dart';
+
 import 'package:shimmer/shimmer.dart';
 import 'components/home_background.dart';
-import 'components/preferentials_horizontal_view.dart';
+
 import 'components/service_gridview.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,14 +27,21 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            _scaffoldKey.currentState.openDrawer();
+        leading: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            if (state.role == 0) {
+              return IconButton(
+                onPressed: () {
+                  _scaffoldKey.currentState.openDrawer();
+                },
+                icon: Icon(
+                  Icons.menu,
+                  color: Colors.white,
+                ),
+              );
+            }
+            return Container();
           },
-          icon: Icon(
-            Icons.menu,
-            color: Colors.white,
-          ),
         ),
         backgroundColor: LightColor.lightteal,
         elevation: 0,

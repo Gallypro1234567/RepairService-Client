@@ -32,7 +32,8 @@ class ServiceContainer extends StatelessWidget {
                   height: 60,
                   width: 60,
                   child: CircleAvatar(
-                    backgroundColor: Colors.transparent,
+                    backgroundColor:
+                        imageUrl != null ? Colors.transparent : null,
                     backgroundImage:
                         imageUrl != null ? NetworkImage(imageUrl) : null,
                   ),

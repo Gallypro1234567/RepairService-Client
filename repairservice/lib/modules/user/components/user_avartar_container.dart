@@ -26,7 +26,9 @@ class UserAvartarContainer extends StatelessWidget {
                 width: 50,
                 child: CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  backgroundImage: AssetImage(imageUrl),
+                  backgroundImage: imageUrl.isNotEmpty
+                      ? NetworkImage(imageUrl)
+                      : AssetImage("assets/images/user_profile_background.jpg"),
                 ),
               ),
               Padding(

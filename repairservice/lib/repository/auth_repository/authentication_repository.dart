@@ -5,6 +5,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:repairservice/repository/user_repository/models/user_register_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/service/server_hosting.dart' as Host;
+
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
 class AuthenticationRepository {
@@ -17,7 +18,7 @@ class AuthenticationRepository {
       bool hasExpired = JwtDecoder.isExpired(token);
       if (!hasExpired) {
         var phone = pref.getString("phone");
-        var pasword = pref.getString("password"); 
+        var pasword = pref.getString("password");
         await logIn(phone: phone, password: pasword);
         yield* _controller.stream;
       } else {
@@ -31,8 +32,9 @@ class AuthenticationRepository {
   }
 
   Future<http.Response> logIn({String phone, String password}) async {
-    var jsonencoder = json.encode({"Phone": "012345678910", "Password": "123456"});
-    //var jsonencoder = json.encode({"Phone": phone, "Password": password});
+    // var jsonencoder =
+    //     json.encode({"Phone": "012345678910", "Password": "123456"});
+    var jsonencoder = json.encode({"Phone": phone, "Password": password});
     Map<String, String> headers = {"Content-Type": "application/json"};
     var response = await http.post(
         Uri.http(Host.Server_hosting, "/api/auth/login"),
@@ -45,7 +47,7 @@ class AuthenticationRepository {
       pref.setString("token", data["token"]);
       pref.setBool("isCustomer", data["isCustomer"] as bool);
       pref.setString("phone", phone);
-      pref.setString("role", "0");
+      pref.setInt("role", data["role"] as int);
       pref.setString("password", password);
       _controller.add(AuthenticationStatus.authenticated);
     }
@@ -75,7 +77,7 @@ class AuthenticationRepository {
       _controller.add(AuthenticationStatus.authenticated);
     }
     return response;
-  } 
+  }
 
   Future<void> logOut() async {
     var pref = await SharedPreferences.getInstance();

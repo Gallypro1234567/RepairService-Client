@@ -13,6 +13,7 @@ class UserDetail extends Equatable {
   final String newpassword;
   final String verifyPassword;
   final UserType isCustomer;
+  final int role;
 
   final String cmnd;
   final String imageUrlcmnd;
@@ -27,6 +28,7 @@ class UserDetail extends Equatable {
       this.newpassword,
       this.verifyPassword,
       this.isCustomer,
+      this.role,
       this.cmnd,
       this.imageUrlcmnd,
       this.imageUrl});
@@ -41,6 +43,7 @@ class UserDetail extends Equatable {
         newpassword,
         verifyPassword,
         isCustomer,
+        role,
         cmnd,
         imageUrlcmnd,
         imageUrl
@@ -56,6 +59,7 @@ class UserDetail extends Equatable {
       String newpassword,
       String verifyPassword,
       UserType isCustomer,
+      int role,
       String cmnd,
       String imageUrl,
       String imageUrlcmnd}) {
@@ -69,6 +73,7 @@ class UserDetail extends Equatable {
         newpassword: newpassword ?? this.newpassword,
         verifyPassword: verifyPassword ?? this.verifyPassword,
         isCustomer: isCustomer ?? this.isCustomer,
+        role: role ?? this.role,
         cmnd: cmnd ?? this.cmnd,
         imageUrl: imageUrl ?? this.imageUrl,
         imageUrlcmnd: imageUrlcmnd ?? this.imageUrlcmnd);

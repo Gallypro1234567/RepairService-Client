@@ -9,6 +9,12 @@ import '../../utils/service/server_hosting.dart' as Host;
 import 'models/preferential_model.dart';
 
 class HomeRepository {
+  Future<int> getRole() async {
+    var pref = await SharedPreferences.getInstance();
+    var role = pref.getInt("role");
+    return role;
+  }
+
   Future<List<Service>> fetchService({String phone, String password}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");

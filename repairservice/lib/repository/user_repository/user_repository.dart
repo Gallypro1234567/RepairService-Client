@@ -11,7 +11,8 @@ class UserRepository {
   Future<UserDetail> fetchUser({String phone, String password}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
-
+    var isCustomer = pref.getBool("isCustomer");
+    var role = pref.getInt("role");
     Map<String, String> headers = {"Authorization": "bearer $token"};
     try {
       var response = await http.get(
@@ -34,7 +35,13 @@ class UserRepository {
                         : Sex.empty,
             email: json["Email"] as String,
             address: json["Address"] as String,
-            imageUrl: json["ImageUrl"] as String,
+            imageUrl: json["ImageUrl"] != null
+                ? json["ImageUrl"].toString().length > 0
+                    ? Uri.http(Host.Server_hosting, json["ImageUrl"]).toString()
+                    : null
+                : null,
+            isCustomer: isCustomer ? UserType.customer : UserType.worker,
+            role: role,
           );
         }).first;
       }
@@ -68,14 +75,13 @@ class UserRepository {
       request.fields['Fullname'] = fullname == null ? "" : fullname;
       request.fields['Sex'] = sex.toString();
 
-      if(email != null){
-        request.fields['Email'] = email ;
+      if (email != null) {
+        request.fields['Email'] = email;
       }
 
-      if(address != null){
-         request.fields['Address'] = address;
+      if (address != null) {
+        request.fields['Address'] = address;
       }
- 
 
       if (file != null) {
         request.files.add(http.MultipartFile(

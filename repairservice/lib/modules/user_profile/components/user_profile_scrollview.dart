@@ -46,15 +46,13 @@ class UserProfileBackground extends StatelessWidget {
                               case FileStatus.loading:
                                 return const CircularProgressIndicator();
                               case FileStatus.success:
-                                return Container(
-                                  child: CircleAvatar(
-                                    backgroundImage: state.file != null
-                                        ? FileImage(state.file)
-                                        : imageUrl.isNotEmpty
-                                            ? NetworkImage(imageUrl)
-                                            : AssetImage(
-                                                "assets/images/user_profile_background.jpg"),
-                                  ),
+                                return CircleAvatar(
+                                  backgroundImage: state.file != null
+                                      ? FileImage(state.file)
+                                      : imageUrl.isNotEmpty
+                                          ? NetworkImage(imageUrl)
+                                          : AssetImage(
+                                              "assets/images/user_profile_background.jpg"),
                                 );
                               case FileStatus.failure:
                                 return CircleAvatar(

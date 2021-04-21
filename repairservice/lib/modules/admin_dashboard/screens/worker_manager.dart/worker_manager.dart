@@ -28,40 +28,6 @@ class WorkerManagerPage extends StatelessWidget {
             case WorkermanagerStatus.loading:
               return SplashPage();
             case WorkermanagerStatus.success:
-              var list = <DataRow>[];
-              for (final e in state.users) {
-                list.add(new DataRow(
-                    color: state.users.indexOf(e).isEven
-                        ? MaterialStateColor.resolveWith(
-                            (states) => LightColor.lightGrey)
-                        : MaterialStateColor.resolveWith(
-                            (states) => Colors.white),
-                    cells: <DataCell>[
-                      DataCell(SizedBox(
-                        height: 30,
-                        width: 30,
-                        child: CircleAvatar(
-                            backgroundImage: e.imageUrl != null
-                                ? NetworkImage(e.imageUrl)
-                                : null),
-                      )),
-                      DataCell(TitleText(
-                        text: e.fullname,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      )),
-                      DataCell(TitleText(
-                        text: e.phone,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      )),
-                      DataCell(TitleText(
-                        text: e.email,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      )),
-                    ]));
-              }
               var datarows = state.users
                   .map((e) => DataRow(cells: <DataCell>[
                         DataCell(SizedBox(
@@ -89,7 +55,7 @@ class WorkerManagerPage extends StatelessWidget {
                         )),
                       ]))
                   .toList();
-              return WorkerManagerDataTable(dataRows: list);
+              return WorkerManagerDataTable(dataRows: datarows);
             default:
               return Center(
                 child: Text("Error"),
