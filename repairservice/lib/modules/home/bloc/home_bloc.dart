@@ -30,11 +30,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (state.hasReachedMax) yield state;
 
     try {
+      final role = await _homeRepository.getRole();
       final services = await _homeRepository.fetchService();
       final preferentials = await _homeRepository.fetchPreferential();
       yield state.copyWith(
         status: HomeStatus.success,
         services: services,
+        role: role,
         preferentials: preferentials,
         hasReachedMax: false,
       );

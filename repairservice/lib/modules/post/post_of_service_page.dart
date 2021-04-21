@@ -1,21 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
-import 'package:repairservice/modules/post_find_worker/post_page.dart';
+import 'package:repairservice/modules/post/bloc/post_bloc.dart';
+import 'package:repairservice/modules/post/screens/post_form_page.dart';
+import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
-import 'components/item_post_container.dart';
+import 'components/post_item_container.dart';
 
-class WorkCategoriesDetail extends StatefulWidget {
+class PostOfServicePage extends StatefulWidget {
   final String title;
 
-  const WorkCategoriesDetail({Key key, this.title}) : super(key: key);
+  const PostOfServicePage({Key key, this.title}) : super(key: key);
   @override
-  _WorkCategoriesDetailState createState() => _WorkCategoriesDetailState();
+  _PostOfServicePageState createState() => _PostOfServicePageState();
 }
 
-class _WorkCategoriesDetailState extends State<WorkCategoriesDetail> {
+class _PostOfServicePageState extends State<PostOfServicePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,9 +56,38 @@ class _WorkCategoriesDetailState extends State<WorkCategoriesDetail> {
         bottomOpacity: 0.0,
         elevation: 0.0,
       ),
-      body: ListView.builder(
-        itemCount: 20,
-        itemBuilder: (context, index) => ItemPostContainer(),
+      body: BlocBuilder<PostBloc, PostState>(
+        builder: (context, state) {
+          switch (state.pageStatus) {
+            case PageStatus.loading:
+              return SplashPage();
+            case PageStatus.loadSuccess:
+              return ListView.builder(
+                itemCount: state.posts.length,
+                itemBuilder: (context, index) => ItemPostContainer(
+                  post: state.posts[index],
+                ),
+              );
+            case PageStatus.sbumitSuccess:
+              return ListView.builder(
+                itemCount: state.posts.length,
+                itemBuilder: (context, index) => ItemPostContainer(
+                  post: state.posts[index],
+                ),
+              );
+            case PageStatus.success:
+              return ListView.builder(
+                itemCount: state.posts.length,
+                itemBuilder: (context, index) => ItemPostContainer(
+                  post: state.posts[index],
+                ),
+              );
+            default:
+              return Center(
+                child: Text("Error"),
+              );
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: LightColor.lightteal,

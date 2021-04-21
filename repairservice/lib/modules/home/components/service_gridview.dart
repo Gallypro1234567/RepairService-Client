@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/components/service_container.dart';
-import 'package:repairservice/modules/post_find_worker/post_find_worker_page.dart';
-import 'package:repairservice/modules/service/service_page_s.dart';
+import 'package:repairservice/modules/post/bloc/post_bloc.dart';
+import 'package:repairservice/modules/post/screens/post_form_page.dart';
+import 'package:repairservice/modules/post/post_of_service_page.dart';
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
@@ -51,19 +53,25 @@ class ServiceGridview extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               children: model
                   .map(
-                    (obj) => Container(
-                      child: ServiceContainer(
-                        title: obj.name,
-                        imageUrl: obj.imageUrl,
-                      ).ripple(() {
-                        Navigator.push(
-                            context,
-                            SlideFadeRoute(
-                                page: WorkCategoriesDetail(
-                              title: obj.name,
-                            )));
-                      }, borderRadius: BorderRadius.all(Radius.circular(10))),
-                    ),
+                    (obj) => Container(child:
+                        BlocBuilder<PostBloc, PostState>(
+                      builder: (context, state) {
+                        return ServiceContainer(
+                          title: obj.name,
+                          imageUrl: obj.imageUrl,
+                        ).ripple(() {
+                          context
+                              .read<PostBloc>()
+                              .add(PostFetched());
+                          Navigator.push(
+                              context,
+                              SlideFadeRoute(
+                                  page: PostOfServicePage(
+                                title: obj.name,
+                              )));
+                        }, borderRadius: BorderRadius.all(Radius.circular(10)));
+                      },
+                    )),
                   )
                   .toList(),
             ),

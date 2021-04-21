@@ -4,12 +4,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/modules/post_find_worker/choose_address.dart';
+import 'package:repairservice/modules/post/screens/post_form_choose_address.dart';
 
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
-import '../../utils/ui/extensions.dart';
-import 'components/google_map_container.dart';
+import '../../../utils/ui/extensions.dart';
+import '../components/post_google_map_container.dart';
 
 class PostFindWorkerPage extends StatefulWidget {
   @override

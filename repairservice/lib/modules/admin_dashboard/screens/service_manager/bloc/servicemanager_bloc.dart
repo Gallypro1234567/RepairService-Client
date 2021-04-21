@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:repairservice/modules/post_find_worker/models/description.dart';
+import 'package:repairservice/modules/post/models/description.dart';
 import 'package:repairservice/repository/home_repository/home_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/utils/service/server_hosting.dart' as Host;

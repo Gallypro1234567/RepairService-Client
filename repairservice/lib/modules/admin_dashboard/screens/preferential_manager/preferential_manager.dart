@@ -6,7 +6,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
-import 'package:repairservice/modules/post_find_worker/components/post_form_input.dart';
+import 'package:repairservice/modules/post/components/post_form_input.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/widgets/title_text.dart';
 

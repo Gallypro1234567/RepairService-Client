@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; 
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/modules/service/service_page_s.dart';
+ 
+import 'package:repairservice/modules/post/post_of_service_page.dart';
 
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
@@ -59,11 +60,11 @@ class ServiceContainer extends StatelessWidget {
             Navigator.push(
                 context,
                 SlideFadeRoute(
-                    page: WorkCategoriesDetail(
+                    page: PostOfServicePage(
                   title: title,
                 )));
           },
-        )
+        ),
       ],
     );
     // return Stack(

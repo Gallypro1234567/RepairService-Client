@@ -16,10 +16,11 @@ import 'modules/admin_dashboard/screens/customer_manager/bloc/customermanager_bl
 import 'modules/admin_dashboard/screens/service_manager/bloc/servicemanager_bloc.dart';
 import 'modules/admin_dashboard/screens/worker_manager.dart/bloc/workermanager_bloc.dart';
 import 'modules/home/bloc/home_bloc.dart';
-import 'modules/post_find_worker/bloc/postfindworker_bloc.dart';
+import 'modules/post/bloc/post_bloc.dart';
 import 'modules/user/bloc/user_bloc.dart';
 import 'modules/user_profile/bloc/userprofile_bloc.dart';
 import 'modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
+import 'repository/post_repository/post_repository.dart';
 
 class AppProvider extends StatelessWidget {
   final AuthenticationRepository authenticationRepository;
@@ -69,7 +70,8 @@ class AppProvider extends StatelessWidget {
                 )..add(HomeFetched())),
         // Post Find Worker Page
         BlocProvider(
-            create: (_) => PostFindWorkerBloc()..add(PostFindWorkerInitial())),
+            create: (_) =>
+                PostBloc(postRepository: PostRepository())..add(PostInitial())),
 
         // Admin - Dashboard
         // ServiceManaGer

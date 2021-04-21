@@ -5,7 +5,7 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
-import '../../utils/ui/extensions.dart';
+import '../../../utils/ui/extensions.dart';
 
 class Location extends StatefulWidget {
   final String title;
