@@ -19,6 +19,7 @@ import 'modules/home/bloc/home_bloc.dart';
 import 'modules/post_find_worker/bloc/postfindworker_bloc.dart';
 import 'modules/user/bloc/user_bloc.dart';
 import 'modules/user_profile/bloc/userprofile_bloc.dart';
+import 'modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
 
 class AppProvider extends StatelessWidget {
   final AuthenticationRepository authenticationRepository;
@@ -84,6 +85,13 @@ class AppProvider extends StatelessWidget {
             create: (_) => WorkermanagerBloc(
                   dashboardRepository: DashboardRepository(),
                 )..add(WorkermanagerInitial())),
+
+        // Worker
+        //WorkerregisterworkBloc
+        BlocProvider(
+            create: (_) => WorkerregisterworkBloc(
+                  userRepository: UserRepository(),
+                )..add(WorkerregisterworkInitial())),
       ], child: AppView()),
     );
   }

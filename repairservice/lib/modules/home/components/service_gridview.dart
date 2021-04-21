@@ -21,7 +21,7 @@ class ServiceGridview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+      padding: EdgeInsets.only(bottom: kDefaultPadding / 2),
       width: AppTheme.fullWidth(context),
       height: AppTheme.fullWidth(context) * .7,
       color: Colors.white,

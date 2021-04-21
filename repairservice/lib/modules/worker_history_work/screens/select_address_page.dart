@@ -5,16 +5,16 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
-import 'package:repairservice/modules/post_find_worker/bloc/postfindworker_bloc.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
+import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
 
-class SelectAddressPage extends StatelessWidget {
+class WorkerSelectAddressPage extends StatelessWidget {
   final List<Service> services;
   final Function onPressed;
-  const SelectAddressPage({Key key, this.services, this.onPressed})
+  const WorkerSelectAddressPage({Key key, this.services, this.onPressed})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,13 @@ class ServiceGridview extends StatelessWidget {
               : index % 2 == 0
                   ? Colors.green
                   : Colors.blue,
-        ).ripple(onPressed);
+        ).ripple(() {
+          context.read<WorkerregisterworkBloc>().add(
+              WorkerregisterworkServiceChanged(
+                  text: state.services[index].name,
+                  value: state.services[index].code));
+          Navigator.pop(context);
+        });
       },
     );
   }

@@ -8,6 +8,8 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'package:repairservice/modules/user_profile/bloc/userprofile_bloc.dart';
 import 'package:repairservice/modules/user_profile/user_profile_page.dart';
+import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
+import 'package:repairservice/modules/worker_history_work/user_history_work_screen.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
@@ -85,19 +87,40 @@ class UserWidget extends StatelessWidget {
                 ? Container()
                 : UserActionContainer(
                     title: "Lịch sử công việc",
-                  ).ripple(() {}),
+                  ).ripple(() {
+                    context
+                        .read<WorkerregisterworkBloc>()
+                        .add(WorkerregisterworkServiceRegisterLoad());
+                    Navigator.push(
+                        context, SlideFadeRoute(page: WorkerHistoryWorkPage()));
+                  }),
+            SizedBox(
+              height: kDefaultPadding / 5,
+            ),
             UserActionContainer(
               title: "Lịch sử giao dịch",
             ).ripple(() {}),
+            SizedBox(
+              height: kDefaultPadding / 5,
+            ),
             UserActionContainer(
               title: "Danh mục yêu thích",
             ).ripple(() {}),
+            SizedBox(
+              height: kDefaultPadding / 5,
+            ),
             UserActionContainer(
               title: "Cài đặt",
             ).ripple(() {}),
+            SizedBox(
+              height: kDefaultPadding / 5,
+            ),
             UserActionContainer(
               title: "Hỗ trợ ",
             ).ripple(() {}),
+            SizedBox(
+              height: kDefaultPadding / 5,
+            ),
             _LogOutSubmitted(),
           ],
         ),

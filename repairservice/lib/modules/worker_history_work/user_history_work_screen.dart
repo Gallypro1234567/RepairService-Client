@@ -1,60 +1,84 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
-import 'package:repairservice/modules/post_find_worker/bloc/postfindworker_bloc.dart';
-import 'package:repairservice/modules/splash/splash_page.dart';
-import 'package:repairservice/repository/home_repository/models/service_model.dart';
-import 'package:repairservice/widgets/title_text.dart';
-import '../../../utils/ui/extensions.dart';
 
-class SelectAddressPage extends StatelessWidget {
-  final List<Service> services;
-  final Function onPressed;
-  const SelectAddressPage({Key key, this.services, this.onPressed})
-      : super(key: key);
+import 'package:repairservice/modules/splash/splash_page.dart';
+
+import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
+import 'package:repairservice/modules/worker_history_work/screens/form_register_page.dart';
+
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/widgets/title_text.dart';
+import '../../utils/ui/extensions.dart';
+import 'screens/post_of_worker.dart';
+
+class WorkerHistoryWorkPage extends StatelessWidget {
+  const WorkerHistoryWorkPage({
+    Key key,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<WorkerregisterworkBloc, WorkerregisterworkState>(
+        builder: (context, state) {
+      switch (state.status) {
+        case WorkerRegisterStatus.loading:
+          return SplashPage();
+        case WorkerRegisterStatus.loadSuccessed:
+          return WorkerHistoryWorkView();
+          break;
+        default:
+          return SplashPage();
+      }
+    });
+  }
+}
+
+class WorkerHistoryWorkView extends StatelessWidget {
+  const WorkerHistoryWorkView({
+    Key key,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: LightColor.lightGrey,
+        backgroundColor: LightColor.lightteal,
         centerTitle: true,
-        title: Text("Chọn danh mục"),
-      ),
-      body: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: kDefaultPadding, vertical: kDefaultPadding),
-        child: BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            switch (state.status) {
-              case HomeStatus.loading:
-                return SplashPage();
-              case HomeStatus.success:
-                return ServiceGridview(state: state, onPressed: onPressed);
-              default:
-                return Center(
-                  child: TitleText(
-                    text: "Lỗi kết nối với máy chủ",
-                  ),
-                );
-            }
-          },
+        title: TitleText(
+          text: "Lịch sử công việc",
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
         ),
+      ),
+      body: BlocBuilder<WorkerregisterworkBloc, WorkerregisterworkState>(
+        builder: (context, state) {
+          return ServiceGridview(
+            state: state,
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: LightColor.lightteal,
+        onPressed: () {
+          Navigator.push(context, SlideFadeRoute(page: FormRegisterPage()));
+        },
+        child: Icon(Entypo.plus),
       ),
     );
   }
 }
 
 class ServiceGridview extends StatelessWidget {
-  final HomeState state;
-  final Function onPressed;
+  final WorkerregisterworkState state;
+
   const ServiceGridview({
     Key key,
     this.state,
-    this.onPressed,
   }) : super(key: key);
 
   @override
@@ -84,7 +108,13 @@ class ServiceGridview extends StatelessWidget {
               : index % 2 == 0
                   ? Colors.green
                   : Colors.blue,
-        ).ripple(onPressed);
+        ).ripple(() {
+          context.read<WorkerregisterworkBloc>().add(
+              WorkerregisterworkServiceChanged(
+                  text: state.services[index].name,
+                  value: state.services[index].code));
+          Navigator.push(context, SlideFadeRoute(page: PostofWorkerPage()));
+        });
       },
     );
   }

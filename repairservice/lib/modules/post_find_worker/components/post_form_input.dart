@@ -5,7 +5,18 @@ class PostFormInput extends StatelessWidget {
   final String title;
   final String hintText;
   final Function(String) onChanged;
-  const PostFormInput({Key key, this.title, this.hintText, this.onChanged}) : super(key: key);
+  final String initialValue;
+  final bool readOnly;
+  final TextEditingController controler;
+  const PostFormInput({
+    Key key,
+    this.title,
+    this.hintText,
+    this.onChanged,
+    this.initialValue,
+    this.controler,
+    this.readOnly = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +24,13 @@ class PostFormInput extends StatelessWidget {
       width: double.infinity,
       child: TextFormField(
         onChanged: onChanged,
+        controller: controler,
+        readOnly: readOnly,
+        // initialValue: initialValue,
         scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
         decoration: InputDecoration(
           labelText: '$title *',
-          hintText: hintText, 
+          hintText: hintText,
           hintStyle: TextStyle(fontWeight: FontWeight.w500),
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
@@ -34,7 +48,9 @@ class PostFormInput extends StatelessWidget {
 class PostSelectInput extends StatelessWidget {
   final String title;
   final String hintText;
-  const PostSelectInput({Key key, this.title, this.hintText}) : super(key: key);
+  final TextEditingController controler;
+  const PostSelectInput({Key key, this.title, this.hintText, this.controler})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +59,7 @@ class PostSelectInput extends StatelessWidget {
       child: Stack(
         children: [
           TextFormField(
+            controller: controler,
             scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
             decoration: InputDecoration(
               labelText: '$title *',
@@ -74,5 +91,4 @@ class PostSelectInput extends StatelessWidget {
       ),
     );
   }
-  
 }

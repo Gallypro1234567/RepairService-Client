@@ -10,11 +10,10 @@ import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
-import 'choose_address.dart';
-import 'components/post_actions_listview.dart';
+ 
 import 'components/post_button.dart';
 import 'components/post_form_input.dart';
-import 'components/post_search_input.dart';
+ 
 import '../../utils/ui/extensions.dart';
 
 class PostPage extends StatelessWidget {
