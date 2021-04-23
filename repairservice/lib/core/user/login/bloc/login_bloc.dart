@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
+ 
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +7,7 @@ import 'package:formz/formz.dart';
 import 'package:repairservice/core/user/login/models/login_pasword.dart';
 import 'package:repairservice/core/user/login/models/login_phone.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+ 
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -58,6 +58,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
 
         if (response.statusCode == 200) {
+          
           yield state.copyWith(
               status: FormzStatus.submissionSuccess,
               statusCode: response.statusCode);

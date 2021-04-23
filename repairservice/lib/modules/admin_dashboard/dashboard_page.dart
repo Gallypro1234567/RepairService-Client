@@ -7,6 +7,7 @@ import 'package:repairservice/widgets/title_text.dart';
 
 import 'screens/customer_manager/customer_manager.dart';
 import 'screens/worker_manager.dart/worker_manager.dart';
+import 'screens/worker_register_manager/worker_register_manager.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({
@@ -59,7 +60,7 @@ class DashboardPage extends StatelessWidget {
             title: Text('Danh sách thợ đăng ký'),
             onTap: () {
               Navigator.push(
-                  context, SlideFadeRoute(page: ServiceManagerPage()));
+                  context, SlideFadeRoute(page: WorkerRegisterManagerPage()));
             },
           ),
         ],

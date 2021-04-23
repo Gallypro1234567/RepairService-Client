@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
-import 'package:repairservice/config/themes/light_theme.dart';
+
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/components/service_container.dart';
 import 'package:repairservice/modules/post/bloc/post_bloc.dart';
-import 'package:repairservice/modules/post/screens/post_form_page.dart';
+
 import 'package:repairservice/modules/post/post_of_service_page.dart';
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
@@ -33,11 +33,11 @@ class ServiceGridview extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(
-                top: kDefaultPadding / 2, left: kDefaultPadding / 2),
+                top: kDefaultPadding, left: kDefaultPadding / 2),
             child: TitleText(
               text: "Khám phá danh mục",
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
           SizedBox(
@@ -53,20 +53,18 @@ class ServiceGridview extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               children: model
                   .map(
-                    (obj) => Container(child:
-                        BlocBuilder<PostBloc, PostState>(
+                    (obj) => Container(child: BlocBuilder<PostBloc, PostState>(
                       builder: (context, state) {
                         return ServiceContainer(
                           title: obj.name,
                           imageUrl: obj.imageUrl,
                         ).ripple(() {
-                          context
-                              .read<PostBloc>()
-                              .add(PostFetched());
+                          context.read<PostBloc>().add(PostFetched(obj.code));
                           Navigator.push(
                               context,
                               SlideFadeRoute(
                                   page: PostOfServicePage(
+                                serviceCode: obj.code,
                                 title: obj.name,
                               )));
                         }, borderRadius: BorderRadius.all(Radius.circular(10)));

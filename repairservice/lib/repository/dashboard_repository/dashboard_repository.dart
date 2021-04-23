@@ -63,14 +63,13 @@ class DashboardRepository {
     };
     try {
       var response = await http.get(
-        Uri.http("repairservice.somee.com", "/api/users/workers", paramters),
+        Uri.http(Host.Server_hosting, "/api/users/workers", paramters),
         headers: headers,
       );
       var jsons = json.decode(response.body);
       if (response.statusCode == 200) {
         var body = jsons['data'] as List;
         return body.map((dynamic json) {
-          var length = json["ImageUrl"].toString().length;
           return UserDetail(
               fullname: json["Fullname"] as String,
               phone: json["Phone"] as String,
@@ -81,6 +80,55 @@ class DashboardRepository {
                           .toString()
                       : null
                   : null);
+        }).toList();
+      }
+      return null;
+    } on Exception {
+      return null;
+    }
+  }
+
+  Future<List<WorkerRegister>> fetchWorkerRegister() async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+
+    Map<String, String> headers = {
+      "Content-Type": "application/json",
+      "Authorization": "bearer $token"
+    };
+    Map<String, String> paramters = {
+      "start": "0",
+      "length": "1000",
+      "order": "1"
+    };
+    try {
+      var response = await http.get(
+        Uri.http(Host.Server_hosting, "/api/workerofservices", paramters),
+        headers: headers,
+      );
+      var jsons = json.decode(response.body);
+      if (response.statusCode == 200) {
+        var body = jsons['data'] as List;
+        return body.map((dynamic json) {
+          return WorkerRegister(
+            code: json["Code"] as String,
+            fullname: json["Fullname"] as String,
+            phone: json["Phone"] as String,
+            address: json["Address"] as String,
+            email: json["Email"] as String,
+            createAt: json["CreateAt"] as String,
+            isApproval: json["isApproval"] as int,
+            cmnd: json["CMND"] as String,
+            imageUrlcmnd: json["ImageUrlcmnd"] as String,
+            imageUrl: json["ImageUrlcmnd"] != null
+                ? json["ImageUrlcmnd"].toString().length > 0
+                    ? Uri.http(Host.Server_hosting, json["ImageUrlcmnd"])
+                        .toString()
+                    : null
+                : null,
+            serviceCode: json["ServiceCode"] as String,
+            serviceName: json["ServiceName"] as String,
+          );
         }).toList();
       }
       return null;

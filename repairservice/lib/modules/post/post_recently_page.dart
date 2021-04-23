@@ -75,13 +75,7 @@ class _PostRecentlyPageState extends State<PostRecentlyPage> {
                   post: state.posts[index],
                 ),
               );
-            case PageStatus.success:
-              return ListView.builder(
-                itemCount: state.posts.length,
-                itemBuilder: (context, index) => ItemPostContainer(
-                  post: state.posts[index],
-                ),
-              );
+           
             default:
               return Center(
                 child: Text("Error"),

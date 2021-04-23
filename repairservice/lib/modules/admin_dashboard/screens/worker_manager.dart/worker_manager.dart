@@ -44,12 +44,12 @@ class WorkerManagerPage extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         )),
                         DataCell(TitleText(
-                          text: e.phone,
+                          text: e.phone == null ? "" : e.phone,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         )),
                         DataCell(TitleText(
-                          text: e.email,
+                          text: e.email == null ? "" : e.email,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         )),

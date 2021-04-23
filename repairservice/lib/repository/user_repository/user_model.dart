@@ -18,6 +18,7 @@ class UserDetail extends Equatable {
   final String cmnd;
   final String imageUrlcmnd;
   final String imageUrl;
+
   UserDetail(
       {this.fullname,
       this.sex,
@@ -78,4 +79,49 @@ class UserDetail extends Equatable {
         imageUrl: imageUrl ?? this.imageUrl,
         imageUrlcmnd: imageUrlcmnd ?? this.imageUrlcmnd);
   }
+}
+
+class WorkerRegister extends Equatable {
+  final String fullname;
+
+  final String email;
+  final String address;
+  final String phone;
+  final String code;
+  final String createAt;
+  final String cmnd;
+  final String imageUrlcmnd;
+  final String imageUrl;
+  final int isApproval;
+  final String serviceCode;
+  final String serviceName;
+  WorkerRegister(
+      {this.fullname,
+      this.email,
+      this.address,
+      this.phone,
+      this.code,
+      this.createAt,
+      this.cmnd,
+      this.imageUrlcmnd,
+      this.imageUrl,
+      this.isApproval,
+      this.serviceCode,
+      this.serviceName});
+
+  @override
+  List<Object> get props => [
+        fullname,
+        email,
+        address,
+        phone,
+        code,
+        createAt,
+        cmnd,
+        imageUrlcmnd,
+        imageUrl,
+        isApproval,
+        serviceCode,
+        serviceName
+      ];
 }

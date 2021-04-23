@@ -23,28 +23,30 @@ class UserRepository {
       var jsons = json.decode(response.body);
       if (response.statusCode == 200) {
         var body = jsons['data'] as List;
-        return body.map((dynamic json) {
-          return UserDetail(
-            fullname: json["Fullname"] as String,
-            phone: json["Phone"] as String,
-            sex: json["Sex"] as int == 1
-                ? Sex.male
-                : json["Sex"] as int == 2
-                    ? Sex.female
-                    : json["Sex"] as int == 3
-                        ? Sex.orther
-                        : Sex.empty,
-            email: json["Email"] as String,
-            address: json["Address"] as String,
-            imageUrl: json["ImageUrl"] != null
-                ? json["ImageUrl"].toString().length > 0
-                    ? Uri.http(Host.Server_hosting, json["ImageUrl"]).toString()
-                    : null
-                : null,
-            isCustomer: isCustomer ? UserType.customer : UserType.worker,
-            role: role,
-          );
-        }).first;
+        if (body != null)
+          return body.map((dynamic json) {
+            return UserDetail(
+              fullname: json["Fullname"] as String,
+              phone: json["Phone"] as String,
+              sex: json["Sex"] as int == 1
+                  ? Sex.male
+                  : json["Sex"] as int == 2
+                      ? Sex.female
+                      : json["Sex"] as int == 3
+                          ? Sex.orther
+                          : Sex.empty,
+              email: json["Email"] as String,
+              address: json["Address"] as String,
+              imageUrl: json["ImageUrl"] != null
+                  ? json["ImageUrl"].toString().length > 0
+                      ? Uri.http(Host.Server_hosting, json["ImageUrl"])
+                          .toString()
+                      : null
+                  : null,
+              isCustomer: isCustomer ? UserType.customer : UserType.worker,
+              role: role,
+            );
+          }).first;
       }
       return null;
     } on Exception catch (e) {
@@ -99,24 +101,21 @@ class UserRepository {
     }
   }
 
-// Worker 
+// Worker
   Future<http.Response> workerRegisterService(
-      {String serviceCode,
-      File file}) async {
+      {String serviceCode, File file}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
 
     try {
-    
       var uri = Uri.http(Host.Server_hosting, "/api/workerofservices/register");
 
       var request = http.MultipartRequest('POST', uri);
 
-      request.headers['Authorization'] = "bearer $token"; 
-     
+      request.headers['Authorization'] = "bearer $token";
+
       request.fields['ServiceCode'] = serviceCode;
       request.fields['isApproval'] = "0";
-      
 
       if (file != null) {
         request.files.add(http.MultipartFile(
@@ -133,7 +132,6 @@ class UserRepository {
     }
   }
 
-  
   Future<List<Service>> fetchWorkerOfServiceByCode({String serviceCode}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
@@ -172,5 +170,4 @@ class UserRepository {
       return null;
     }
   }
-
 }

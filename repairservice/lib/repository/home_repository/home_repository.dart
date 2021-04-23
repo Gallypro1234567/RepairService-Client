@@ -3,16 +3,21 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:repairservice/repository/auth_repository/models/login_model.dart';
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/service/server_hosting.dart' as Host;
 import 'models/preferential_model.dart';
 
 class HomeRepository {
-  Future<int> getRole() async {
+  Future<Login> getRole() async {
     var pref = await SharedPreferences.getInstance();
     var role = pref.getInt("role");
-    return role;
+    var isCustomer = pref.getBool("isCustomer");
+    return Login(
+        isCustomer: isCustomer ? UserType.customer : UserType.worker,
+        role: role);
   }
 
   Future<List<Service>> fetchService({String phone, String password}) async {

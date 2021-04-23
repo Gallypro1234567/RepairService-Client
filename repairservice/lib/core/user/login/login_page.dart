@@ -25,10 +25,7 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-
-
 class _LoginPageState extends State<LoginPage> {
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
@@ -165,7 +162,7 @@ class _LoginBlocButton extends StatelessWidget {
             : MyElevatedButton(
                 key: const Key('loginForm_continue_raisedButton'),
                 title: title,
-                color: LightColor.orange,
+                color: LightColor.lightteal,
                 isValidated: state.status.isValidated,
                 onPressed: state.status.isValidated
                     ? () {
@@ -192,7 +189,7 @@ class _RegisterBlocButton extends StatelessWidget {
             : MyElevatedButton(
                 key: const Key('loginForm_continue_raisedButton'),
                 title: title,
-                color: LightColor.orange,
+                color: LightColor.lightteal,
                 isValidated: state.status.isValidated,
                 onPressed: state.status.isValidated
                     ? () {

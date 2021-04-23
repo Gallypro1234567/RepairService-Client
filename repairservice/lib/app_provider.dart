@@ -15,7 +15,9 @@ import 'core/user/verifyphone/bloc/verifyphone_bloc.dart';
 import 'modules/admin_dashboard/screens/customer_manager/bloc/customermanager_bloc.dart';
 import 'modules/admin_dashboard/screens/service_manager/bloc/servicemanager_bloc.dart';
 import 'modules/admin_dashboard/screens/worker_manager.dart/bloc/workermanager_bloc.dart';
+import 'modules/admin_dashboard/screens/worker_register_manager/bloc/workerregistermanager_bloc.dart';
 import 'modules/home/bloc/home_bloc.dart';
+import 'modules/manager/bloc/manager_bloc.dart';
 import 'modules/post/bloc/post_bloc.dart';
 import 'modules/user/bloc/user_bloc.dart';
 import 'modules/user_profile/bloc/userprofile_bloc.dart';
@@ -67,7 +69,14 @@ class AppProvider extends StatelessWidget {
         BlocProvider(
             create: (_) => HomeBloc(
                   homeRepository: HomeRepository(),
+                  postRepository: PostRepository(),
                 )..add(HomeFetched())),
+        // Manager Page
+        BlocProvider(
+            create: (_) => ManagerBloc(
+                  postRepository: PostRepository(),
+                )..add(ManagerFetched())),
+
         // Post Find Worker Page
         BlocProvider(
             create: (_) =>
@@ -87,7 +96,10 @@ class AppProvider extends StatelessWidget {
             create: (_) => WorkermanagerBloc(
                   dashboardRepository: DashboardRepository(),
                 )..add(WorkermanagerInitial())),
-
+        BlocProvider(
+            create: (_) => WorkerregistermanagerBloc(
+                  dashboardRepository: DashboardRepository(),
+                )..add(WorkerregistermanagerFetched())),
         // Worker
         //WorkerregisterworkBloc
         BlocProvider(

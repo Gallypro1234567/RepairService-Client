@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,9 +8,8 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/core/auth/my_elevated_button.dart';
 import 'package:repairservice/core/user/login/components/textfield_container.dart';
 import 'package:repairservice/core/user/register/bloc/register_bloc.dart';
-import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
+
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
-import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 
 import 'package:repairservice/widgets/text_field_container.dart';
 import 'package:repairservice/widgets/title_text.dart';
@@ -112,7 +109,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               value: UserType.worker,
                               groupValue: state.userType,
                               onChanged: (UserType value) {
-                                 context
+                                context
                                     .read<RegisterBloc>()
                                     .add(RegisterRadioCustomerChanged(value));
                               },

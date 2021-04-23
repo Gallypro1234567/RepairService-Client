@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +8,21 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/admin_dashboard/dashboard_page.dart';
 
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/post/components/post_item_container.dart';
+import 'package:repairservice/modules/post/screens/post_detail_page.dart';
+
+import 'package:repairservice/modules/post/screens/post_form_page.dart';
+import 'package:repairservice/modules/splash/splash_page.dart';
+
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 
 import 'package:shimmer/shimmer.dart';
 import 'components/home_background.dart';
 
+import 'components/post_recently_gridview.dart';
 import 'components/service_gridview.dart';
+import '../../utils/ui/extensions.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,6 +31,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _scrollController = ScrollController();
+  HomeBloc _postBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+    _postBloc = context.read<HomeBloc>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +47,29 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        title: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          child: TextFormField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.grey)),
+              focusColor: LightColor.grey,
+              contentPadding: EdgeInsets.only(top: kDefaultPadding / 2),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  borderSide: BorderSide(color: Colors.grey)),
+              prefixIcon: Icon(
+                Icons.search,
+                color: Colors.grey,
+              ),
+              hintText: "Bạn cần tìm dịch vụ gì ?",
+            ),
+          ),
+        ),
+        leadingWidth: 30,
         leading: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
             if (state.role == 0) {
@@ -57,6 +100,11 @@ class _HomePageState extends State<HomePage> {
                 return const Center(child: Text('no services'));
               }
               return _refreshIndicator(_size, context, state);
+            case HomeStatus.initial:
+              if (state.services.isEmpty) {
+                return const Center(child: Text('no services'));
+              }
+              return _refreshIndicator(_size, context, state);
             case HomeStatus.loading:
               return Center(
                 child: SizedBox(
@@ -81,6 +129,26 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
+      floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          switch (state.isCustomer) {
+            case UserType.customer:
+              return Padding(
+                padding: const EdgeInsets.only(bottom: kDefaultPadding),
+                child: FloatingActionButton(
+                  backgroundColor: LightColor.lightteal,
+                  onPressed: () {
+                    Navigator.push(context, SlideFadeRoute(page: PostPage()));
+                  },
+                  child: Center(child: Icon(Entypo.plus)),
+                ),
+              );
+              break;
+            default:
+              return Container();
+          }
+        },
+      ),
     );
   }
 
@@ -99,6 +167,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _homeWidget(_size, HomeState state) {
     return HomeBackground(
+      controler: _scrollController,
       children: [
         //UserCard(),
         Column(
@@ -111,29 +180,92 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: kDefaultPadding / 2,
             ),
-            Container(
-              height: AppTheme.fullHeight(context),
-              color: Colors.white,
-            ),
-            // TitleText(
-            //   text: "Tin khuyến mãi",
-            //   fontSize: 16,
-            // ),
-            // PreferentialHorizontalView(model: state.preferentials),
-            // SizedBox(
-            //   height: kDefaultPadding,
-            // ),
-            // TitleText(
-            //   text: "Tin tức nổi bật",
-            //   fontSize: 16,
-            // ),
-            // PreferentialHorizontalView(model: state.preferentials),
-            // SizedBox(
-            //   height: kDefaultPadding,
-            // ),
           ],
+        ),
+        BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case HomeStatus.loading:
+                return SplashPage();
+              case HomeStatus.success:
+                return PostRecenttlyGridview(
+                  posts: state.postRecently,
+                  length: state.hasReachedMax
+                      ? state.postRecently.length
+                      : state.postRecently.length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    return index >= state.postRecently.length
+                        ? Center(
+                            child: SizedBox(
+                              height: 24,
+                              width: 24,
+                              child:
+                                  CircularProgressIndicator(strokeWidth: 1.5),
+                            ),
+                          )
+                        : ItemPostContainer(
+                            post: state.postRecently[index],
+                          ).ripple(() {
+                            Navigator.push(
+                                context,
+                                SlideFadeRoute(
+                                    page: PostDetailPage(
+                                        post: state.postRecently[index])));
+                          });
+                  },
+                );
+              case HomeStatus.initial:
+                return PostRecenttlyGridview(
+                  posts: state.postRecently,
+                  length: state.hasReachedMax
+                      ? state.postRecently.length
+                      : state.postRecently.length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    return index >= state.postRecently.length
+                        ? Center(
+                            child: SizedBox(
+                              height: 24,
+                              width: 24,
+                              child:
+                                  CircularProgressIndicator(strokeWidth: 1.5),
+                            ),
+                          )
+                        : ItemPostContainer(
+                            post: state.postRecently[index],
+                          ).ripple(() {
+                            Navigator.push(
+                                context,
+                                SlideFadeRoute(
+                                    page: PostDetailPage(
+                                        post: state.postRecently[index])));
+                          });
+                  },
+                );
+              default:
+                return Center(
+                  child: Text("Error"),
+                );
+            }
+          },
         )
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_isBottom) _postBloc.add(HomeFetched());
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
   }
 }

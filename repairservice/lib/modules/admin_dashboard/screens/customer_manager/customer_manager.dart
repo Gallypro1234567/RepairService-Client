@@ -50,7 +50,7 @@ class CustomerManagerPage extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         )),
                         DataCell(TitleText(
-                          text: e.email,
+                          text: e.email == null ? "" : e.email,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         )),

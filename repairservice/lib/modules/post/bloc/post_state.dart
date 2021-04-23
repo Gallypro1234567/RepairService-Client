@@ -1,6 +1,6 @@
 part of 'post_bloc.dart';
 
-enum PageStatus { none, loading, success, failure, loadSuccess, sbumitSuccess }
+enum PageStatus { none, loading, failure, loadSuccess, sbumitSuccess }
 
 class PostState extends Equatable {
   const PostState(

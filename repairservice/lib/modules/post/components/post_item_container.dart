@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
+import 'package:repairservice/repository/post_repository/models/time_ago.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
 
@@ -16,7 +18,7 @@ class ItemPostContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        top: kDefaultPadding / 4,
+        bottom: kDefaultPadding / 4,
       ),
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -57,44 +59,43 @@ class ItemPostContainer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Expanded(
-                        flex: 3,
                         child: Container(
                           child: TitleText(
                             text: post.title,
                             fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            TitleText(
-                              text: post.address == null ? "" : post.address,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                      Row(
+                        //crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            child: Icon(
+                              Icons.location_on,
+                              color: Colors.red,
                             ),
-                            SizedBox(
-                              width: kDefaultPadding,
-                            ),
-                            TitleText(
-                              text: DateFormat('yyyy-MM-dd – kk:mm')
-                                  .format(post.createAt)
-                                  .toString(),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ],
-                        ),
+                          ),
+                          TitleText(
+                            text: post.address == null ? "" : post.address,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          Expanded(child: Container()),
+                          TitleText(
+                            text: TimeAgo.timeAgoSinceDate(post.createAt),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 )),
           ],
         ),
-      ).ripple(() {
-        // Navigator.push(context, SlideFadeRoute(page: PostFindWorkerPage()));
-      }),
+      ),
     );
   }
 }

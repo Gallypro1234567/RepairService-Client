@@ -31,6 +31,12 @@ class WorkerHistoryWorkPage extends StatelessWidget {
         case WorkerRegisterStatus.loadSuccessed:
           return WorkerHistoryWorkView();
           break;
+        case WorkerRegisterStatus.registerSuccessed:
+          return WorkerHistoryWorkView();
+          break;
+        case WorkerRegisterStatus.exitFailure:
+          return WorkerHistoryWorkView();
+          break;
         default:
           return SplashPage();
       }

@@ -1,25 +1,17 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
-import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/manager/models/event_model.dart';
-import 'package:repairservice/widgets/title_text.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'screens/manager_gridview_page.dart';
-
-class ManagerScreen extends StatefulWidget {
+class TableCalendarContainer extends StatefulWidget {
   @override
-  _ManagerScreenState createState() => _ManagerScreenState();
+  _TableCalendarContainerState createState() => _TableCalendarContainerState();
 }
 
-class _ManagerScreenState extends State<ManagerScreen>
+class _TableCalendarContainerState extends State<TableCalendarContainer>
     with TickerProviderStateMixin {
   List _selectedEvents;
 
@@ -280,107 +272,6 @@ class _ManagerScreenState extends State<ManagerScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-   
-      appBar: AppBar(
-        title: TitleText(
-          text: "Quản lý việc",
-          fontSize: 16,
-          fontWeight: FontWeight.w800,
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.tealAccent[700],
-      ),
-      body: Container(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: DefaultTabController(
-              length: 2,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: Scaffold(
-                  appBar: TabBar(
-                      indicator: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        color: LightColor.orange,
-                        //borderRadius: BorderRadius.circular(10)
-                      ),
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.grey,
-                      tabs: [
-                        Tab(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.calendar_today),
-                              Text('Lịch'),
-                            ],
-                          ),
-                        ),
-                        Tab(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.view_list),
-                              Text('Danh sách'),
-                            ],
-                          ),
-                        ),
-                      ]),
-                  body: TabBarView(
-                    children: [
-                      Tab(
-                        child: RefreshIndicator(
-                          child: Column(
-                            children: [
-                              _buildTableCalendarWithBuilders(),
-                              const SizedBox(height: 8.0),
-                              const SizedBox(height: 8.0),
-                              Expanded(child: _buildEventList()),
-                            ],
-                          ),
-                          onRefresh: () async {
-                            Completer<Null> completer = new Completer<Null>();
-                            await Future.delayed(Duration(seconds: 2))
-                                .then((onvalue) {
-                              completer.complete();
-                              setState(() {});
-                            });
-                            return completer.future;
-                          },
-                        ),
-                      ),
-                      Tab(
-                        child: BlocBuilder<ManagerBloc, ManagerState>(
-                          builder: (context, state) {
-                            return RefreshIndicator(
-                              child: ManagerGridViewPage(),
-                              onRefresh: () async {
-                                context
-                                    .read<ManagerBloc>()
-                                    .add(ManagerFetched());
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      )),
-    );
-  }
-
-  Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
       //locale: 'pl_PL',
       calendarController: _calendarController,

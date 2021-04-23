@@ -43,8 +43,9 @@ class WorkerregisterworkBloc
       );
       if (response.statusCode == 200) {
         yield state.copyWith(status: WorkerRegisterStatus.registerSuccessed);
+      } else {
+        yield state.copyWith(status: WorkerRegisterStatus.exitFailure);
       }
-      yield state.copyWith(status: WorkerRegisterStatus.failure);
     } on Exception catch (_) {
       yield state.copyWith(status: WorkerRegisterStatus.failure);
     }

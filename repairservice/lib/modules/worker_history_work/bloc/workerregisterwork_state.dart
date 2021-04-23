@@ -6,7 +6,8 @@ enum WorkerRegisterStatus {
   success,
   failure,
   registerSuccessed,
-  loadSuccessed
+  loadSuccessed,
+  exitFailure
 }
 
 class WorkerregisterworkState extends Equatable {

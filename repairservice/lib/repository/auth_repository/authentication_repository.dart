@@ -45,9 +45,9 @@ class AuthenticationRepository {
       var pref = await SharedPreferences.getInstance();
       pref.clear();
       pref.setString("token", data["token"]);
-      pref.setBool("isCustomer", data["isCustomer"] as bool);
       pref.setString("phone", phone);
       pref.setInt("role", data["role"] as int);
+      pref.setBool("isCustomer", data["isCustomer"] as bool);
       pref.setString("password", password);
       _controller.add(AuthenticationStatus.authenticated);
     }
@@ -74,6 +74,8 @@ class AuthenticationRepository {
       pref.setString("phone", model.phone);
       pref.setString("fullname", model.fullname);
       pref.setString("password", model.password);
+      pref.setInt("role", data["role"] as int);
+      pref.setBool("isCustomer", data["isCustomer"] as bool);
       _controller.add(AuthenticationStatus.authenticated);
     }
     return response;

@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
- 
+import 'package:repairservice/modules/post/bloc/post_bloc.dart';
+
 import 'package:repairservice/modules/post/post_of_service_page.dart';
 
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
@@ -55,14 +57,18 @@ class ServiceContainer extends StatelessWidget {
             ],
           ),
         ),
-        InkWell(
-          onTap: () {
-            Navigator.push(
-                context,
-                SlideFadeRoute(
-                    page: PostOfServicePage(
-                  title: title,
-                )));
+        BlocBuilder<PostBloc, PostState>(
+          builder: (context, state) {
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    SlideFadeRoute(
+                        page: PostOfServicePage(
+                      title: title,
+                    )));
+              },
+            );
           },
         ),
       ],

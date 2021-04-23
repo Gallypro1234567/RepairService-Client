@@ -25,17 +25,19 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       yield state.copyWith();
     } else if (event is PostFetched) {
       yield* _mapPostFetched(event, state);
+    } else if (event is PostRecently) {
+      yield* _mapPostRecently(event, state);
+    } else if (event is PostFetchedByPhone) {
+      yield* _mapPostFetchedByPhone(event, state);
     } else if (event is PostServiceChanged) {
-      yield state.copyWith(
-        serviceText: event.text,
-      );
+      yield state.copyWith(serviceText: event.text, serviceCode: event.code);
     } else if (event is PostAddressChanged) {
       yield state.copyWith(address: Address.dirty(event.value));
     } else if (event is PostTitleChanged) {
       yield _mapPostTitleChangedToState(event, state);
     } else if (event is PostDescriptionChanged) {
       yield state.copyWith(description: Description.dirty(event.value));
-    } else if (event is PostSubmitted) {
+    } else if (event is PostCustomerSubmitted) {
       yield* _mapPostSubmittedToState(event, state);
     }
   }
@@ -51,7 +53,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       yield state.copyWith(pageStatus: PageStatus.loadSuccess);
     yield state.copyWith(pageStatus: PageStatus.loading);
     try {
-      var datas = await _postRepository.fetchPost();
+      var datas = await _postRepository.fetchPost(serviceCode: event.code);
 
       yield state.copyWith(pageStatus: PageStatus.loadSuccess, posts: datas);
     } on Exception catch (_) {
@@ -60,10 +62,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }
 
   Stream<PostState> _mapPostSubmittedToState(
-      PostSubmitted event, PostState state) async* {
+      PostCustomerSubmitted event, PostState state) async* {
     yield state.copyWith(pageStatus: PageStatus.loading);
     try {
       var response = await _postRepository.addPost(
+          serviceCode: state.serviceCode,
           title: state.title.value,
           address: state.address.value,
           description: state.description.value,
@@ -75,6 +78,34 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         yield state.copyWith(pageStatus: PageStatus.sbumitSuccess);
       else
         yield state.copyWith(pageStatus: PageStatus.failure);
+    } on Exception catch (_) {
+      yield state.copyWith(pageStatus: PageStatus.failure);
+    }
+  }
+
+  Stream<PostState> _mapPostFetchedByPhone(
+      PostFetchedByPhone event, PostState state) async* {
+    if (state.pageStatus == PageStatus.loadSuccess)
+      yield state.copyWith(pageStatus: PageStatus.loadSuccess);
+    yield state.copyWith(pageStatus: PageStatus.loading);
+    try {
+      var datas = await _postRepository.fetchPostByPhone();
+
+      yield state.copyWith(pageStatus: PageStatus.loadSuccess, posts: datas);
+    } on Exception catch (_) {
+      yield state.copyWith(pageStatus: PageStatus.failure);
+    }
+  }
+
+  Stream<PostState> _mapPostRecently(
+      PostRecently event, PostState state) async* {
+    if (state.pageStatus == PageStatus.loadSuccess)
+      yield state.copyWith(pageStatus: PageStatus.loadSuccess);
+    yield state.copyWith(pageStatus: PageStatus.loading);
+    try {
+      var datas = await _postRepository.fetchRecentlyPost();
+
+      yield state.copyWith(pageStatus: PageStatus.loadSuccess, posts: datas);
     } on Exception catch (_) {
       yield state.copyWith(pageStatus: PageStatus.failure);
     }

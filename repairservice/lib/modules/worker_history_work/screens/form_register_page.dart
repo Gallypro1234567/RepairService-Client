@@ -22,6 +22,13 @@ class FormRegisterPage extends StatelessWidget {
           if (state.status == WorkerRegisterStatus.registerSuccessed) {
             Navigator.pop(context);
           }
+          if (state.status == WorkerRegisterStatus.exitFailure) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(content: Text('Đã tồn tại thông tin đăng ký')),
+              );
+          }
         },
         child: Scaffold(
           appBar: AppBar(

@@ -4,12 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/core/auth/my_elevated_button.dart';
-import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
+
 import 'package:repairservice/core/user/login/components/textfield_container.dart';
 import 'package:repairservice/core/user/register/bloc/register_bloc.dart';
 import 'package:repairservice/core/user/register/register_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
-import 'package:repairservice/widgets/text_field_container.dart';
 
 import 'package:repairservice/widgets/title_text.dart';
 

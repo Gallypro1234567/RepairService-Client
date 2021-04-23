@@ -10,3 +10,4 @@ abstract class HomeEvent extends Equatable {
 class HomeFetched extends HomeEvent {}
 class HomeRefesh extends HomeEvent {}
 class HomeLoading extends HomeEvent {}
+ 
