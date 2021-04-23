@@ -56,7 +56,13 @@ class CustomerManagerPage extends StatelessWidget {
                         )),
                       ]))
                   .toList();
-              return CustomerManagerDataTable(dataRows: datarows);
+              return RefreshIndicator(
+                  onRefresh: () async {
+                    context
+                        .read<CustomermanagerBloc>()
+                        .add(CustomermanagerInitial());
+                  },
+                  child: CustomerManagerDataTable(dataRows: datarows));
             default:
               return Center(
                 child: Text("Error"),
@@ -78,6 +84,7 @@ class CustomerManagerDataTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,

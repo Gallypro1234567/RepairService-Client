@@ -107,14 +107,14 @@ class _ServiceManagerPageState extends State<ServiceManagerPage> {
             context.read<HomeBloc>().add(HomeFetched());
           }
         },
-        child: BlocBuilder<HomeBloc, HomeState>(
+        child: BlocBuilder<ServicemanagerBloc, ServicemanagerState>(
           builder: (context, state) {
             switch (state.status) {
-              case HomeStatus.loading:
+              case ServiceManagerStatus.loading:
                 {
                   return SplashPage();
                 }
-              case HomeStatus.success:
+              case ServiceManagerStatus.success:
                 {
                   var datarows = state.services
                       .map((e) => DataRow(cells: <DataCell>[
@@ -131,7 +131,13 @@ class _ServiceManagerPageState extends State<ServiceManagerPage> {
                             DataCell(Text(e.name)),
                           ]))
                       .toList();
-                  return DataTableBloc(datarows: datarows);
+                  return RefreshIndicator(
+                      onRefresh: () async {
+                        context
+                            .read<ServicemanagerBloc>()
+                            .add(ServicemanagerInitial());
+                      },
+                      child: DataTableBloc(datarows: datarows));
                 }
               default:
                 return Center(
@@ -161,6 +167,7 @@ class DataTableBloc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,

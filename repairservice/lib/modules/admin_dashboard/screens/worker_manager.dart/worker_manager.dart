@@ -55,7 +55,13 @@ class WorkerManagerPage extends StatelessWidget {
                         )),
                       ]))
                   .toList();
-              return WorkerManagerDataTable(dataRows: datarows);
+              return RefreshIndicator(
+                  onRefresh: () async {
+                    context
+                        .read<WorkermanagerBloc>()
+                        .add(WorkermanagerInitial());
+                  },
+                  child: WorkerManagerDataTable(dataRows: datarows));
             default:
               return Center(
                 child: Text("Error"),
@@ -77,6 +83,7 @@ class WorkerManagerDataTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,

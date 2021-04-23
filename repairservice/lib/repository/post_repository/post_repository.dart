@@ -16,6 +16,7 @@ class PostRepository {
       "start": "0",
       "length": "1000",
       "order": "1",
+      "status": "0",
       "servicecode": serviceCode,
     };
     try {
@@ -69,6 +70,7 @@ class PostRepository {
       "start": start.toString(),
       "length": length.toString(),
       "order": "1",
+      "status": "0"
     };
     try {
       var response = await http.get(
@@ -122,7 +124,7 @@ class PostRepository {
       "length": "1000",
       "order": "1",
       "servicecode": "02",
-      "status": "0",
+      "status": null,
     };
     try {
       var response = await http.get(

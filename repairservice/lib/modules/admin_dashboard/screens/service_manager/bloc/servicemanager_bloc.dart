@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:repairservice/repository/home_repository/home_repository.dart';
+import 'package:repairservice/repository/home_repository/models/service_model.dart';
 
 part 'servicemanager_event.dart';
 part 'servicemanager_state.dart';
@@ -21,7 +22,7 @@ class ServicemanagerBloc
     ServicemanagerEvent event,
   ) async* {
     if (event is ServicemanagerInitial) {
-      yield state.copyWith();
+      yield* _mapServicemanagerInitialToState(event, state);
     } else if (event is ServicemanagerNameChanged) {
       yield state.copyWith(name: event.name);
     } else if (event is ServicemanagerDesciptionChanged) {
@@ -44,6 +45,21 @@ class ServicemanagerBloc
         yield state.copyWith(
             status: ServiceManagerStatus.success, statusCode: 200);
       }
+    } on Exception catch (_) {
+      yield state.copyWith(status: ServiceManagerStatus.failure);
+    }
+  }
+
+  Stream<ServicemanagerState> _mapServicemanagerInitialToState(
+      ServicemanagerInitial event, ServicemanagerState state) async* {
+    yield state.copyWith(status: ServiceManagerStatus.loading);
+    try {
+      var services = await _homeRepository.fetchService();
+
+      yield state.copyWith(
+          status: ServiceManagerStatus.success,
+          statusCode: 200,
+          services: services);
     } on Exception catch (_) {
       yield state.copyWith(status: ServiceManagerStatus.failure);
     }

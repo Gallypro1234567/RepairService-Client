@@ -20,6 +20,14 @@ class WorkerregistermanagerBloc
   ) async* {
     if (event is WorkerregistermanagerFetched) {
       yield* _mapWorkerregistermanagerFetchedToState(event, state);
+    } else if (event is WorkerregistermanagerFetchedDetail) {
+      yield _mapWorkerregistermanagerFetchedDetailToState(event, state);
+    } else if (event is WorkerregistermanagerCode) {
+      yield state.copyWith(workerOfServicesCode: event.value);
+    } else if (event is WorkerregistermanagerApprovalChanged) {
+      yield state.copyWith(formIsApproval: event.value);
+    } else if (event is WorkerregistermanagerSubmit) {
+      yield* _mapWorkerregistermanagerSubmittedToState(event, state);
     }
   }
 
@@ -30,9 +38,34 @@ class WorkerregistermanagerBloc
     try {
       var users = await _dashboardRepository.fetchWorkerRegister();
       yield state.copyWith(
-          status: WorkerregistermanagerStatus.success, workerregister: users);
+          status: WorkerregistermanagerStatus.success,
+          workerregister: users,
+          workerOfServicesCode: "");
     } on Exception catch (_) {
       yield state.copyWith(status: WorkerregistermanagerStatus.failure);
     }
+  }
+
+  Stream<WorkerregistermanagerState> _mapWorkerregistermanagerSubmittedToState(
+      WorkerregistermanagerSubmit event,
+      WorkerregistermanagerState state) async* {
+    yield state.copyWith(status: WorkerregistermanagerStatus.loading);
+    try {
+      await _dashboardRepository.adminVetification(
+          isApproval: state.formIsApproval,
+          workerOfServicesCode: state.workerOfServicesCode);
+      yield state.copyWith(
+        status: WorkerregistermanagerStatus.submitted,
+      );
+    } on Exception catch (_) {
+      yield state.copyWith(status: WorkerregistermanagerStatus.failure);
+    }
+  }
+
+  _mapWorkerregistermanagerFetchedDetailToState(
+      WorkerregistermanagerFetchedDetail event,
+      WorkerregistermanagerState state) {
+    return state.copyWith(
+        workerOfServicesCode: event.code, formIsApproval: event.isApproval);
   }
 }

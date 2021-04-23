@@ -64,12 +64,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       } else {
         final postRecently = await _postRepository.fetchRecentlyPost(
             start: state.postRecently.length, length: 5);
-        return postRecently.isEmpty ? state.copyWith(hasReachedMax: true) : state.copyWith(
-          status: HomeStatus.success,
-          pagestatus: PageStatus.navigationPage,
-          hasReachedMax: false,
-          postRecently: List.of(state.postRecently)..addAll(postRecently),
-        );
+        return postRecently.isEmpty
+            ? state.copyWith(hasReachedMax: true)
+            : state.copyWith(
+                status: HomeStatus.success,
+                pagestatus: PageStatus.navigationPage,
+                hasReachedMax: false,
+                postRecently: List.of(state.postRecently)..addAll(postRecently),
+              );
       }
     } on Exception catch (e) {
       return state.copyWith(status: HomeStatus.failure, message: e.toString());
@@ -81,12 +83,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       status: HomeStatus.loading,
     );
     try {
-      //final userRole = await _homeRepository.getRole();
+      final userRole = await _homeRepository.getRole();
       final services = await _homeRepository.fetchService();
       final postRecently = await _postRepository.fetchRecentlyPost();
       yield state.copyWith(
           status: HomeStatus.initial,
           services: services,
+          role: userRole.role,
           hasReachedMax: false,
           postRecently: postRecently);
     } on Exception catch (e) {

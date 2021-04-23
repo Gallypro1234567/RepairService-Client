@@ -9,6 +9,13 @@ abstract class WorkerregistermanagerEvent extends Equatable {
 
 class WorkerregistermanagerFetched extends WorkerregistermanagerEvent {}
 
+class WorkerregistermanagerFetchedDetail extends WorkerregistermanagerEvent {
+  final int isApproval;
+  final String code;
+
+  WorkerregistermanagerFetchedDetail({this.isApproval, this.code});
+}
+
 class WorkerregistermanagerStatusChanged extends WorkerregistermanagerEvent {
   final String value;
   final String text;
@@ -17,4 +24,15 @@ class WorkerregistermanagerStatusChanged extends WorkerregistermanagerEvent {
 }
 
 class WorkerregistermanagerSubmit extends WorkerregistermanagerEvent {}
- 
+
+class WorkerregistermanagerApprovalChanged extends WorkerregistermanagerEvent {
+  final int value;
+
+  WorkerregistermanagerApprovalChanged(this.value);
+}
+
+class WorkerregistermanagerCode extends WorkerregistermanagerEvent {
+  final String value;
+
+  WorkerregistermanagerCode(this.value);
+}

@@ -47,8 +47,16 @@ class _WorkerRegisterManagerPageState extends State<WorkerRegisterManagerPage> {
                   .map((e) => DataRow(
                           onSelectChanged: (bool selected) {
                             if (selected) {
-                              Navigator.push(context,
-                                  SlideFadeRoute(page: VerificationFormPage(model: e,)));
+                              context.read<WorkerregistermanagerBloc>().add(
+                                  WorkerregistermanagerFetchedDetail(
+                                      code: e.code, isApproval: e.isApproval));
+
+                              Navigator.push(
+                                  context,
+                                  SlideFadeRoute(
+                                      page: VerificationFormPage(
+                                    model: e,
+                                  )));
                             }
                           },
                           cells: <DataCell>[
@@ -65,6 +73,9 @@ class _WorkerRegisterManagerPageState extends State<WorkerRegisterManagerPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                             )),
+                            DataCell(StatusContainer(
+                              isApproval: e.isApproval,
+                            )),
                             DataCell(TitleText(
                               text: e.phone,
                               fontSize: 16,
@@ -75,18 +86,15 @@ class _WorkerRegisterManagerPageState extends State<WorkerRegisterManagerPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                             )),
-                            DataCell(TitleText(
-                              text: e.isApproval == 0
-                                  ? "Đang chờ xác nhận"
-                                  : e.isApproval == 1
-                                      ? "Duyệt thành công"
-                                      : "Duyệt thất bại",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            )),
                           ]))
                   .toList();
-              return WorkerRegisterManagerDataTable(dataRows: datarows);
+              return RefreshIndicator(
+                  onRefresh: () async {
+                    context
+                        .read<WorkerregistermanagerBloc>()
+                        .add(WorkerregistermanagerFetched());
+                  },
+                  child: WorkerRegisterManagerDataTable(dataRows: datarows));
             default:
               return Center(
                 child: Text("Error"),
@@ -108,6 +116,7 @@ class WorkerRegisterManagerDataTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -130,6 +139,13 @@ class WorkerRegisterManagerDataTable extends StatelessWidget {
             ),
             DataColumn(
               label: TitleText(
+                text: 'Trạng thái',
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            DataColumn(
+              label: TitleText(
                 text: 'Điện thoại',
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
@@ -142,16 +158,46 @@ class WorkerRegisterManagerDataTable extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            DataColumn(
-              label: TitleText(
-                text: 'Trạng thái',
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
           ],
           rows: dataRows,
         ),
+      ),
+    );
+  }
+}
+
+class StatusContainer extends StatelessWidget {
+  final int isApproval;
+  const StatusContainer({
+    Key key,
+    this.isApproval,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 2),
+      decoration: BoxDecoration(
+          color: isApproval == 0
+              ? Colors.amber
+              : isApproval == 1
+                  ? Colors.green
+                  : Colors.red,
+          borderRadius: BorderRadius.circular(50)),
+      child: TitleText(
+        text: isApproval == 0
+            ? "Đang chờ xác nhận"
+            : isApproval == 1
+                ? "Duyệt thành công"
+                : "Duyệt thất bại",
+        color: isApproval == 0
+            ? Colors.black
+            : isApproval == 1
+                ? Colors.white
+                : Colors.black,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
       ),
     );
   }

@@ -171,4 +171,23 @@ class DashboardRepository {
       return response;
     } on Exception catch (_) {}
   }
+
+  Future<http.Response> adminVetification({int isApproval, String workerOfServicesCode}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    try {
+      var uri =
+          Uri.http(Host.Server_hosting, "api/workerofservices/vetification");
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      request.fields['isApproval'] = isApproval.toString();
+      request.fields['WorkerOfServicesCode'] = workerOfServicesCode;
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
 }
