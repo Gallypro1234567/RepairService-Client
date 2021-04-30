@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/core/auth/authentication.dart';
+import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'package:repairservice/modules/admin_dashboard/dashboard_page.dart';
 
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
@@ -70,9 +72,9 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         leadingWidth: 30,
-        leading: BlocBuilder<HomeBloc, HomeState>(
+        leading: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
-            if (state.role == 0) {
+            if (state.user.role == 0) {
               return IconButton(
                 onPressed: () {
                   _scaffoldKey.currentState.openDrawer();
@@ -97,12 +99,12 @@ class _HomePageState extends State<HomePage> {
               return const Center(child: Text("state.message"));
             case HomeStatus.success:
               if (state.services.isEmpty) {
-                return const Center(child: Text('no services'));
+                return const Center(child: CircularProgressIndicator());
               }
               return _refreshIndicator(_size, context, state);
             case HomeStatus.initial:
               if (state.services.isEmpty) {
-                return const Center(child: Text('no services'));
+                return const Center(child: CircularProgressIndicator());
               }
               return _refreshIndicator(_size, context, state);
             case HomeStatus.loading:
@@ -129,9 +131,10 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
-      floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
+      floatingActionButton:
+          BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
-          switch (state.isCustomer) {
+          switch (state.user.isCustomer) {
             case UserType.customer:
               return Padding(
                 padding: const EdgeInsets.only(bottom: kDefaultPadding),

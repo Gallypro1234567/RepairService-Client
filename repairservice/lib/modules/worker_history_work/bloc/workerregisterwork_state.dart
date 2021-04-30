@@ -15,7 +15,7 @@ class WorkerregisterworkState extends Equatable {
       {this.status = WorkerRegisterStatus.none,
       this.cmnd,
       this.imageCMND,
-      this.services,
+      this.serviceRegisters,
       this.workerofserviceOfworkerBytoken,
       this.serviceText,
       this.serviceCode});
@@ -23,7 +23,7 @@ class WorkerregisterworkState extends Equatable {
   final WorkerRegisterStatus status;
   final String cmnd;
   final File imageCMND;
-  final List<Service> services;
+  final List<WorkerRegister> serviceRegisters;
   final List<Service> workerofserviceOfworkerBytoken;
   final String serviceCode;
   final String serviceText;
@@ -32,7 +32,7 @@ class WorkerregisterworkState extends Equatable {
         status,
         cmnd,
         imageCMND,
-        services,
+        serviceRegisters,
         workerofserviceOfworkerBytoken,
         serviceCode,
         serviceText
@@ -43,14 +43,14 @@ class WorkerregisterworkState extends Equatable {
       String cmnd,
       File imageCMND,
       String serviceText,
-      List<Service> services,
+      List<WorkerRegister> serviceRegisters,
       List<Service> workerofserviceOfworkerBytoken,
       String serviceCode}) {
     return WorkerregisterworkState(
         status: status ?? this.status,
         cmnd: cmnd ?? this.cmnd,
         imageCMND: imageCMND ?? this.imageCMND,
-        services: services ?? this.services,
+        serviceRegisters: serviceRegisters ?? this.serviceRegisters,
         workerofserviceOfworkerBytoken: workerofserviceOfworkerBytoken ??
             this.workerofserviceOfworkerBytoken,
         serviceText: serviceText ?? this.serviceText,

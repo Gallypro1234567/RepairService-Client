@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:repairservice/repository/dashboard_repository/dashboard_repository.dart';
 
 import 'package:repairservice/repository/home_repository/home_repository.dart';
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
@@ -13,10 +14,10 @@ part 'servicemanager_state.dart';
 
 class ServicemanagerBloc
     extends Bloc<ServicemanagerEvent, ServicemanagerState> {
-  ServicemanagerBloc({HomeRepository homeRepository})
-      : _homeRepository = homeRepository,
+  ServicemanagerBloc({DashboardRepository dashboardRepository})
+      : _dashboardRepository = dashboardRepository,
         super(ServicemanagerState());
-  final HomeRepository _homeRepository;
+  final DashboardRepository _dashboardRepository;
   @override
   Stream<ServicemanagerState> mapEventToState(
     ServicemanagerEvent event,
@@ -26,7 +27,7 @@ class ServicemanagerBloc
     } else if (event is ServicemanagerNameChanged) {
       yield state.copyWith(name: event.name);
     } else if (event is ServicemanagerDesciptionChanged) {
-      yield state.copyWith(name: event.description);
+      yield state.copyWith(description: event.description);
     } else if (event is ServicemanagerImageChanged) {
       yield state.copyWith(image: event.file);
     } else if (event is ServicemanagerEventSubmited) {
@@ -38,7 +39,7 @@ class ServicemanagerBloc
       ServicemanagerEventSubmited event, ServicemanagerState state) async* {
     yield state.copyWith(status: ServiceManagerStatus.loading);
     try {
-      var response = await _homeRepository.addService(
+      var response = await _dashboardRepository.addService(
           name: state.name, description: state.description, file: state.image);
       var body = json.decode(response.body);
       if (response.statusCode == 200) {
@@ -54,7 +55,7 @@ class ServicemanagerBloc
       ServicemanagerInitial event, ServicemanagerState state) async* {
     yield state.copyWith(status: ServiceManagerStatus.loading);
     try {
-      var services = await _homeRepository.fetchService();
+      var services = await _dashboardRepository.fetchService();
 
       yield state.copyWith(
           status: ServiceManagerStatus.success,

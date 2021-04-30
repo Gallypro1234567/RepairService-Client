@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:jwt_decoder/jwt_decoder.dart'; 
 import 'package:repairservice/repository/user_repository/models/user_register_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/service/server_hosting.dart' as Host;
@@ -16,10 +16,8 @@ class AuthenticationRepository {
     var token = pref.getString("token");
     if (token != null) {
       bool hasExpired = JwtDecoder.isExpired(token);
-      if (!hasExpired) {
-        var phone = pref.getString("phone");
-        var pasword = pref.getString("password");
-        await logIn(phone: phone, password: pasword);
+      if (!hasExpired) {  
+        yield AuthenticationStatus.authenticated;
         yield* _controller.stream;
       } else {
         yield AuthenticationStatus.unauthenticated;
@@ -48,11 +46,12 @@ class AuthenticationRepository {
       pref.setString("phone", phone);
       pref.setInt("role", data["role"] as int);
       pref.setBool("isCustomer", data["isCustomer"] as bool);
-      pref.setString("password", password);
+      pref.setString("password", password); 
       _controller.add(AuthenticationStatus.authenticated);
     }
     return response;
   }
+    
 
   Future<http.Response> register(RegisterModel model) async {
     var jsonencoder = json.encode({

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 
 import 'config/themes/theme_config.dart';
 
@@ -48,11 +49,16 @@ class _AppViewState extends State<AppView> {
                 context.read<HomeBloc>().add(HomeFetched());
                 context.read<UserBloc>().add(UserFetch());
                 _navigator.pushAndRemoveUntil(
-                    MainPage.route(), (route) => false);
+                    SlideFadeRoute(page: MainPage()), (route) => false);
+
                 break;
               case AuthenticationStatus.unauthenticated:
                 _navigator.pushAndRemoveUntil(
                     LoginPage.route(), (route) => false);
+                break;
+              case AuthenticationStatus.unknown:
+                _navigator.pushAndRemoveUntil(
+                    SplashPage.route(), (route) => false);
                 break;
               default:
                 break;

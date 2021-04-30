@@ -146,13 +146,16 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           email: state.email.value,
           address: state.address.value,
           oldpassword: state.oldpassword.value,
-          newpassword: state.newPassword.value);
+          newpassword: state.newPassword.value,
+          file: state.file);
 
       if (a.statusCode == 200) {
         yield state.copyWith(
             status: UserProfileStatus.modified,
             formzstatus: FormzStatus.submissionSuccess,
             checkPass: 10);
+      } else {
+        yield state.copyWith(status: UserProfileStatus.failure);
       }
     } on Exception catch (_) {
       yield state.copyWith(
@@ -170,9 +173,11 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       if (pickedFile != null) {
         yield state.copyWith(
             file: File(pickedFile.path), fileStatus: FileStatus.success);
+      } else {
+        yield state.copyWith(
+          file: null,
+        );
       }
-      yield state.copyWith(
-          file: File(pickedFile.path), fileStatus: FileStatus.failure);
     } on Exception catch (_) {
       yield state.copyWith(fileStatus: FileStatus.failure);
     }

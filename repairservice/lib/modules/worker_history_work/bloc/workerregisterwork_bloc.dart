@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:repairservice/modules/worker_history_work/models/cmnd.dart';
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
+import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:repairservice/repository/user_repository/user_repository.dart';
 
 part 'workerregisterwork_event.dart';
@@ -57,11 +58,9 @@ class WorkerregisterworkBloc
           WorkerregisterworkState state) async* {
     yield state.copyWith(status: WorkerRegisterStatus.loading);
     try {
-      var serviceList = await _userRepository.fetchWorkerOfServiceByCode(
-        serviceCode: state.serviceCode,
-      );
+      var serviceList = await _userRepository.fetchWorkerRegisterByUser();
       yield state.copyWith(
-          status: WorkerRegisterStatus.loadSuccessed, services: serviceList);
+          status: WorkerRegisterStatus.loadSuccessed, serviceRegisters: serviceList);
     } on Exception catch (_) {
       yield state.copyWith(status: WorkerRegisterStatus.failure);
     }

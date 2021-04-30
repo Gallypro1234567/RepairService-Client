@@ -28,7 +28,7 @@ class CustomermanagerBloc
       CustomermanagerInitial event, CustomermanagerState state) async* {
     yield state.copyWith(status: CustomermanagerStatus.loading);
     try {
-      var users = await _dashboardRepository.fetchWorker();
+      var users = await _dashboardRepository.fetchCustomers();
       yield state.copyWith(status: CustomermanagerStatus.success, users: users);
     } on Exception catch (_) {
       yield state.copyWith(status: CustomermanagerStatus.failure);

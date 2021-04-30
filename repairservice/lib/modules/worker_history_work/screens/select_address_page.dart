@@ -34,6 +34,8 @@ class WorkerSelectAddressPage extends StatelessWidget {
                 return SplashPage();
               case HomeStatus.success:
                 return ServiceGridview(state: state, onPressed: onPressed);
+              case HomeStatus.initial:
+                return ServiceGridview(state: state, onPressed: onPressed);
               default:
                 return Center(
                   child: TitleText(

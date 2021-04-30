@@ -54,17 +54,23 @@ class WorkerHistoryWorkView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: LightColor.lightteal,
-        centerTitle: true,
+        centerTitle: false,
+        leadingWidth: 30,
         title: TitleText(
-          text: "Lịch sử công việc",
+          text: "Danh sách công việc đăng ký",
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
       ),
       body: BlocBuilder<WorkerregisterworkBloc, WorkerregisterworkState>(
         builder: (context, state) {
-          return ServiceGridview(
-            state: state,
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<WorkerregisterworkBloc>().add(WorkerregisterworkServiceRegisterLoad());
+            },
+            child: ServiceGridview(
+              state: state,
+            ),
           );
         },
       ),
@@ -92,43 +98,49 @@ class ServiceGridview extends StatelessWidget {
     return GridView.builder(
       physics: AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: state.services.length,
+      itemCount: state.serviceRegisters.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 5.0,
         mainAxisSpacing: 6,
       ),
       itemBuilder: (context, index) {
-        return _PostSelectServiceContainer(
-          title: state.services[index].name,
-          imageUrl: state.services[index].imageUrl == null
-              ? ""
-              : state.services[index].imageUrl,
-          backgroundColor: index % 3 == 0
-              ? Colors.amber[300]
-              : index % 2 == 0
-                  ? Colors.green[300]
-                  : Colors.blue[300],
-          headerColor: index % 3 == 0
-              ? Colors.amber
-              : index % 2 == 0
-                  ? Colors.green
-                  : Colors.blue,
-        ).ripple(() {
-          context.read<WorkerregisterworkBloc>().add(
-              WorkerregisterworkServiceChanged(
-                  text: state.services[index].name,
-                  value: state.services[index].code));
-          Navigator.push(context, SlideFadeRoute(page: PostofWorkerPage()));
-        });
+        return Padding(
+          padding: const EdgeInsets.all(kDefaultPadding / 2),
+          child: _PostSelectServiceContainer(
+            title: state.serviceRegisters[index].serviceName,
+            imageUrl: state.serviceRegisters[index].serviceImageurl == null
+                ? ""
+                : state.serviceRegisters[index].serviceImageurl,
+            backgroundColor: state.serviceRegisters[index].isApproval == 0
+                ? LightColor.lightGrey
+                : state.serviceRegisters[index].isApproval == 1
+                    ? Colors.green[300]
+                    : Colors.red[300],
+            headerColor: state.serviceRegisters[index].isApproval == 0
+                ? Colors.grey
+                : state.serviceRegisters[index].isApproval == 1
+                    ? Colors.green
+                    : Colors.red,
+          ).ripple(
+              state.serviceRegisters[index].isApproval == 0
+                  ? null
+                  : () {
+                      context.read<WorkerregisterworkBloc>().add(
+                          WorkerregisterworkServiceChanged(
+                              text: state.serviceRegisters[index].serviceName,
+                              value:
+                                  state.serviceRegisters[index].serviceCode));
+                      Navigator.push(
+                          context, SlideFadeRoute(page: PostofWorkerPage()));
+                    },
+              borderRadius: BorderRadius.circular(10)),
+        );
       },
     );
   }
 }
 
-//  context.read<PostFindWorkerBloc>().add(PostFindWorkerServiceChanged(
-//               text: state.services[index].name,
-//               code: state.services[index].code));
 class _PostSelectServiceContainer extends StatelessWidget {
   final String title;
   final String imageUrl;
@@ -148,58 +160,55 @@ class _PostSelectServiceContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding / 2),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: backgroundColor),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: AppTheme.fullHeight(context) * 0.05,
-              width: AppTheme.fullWidth(context) * 0.2,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10)),
-                  color: headerColor),
-            ),
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: kDefaultPadding / 2,
-                    horizontal: kDefaultPadding / 2),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      height: 60,
-                      width: 60,
-                      child: CircleAvatar(
-                        backgroundImage:
-                            imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
-                      ),
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10), color: backgroundColor),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            height: AppTheme.fullHeight(context) * 0.05,
+            width: AppTheme.fullWidth(context) * 0.2,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10)),
+                color: headerColor),
+          ),
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  vertical: kDefaultPadding / 2,
+                  horizontal: kDefaultPadding / 2),
+              child: Row(
+                children: [
+                  SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: CircleAvatar(
+                      backgroundImage:
+                          imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: kDefaultPadding / 2,
-                    horizontal: kDefaultPadding / 2),
-                child: TitleText(
-                  text: title,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  vertical: kDefaultPadding / 2,
+                  horizontal: kDefaultPadding / 2),
+              child: TitleText(
+                text: title,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }

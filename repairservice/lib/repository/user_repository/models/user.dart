@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 
 class User extends Equatable {
-  const User(this.id);
-
-  final String id;
-
+  const User({this.isCustomer, this.role});
+  final UserType isCustomer;
+  final int role;
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [role, isCustomer];
 
-  static const empty = User('-');
+  static const empty = User();
 }

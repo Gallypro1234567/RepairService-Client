@@ -95,6 +95,7 @@ class WorkerRegister extends Equatable {
   final int isApproval;
   final String serviceCode;
   final String serviceName;
+  final String serviceImageurl;
   WorkerRegister(
       {this.fullname,
       this.email,
@@ -107,7 +108,8 @@ class WorkerRegister extends Equatable {
       this.imageUrl,
       this.isApproval,
       this.serviceCode,
-      this.serviceName});
+      this.serviceName,
+      this.serviceImageurl});
 
   @override
   List<Object> get props => [
@@ -122,6 +124,17 @@ class WorkerRegister extends Equatable {
         imageUrl,
         isApproval,
         serviceCode,
-        serviceName
+        serviceName,
+        serviceImageurl
       ];
+}
+
+class UserRole extends Equatable {
+  final UserType isCustomer; 
+  final int role;
+
+  UserRole({this.isCustomer, this.role});
+
+  @override
+  List<Object> get props => [role,isCustomer];
 }

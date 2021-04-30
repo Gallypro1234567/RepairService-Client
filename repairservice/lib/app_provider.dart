@@ -14,6 +14,7 @@ import 'core/user/verifyphone/bloc/verifyphone_bloc.dart';
 
 import 'modules/admin_dashboard/screens/customer_manager/bloc/customermanager_bloc.dart';
 import 'modules/admin_dashboard/screens/service_manager/bloc/servicemanager_bloc.dart';
+import 'modules/admin_dashboard/screens/service_manager/screens/bloc/updateservice_bloc.dart';
 import 'modules/admin_dashboard/screens/worker_manager.dart/bloc/workermanager_bloc.dart';
 import 'modules/admin_dashboard/screens/worker_register_manager/bloc/workerregistermanager_bloc.dart';
 import 'modules/home/bloc/home_bloc.dart';
@@ -86,8 +87,13 @@ class AppProvider extends StatelessWidget {
         // ServiceManaGer
         BlocProvider(
             create: (_) => ServicemanagerBloc(
-                  homeRepository: HomeRepository(),
+                  dashboardRepository: DashboardRepository(),
                 )..add(ServicemanagerInitial())),
+        BlocProvider(
+            create: (_) => UpdateserviceBloc(
+                  dashboardRepository: DashboardRepository(),
+                )..add(UpdateserviceInitial())),
+
         BlocProvider(
             create: (_) => CustomermanagerBloc(
                   dashboardRepository: DashboardRepository(),

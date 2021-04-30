@@ -5,12 +5,15 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/modules/admin_dashboard/screens/service_manager/screens/bloc/updateservice_bloc.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post/components/post_form_input.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 import 'bloc/servicemanager_bloc.dart';
+import 'screens/service_detail_page.dart';
 
 class ServiceManagerPage extends StatefulWidget {
   @override
@@ -117,19 +120,29 @@ class _ServiceManagerPageState extends State<ServiceManagerPage> {
               case ServiceManagerStatus.success:
                 {
                   var datarows = state.services
-                      .map((e) => DataRow(cells: <DataCell>[
-                            DataCell(SizedBox(
-                              height: 30,
-                              width: 30,
-                              child: CircleAvatar(
-                                backgroundImage: e.imageUrl != null
-                                    ? NetworkImage(e.imageUrl)
-                                    : null,
-                              ),
-                            )),
-                            DataCell(Text(e.code)),
-                            DataCell(Text(e.name)),
-                          ]))
+                      .map((e) => DataRow(
+                              onSelectChanged: (selected) {
+                                if (selected) {
+                                  context.read<UpdateserviceBloc>().add(UpdateserviceFetched(e.code));
+                                  Navigator.push(
+                                      context,
+                                      SlideFadeRoute(
+                                          page: ServiceDetailPage()));
+                                }
+                              },
+                              cells: <DataCell>[
+                                DataCell(SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: CircleAvatar(
+                                    backgroundImage: e.imageUrl != null
+                                        ? NetworkImage(e.imageUrl)
+                                        : null,
+                                  ),
+                                )),
+                                DataCell(Text(e.code)),
+                                DataCell(Text(e.name)),
+                              ]))
                       .toList();
                   return RefreshIndicator(
                       onRefresh: () async {
@@ -172,6 +185,7 @@ class DataTableBloc extends StatelessWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
+          showCheckboxColumn: false,
           columns: const <DataColumn>[
             DataColumn(
               label: TitleText(

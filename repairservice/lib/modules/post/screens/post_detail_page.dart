@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/post/bloc/post_bloc.dart';
 import 'package:repairservice/modules/post/screens/post_find_worker_page.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
@@ -159,9 +161,10 @@ class PostDetailPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomSheet: BlocBuilder<HomeBloc, HomeState>(
+      bottomSheet: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
-          if (state.isCustomer == UserType.worker && state.role == 1) {
+          if (state.user.isCustomer == UserType.worker &&
+              state.user.role == 1) {
             return Container(
               height: AppTheme.fullHeight(context) * 0.1,
               color: Colors.grey,
@@ -170,28 +173,37 @@ class PostDetailPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.green,
-                          shadowColor: LightColor.lightGrey,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(0))),
-                      key: key,
-                      child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                        child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50)),
-                            child: Center(
-                                child: TitleText(
-                              text: "Gọi ngay",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ))),
-                      ),
-                      onPressed: () {},
+                    child: BlocBuilder<PostBloc, PostState>(
+                      builder: (context, state) {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.green,
+                              shadowColor: LightColor.lightGrey,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(0))),
+                          key: key,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: kDefaultPadding),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50)),
+                                child: Center(
+                                    child: TitleText(
+                                  text: "Nhận đơn",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ))),
+                          ),
+                          onPressed: () {
+                            context
+                                .read<PostBloc>()
+                                .add(PostWorkerApplySubmitted(post.code));
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
                     ),
                   ),
                   Expanded(

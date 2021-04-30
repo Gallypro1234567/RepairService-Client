@@ -20,6 +20,9 @@ class FormRegisterPage extends StatelessWidget {
     return BlocListener<WorkerregisterworkBloc, WorkerregisterworkState>(
         listener: (context, state) {
           if (state.status == WorkerRegisterStatus.registerSuccessed) {
+            context
+                .read<WorkerregisterworkBloc>()
+                .add(WorkerregisterworkServiceRegisterLoad());
             Navigator.pop(context);
           }
           if (state.status == WorkerRegisterStatus.exitFailure) {

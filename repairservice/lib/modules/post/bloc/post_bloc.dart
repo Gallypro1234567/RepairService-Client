@@ -39,6 +39,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       yield state.copyWith(description: Description.dirty(event.value));
     } else if (event is PostCustomerSubmitted) {
       yield* _mapPostSubmittedToState(event, state);
+    } else if (event is PostWorkerApplySubmitted) {
+      yield* _mapPostWorkerApplySubmittedToState(event, state);
     }
   }
 
@@ -65,7 +67,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       PostCustomerSubmitted event, PostState state) async* {
     yield state.copyWith(pageStatus: PageStatus.loading);
     try {
-      var response = await _postRepository.addPost(
+      var response = await _postRepository.customerAddPost(
           serviceCode: state.serviceCode,
           title: state.title.value,
           address: state.address.value,
@@ -106,6 +108,22 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       var datas = await _postRepository.fetchRecentlyPost();
 
       yield state.copyWith(pageStatus: PageStatus.loadSuccess, posts: datas);
+    } on Exception catch (_) {
+      yield state.copyWith(pageStatus: PageStatus.failure);
+    }
+  }
+
+  Stream<PostState> _mapPostWorkerApplySubmittedToState(
+      PostWorkerApplySubmitted event, PostState state) async* {
+    yield state.copyWith(pageStatus: PageStatus.loading);
+    try {
+      var response =
+          await _postRepository.workerApplyPost(postCode: event.code);
+      if (response.statusCode == 200) {
+        yield state.copyWith(pageStatus: PageStatus.sbumitSuccess);
+      } else {
+        yield state.copyWith(pageStatus: PageStatus.failure);
+      }
     } on Exception catch (_) {
       yield state.copyWith(pageStatus: PageStatus.failure);
     }

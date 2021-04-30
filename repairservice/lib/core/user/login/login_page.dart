@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/core/auth/authentication.dart';
 
 import 'package:repairservice/core/auth/my_elevated_button.dart';
 import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
@@ -35,14 +36,6 @@ class _LoginPageState extends State<LoginPage> {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 const SnackBar(content: Text('Vui lòng kiểm tra kết nối')),
-              );
-          }
-          if (state.statusCode == 404) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                const SnackBar(
-                    content: Text('Đăng nhập thất bại, vui lòng kiểm tra lại')),
               );
           }
         },
@@ -181,22 +174,28 @@ class _RegisterBlocButton extends StatelessWidget {
   const _RegisterBlocButton({Key key, this.title}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.status != current.status,
-      builder: (context, state) {
-        return state.status.isSubmissionInProgress
-            ? const CircularProgressIndicator()
-            : MyElevatedButton(
-                key: const Key('loginForm_continue_raisedButton'),
-                title: title,
-                color: LightColor.lightteal,
-                isValidated: state.status.isValidated,
-                onPressed: state.status.isValidated
-                    ? () {
-                        context.read<LoginBloc>().add(const LoginSubmitted());
-                      }
-                    : null,
-              );
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      builder: (context, authenState) {
+        return BlocBuilder<LoginBloc, LoginState>(
+          buildWhen: (previous, current) => previous.status != current.status,
+          builder: (context, loginState) {
+            return loginState.status.isSubmissionInProgress
+                ? const CircularProgressIndicator()
+                : MyElevatedButton(
+                    key: const Key('loginForm_continue_raisedButton'),
+                    title: title,
+                    color: LightColor.lightteal,
+                    isValidated: loginState.status.isValidated,
+                    onPressed: loginState.status.isValidated
+                        ? () {
+                            context
+                                .read<LoginBloc>()
+                                .add(const LoginSubmitted());
+                          }
+                        : null,
+                  );
+          },
+        );
       },
     );
   }

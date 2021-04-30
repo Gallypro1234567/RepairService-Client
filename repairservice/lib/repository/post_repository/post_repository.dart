@@ -162,7 +162,7 @@ class PostRepository {
     }
   }
 
-  Future<http.Response> addPost(
+  Future<http.Response> customerAddPost(
       {String title,
       String position,
       String serviceCode,
@@ -193,6 +193,28 @@ class PostRepository {
             filename: file.path.split("/").last));
       }
 
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
+
+  Future<http.Response> workerApplyPost(
+      { 
+      String postCode,
+      }) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+     Map<String, String> paramters = {
+      "code": postCode
+    };
+    try {
+      var uri = Uri.http(Host.Server_hosting, "/api/posts/updatebyworker",paramters);
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token"; 
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
       return response;

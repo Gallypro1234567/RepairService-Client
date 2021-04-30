@@ -8,9 +8,9 @@ class PostEvent extends Equatable {
 }
 
 class PostInitial extends PostEvent {}
-class PostRecently extends PostEvent {
 
-}
+class PostRecently extends PostEvent {}
+
 class PostFetched extends PostEvent {
   final String code;
 
@@ -49,6 +49,10 @@ class PostDescriptionChanged extends PostEvent {
   PostDescriptionChanged(this.value);
 }
 
-class PostWorkerApplySubmitted extends PostEvent {}
+class PostWorkerApplySubmitted extends PostEvent {
+  final String code;
+
+  PostWorkerApplySubmitted(this.code);
+}
 
 class PostCustomerSubmitted extends PostEvent {}

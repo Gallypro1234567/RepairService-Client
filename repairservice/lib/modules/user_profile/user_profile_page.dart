@@ -16,7 +16,7 @@ import 'bloc/userprofile_bloc.dart';
 import 'components/user_elevate_button.dart';
 
 import 'components/user_profile_input.dart';
-import 'components/user_profile_scrollview.dart';
+import 'components/user_profile_image.dart';
 import 'package:formz/formz.dart';
 
 class UserProfilePage extends StatelessWidget {
