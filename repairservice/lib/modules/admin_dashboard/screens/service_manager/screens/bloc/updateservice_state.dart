@@ -1,7 +1,7 @@
 part of 'updateservice_bloc.dart';
 
 enum UpdateServiceStatus { loading, success, failure, submitted }
-enum FileStatus { loading, loaded, success, failure }
+enum FileStatus { open, close}
 
 class UpdateserviceState extends Equatable {
   const UpdateserviceState(
@@ -12,14 +12,14 @@ class UpdateserviceState extends Equatable {
       this.description = "",
       this.image,
       this.imageUrl,
-      this.fileStatus = FileStatus.success});
+      this.fileStatus = FileStatus.close});
 
   final UpdateServiceStatus status;
   final String code;
   final String createAt;
   final String name;
   final String description;
-  final File image;
+  final File image; 
   final String imageUrl;
   final FileStatus fileStatus;
   @override

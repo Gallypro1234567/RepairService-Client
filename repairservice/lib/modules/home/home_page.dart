@@ -4,16 +4,17 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
-import 'package:repairservice/config/themes/theme_config.dart';
+
 import 'package:repairservice/core/auth/authentication.dart';
-import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
+
 import 'package:repairservice/modules/admin_dashboard/dashboard_page.dart';
 
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post/components/post_item_container.dart';
-import 'package:repairservice/modules/post/screens/post_detail_page.dart';
 
 import 'package:repairservice/modules/post/screens/post_form_page.dart';
+import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
+import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
@@ -172,7 +173,6 @@ class _HomePageState extends State<HomePage> {
     return HomeBackground(
       controler: _scrollController,
       children: [
-        //UserCard(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -209,11 +209,15 @@ class _HomePageState extends State<HomePage> {
                         : ItemPostContainer(
                             post: state.postRecently[index],
                           ).ripple(() {
+                            context.read<PostdetailBloc>().add(
+                                PostdetailFetched(
+                                    state.postRecently[index].code));
                             Navigator.push(
                                 context,
                                 SlideFadeRoute(
                                     page: PostDetailPage(
-                                        post: state.postRecently[index])));
+                                        postCode:
+                                            state.postRecently[index].code)));
                           });
                   },
                 );
@@ -236,11 +240,11 @@ class _HomePageState extends State<HomePage> {
                         : ItemPostContainer(
                             post: state.postRecently[index],
                           ).ripple(() {
-                            Navigator.push(
-                                context,
-                                SlideFadeRoute(
-                                    page: PostDetailPage(
-                                        post: state.postRecently[index])));
+                            context.read<PostdetailBloc>().add(
+                                PostdetailFetched(
+                                    state.postRecently[index].code));
+                            Navigator.push(context,
+                                SlideFadeRoute(page: PostDetailPage()));
                           });
                   },
                 );

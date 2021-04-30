@@ -1,21 +1,24 @@
 part of 'post_bloc.dart';
 
-enum PageStatus { none, loading, failure, loadSuccess, sbumitSuccess }
+enum PostStatus { none, loading, failure, loadSuccess, sbumitSuccess }
+enum FileStatus { open, close }
 
 class PostState extends Equatable {
   const PostState(
       {this.status = FormzStatus.pure,
-      this.pageStatus = PageStatus.none,
+      this.pageStatus = PostStatus.none,
       this.serviceText,
       this.serviceCode,
       this.name,
       this.address = const Address.pure(),
       this.title = const Title.pure(),
       this.description = const Description.pure(),
-      this.posts = const <Post>[]});
+      this.posts = const <Post>[],
+      this.images = const <File>[],
+      this.fileStatus = FileStatus.close});
 
   final FormzStatus status;
-  final PageStatus pageStatus;
+  final PostStatus pageStatus;
   final String serviceText;
   final String serviceCode;
   final String name;
@@ -23,6 +26,9 @@ class PostState extends Equatable {
   final Title title;
   final List<Post> posts;
   final Description description;
+
+  final List<File> images;
+  final FileStatus fileStatus;
 
   @override
   List<Object> get props => [
@@ -34,12 +40,14 @@ class PostState extends Equatable {
         address,
         title,
         description,
-        posts
+        posts,
+        images,
+        fileStatus
       ];
 
   PostState copyWith(
       {FormzStatus status,
-      PageStatus pageStatus,
+      PostStatus pageStatus,
       String serviceText,
       String serviceCode,
       String name,
@@ -50,7 +58,9 @@ class PostState extends Equatable {
       Title title,
       Address address,
       Description description,
-      List<Post> posts}) {
+      List<Post> posts,
+      List<File> images,
+      FileStatus fileStatus}) {
     return PostState(
       status: status ?? this.status,
       pageStatus: pageStatus ?? this.pageStatus,
@@ -60,6 +70,8 @@ class PostState extends Equatable {
       title: title ?? this.title,
       address: address ?? this.address,
       posts: posts ?? this.posts,
+      images: images ?? this.images,
+      fileStatus: fileStatus ?? this.fileStatus,
       description: description ?? this.description,
     );
   }

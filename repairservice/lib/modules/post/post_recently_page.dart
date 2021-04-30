@@ -59,16 +59,16 @@ class _PostRecentlyPageState extends State<PostRecentlyPage> {
       body: BlocBuilder<PostBloc, PostState>(
         builder: (context, state) {
           switch (state.pageStatus) {
-            case PageStatus.loading:
+            case PostStatus.loading:
               return SplashPage();
-            case PageStatus.loadSuccess:
+            case PostStatus.loadSuccess:
               return ListView.builder(
                 itemCount: state.posts.length,
                 itemBuilder: (context, index) => ItemPostContainer(
                   post: state.posts[index],
                 ),
               );
-            case PageStatus.sbumitSuccess:
+            case PostStatus.sbumitSuccess:
               return ListView.builder(
                 itemCount: state.posts.length,
                 itemBuilder: (context, index) => ItemPostContainer(

@@ -15,6 +15,7 @@ class Post extends Equatable {
   final String phone;
   final String email;
   final String desciption;
+  final List<String> imageUrls;
   Post(
       {this.code,
       this.title,
@@ -29,7 +30,7 @@ class Post extends Equatable {
       this.fullname,
       this.phone,
       this.desciption,
-      this.email});
+      this.email, this.imageUrls});
   @override
   List<Object> get props => [
         code,
@@ -45,6 +46,6 @@ class Post extends Equatable {
         fullname,
         phone,
         desciption,
-        email
+        email, imageUrls
       ];
 }

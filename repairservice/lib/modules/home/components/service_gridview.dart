@@ -51,7 +51,7 @@ class ServiceGridview extends StatelessWidget {
                 crossAxisSpacing: 10,
               ),
               scrollDirection: Axis.horizontal,
-              children: model
+              children:  model
                   .map(
                     (obj) => Container(child: BlocBuilder<PostBloc, PostState>(
                       builder: (context, state) {

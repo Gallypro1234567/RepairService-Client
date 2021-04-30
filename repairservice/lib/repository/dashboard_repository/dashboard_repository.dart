@@ -72,8 +72,8 @@ class DashboardRepository {
                   ? json["ImageUrl"].toString().length > 0
                       ? Uri.http(Host.Server_hosting, json["ImageUrl"])
                           .toString()
-                      : null
-                  : null);
+                      : ""
+                  : "");
         }).first;
       }
       return null;

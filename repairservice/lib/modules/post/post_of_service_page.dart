@@ -6,6 +6,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 
 import 'package:repairservice/modules/post/bloc/post_bloc.dart';
+import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 
 import 'package:repairservice/modules/splash/splash_page.dart';
 
@@ -64,9 +65,9 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
       body: BlocBuilder<PostBloc, PostState>(
         builder: (context, state) {
           switch (state.pageStatus) {
-            case PageStatus.loading:
+            case PostStatus.loading:
               return SplashPage();
-            case PageStatus.loadSuccess:
+            case PostStatus.loadSuccess:
               return RefreshIndicator(
                   onRefresh: () async {
                     context
@@ -76,7 +77,7 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
                   child: ListPostView(
                     state: state,
                   ));
-            case PageStatus.sbumitSuccess:
+            case PostStatus.sbumitSuccess:
               return RefreshIndicator(
                   onRefresh: () async {
                     context
@@ -113,8 +114,10 @@ class ListPostView extends StatelessWidget {
       itemBuilder: (context, index) => ItemPostContainer(
         post: state.posts[index],
       ).ripple(() {
-        Navigator.push(context,
-            SlideFadeRoute(page: PostDetailPage(post: state.posts[index])));
+        Navigator.push(
+            context,
+            SlideFadeRoute(
+                page: PostDetailPage(postCode: state.posts[index].code)));
       }),
     );
   }

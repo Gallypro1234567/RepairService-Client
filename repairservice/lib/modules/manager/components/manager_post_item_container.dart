@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post/screens/post_detail_page.dart';
+import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
@@ -203,7 +204,7 @@ class CustomerManagerPostContainer extends StatelessWidget {
         ),
       ).ripple(() {
         Navigator.push(
-            context, SlideFadeRoute(page: PostDetailPage(post: post)));
+            context, SlideFadeRoute(page: PostDetailPage(postCode: post.code)));
       }),
     );
   }
@@ -403,7 +404,7 @@ class WorkerManagerPostContainer extends StatelessWidget {
         ),
       ).ripple(() {
         Navigator.push(
-            context, SlideFadeRoute(page: PostDetailPage(post: post)));
+            context, SlideFadeRoute(page: PostDetailPage(postCode: post.code)));
       }),
     );
   }

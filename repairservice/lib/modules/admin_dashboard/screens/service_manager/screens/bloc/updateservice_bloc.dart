@@ -37,26 +37,27 @@ class UpdateserviceBloc extends Bloc<UpdateserviceEvent, UpdateserviceState> {
 
   Stream<UpdateserviceState> _mapUpdateserviceImageChangedToState(
       UpdateserviceImageChanged event, UpdateserviceState state) async* {
-    yield state.copyWith(fileStatus: FileStatus.loading);
+    yield state.copyWith(fileStatus: FileStatus.close);
     try {
       final picker = ImagePicker();
       final pickedFile = await picker.getImage(source: event.imageSource);
       if (pickedFile != null) {
         yield state.copyWith(
-            image: File(pickedFile.path), fileStatus: FileStatus.success);
+            image: File(pickedFile.path), fileStatus: FileStatus.open);
       } else {
         yield state.copyWith(
           image: null,
         );
       }
     } on Exception catch (_) {
-      yield state.copyWith(fileStatus: FileStatus.failure);
+      yield state.copyWith(fileStatus: FileStatus.close);
     }
   }
 
   Stream<UpdateserviceState> _mapUpdateserviceFetchedToState(
       UpdateserviceFetched event, UpdateserviceState state) async* {
     yield state.copyWith(status: UpdateServiceStatus.loading);
+
     try {
       var service = await _dashboardRepository.fetchServiceDetail(event.code);
 
@@ -68,7 +69,7 @@ class UpdateserviceBloc extends Bloc<UpdateserviceEvent, UpdateserviceState> {
           createAt: service.createAt,
           description: service.description,
           imageUrl: service.imageUrl == null ? "" : service.imageUrl,
-          fileStatus: FileStatus.success);
+          fileStatus: FileStatus.close);
     } on Exception catch (_) {
       yield state.copyWith(status: UpdateServiceStatus.failure);
     }

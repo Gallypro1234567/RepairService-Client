@@ -27,7 +27,15 @@ class PostRepository {
       var jsons = json.decode(response.body);
       if (response.statusCode == 200) {
         var body = jsons['data'] as List;
+
         return body.map((dynamic json) {
+          List<String> imageUrls = [];
+          if (json["ImageUrl"] != null) {
+            List<String> list = json["ImageUrl"].split(',');
+            for (var item in list) {
+              imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+            }
+          }
           return Post(
               code: json["Code"] as String,
               title: json["Title"] as String,
@@ -40,12 +48,7 @@ class PostRepository {
               status: json["status"] as int,
               phone: json["Phone"] as String,
               email: json["Email"] as String,
-              imageUrl: json["ImageUrl"] != null
-                  ? json["ImageUrl"].toString().length > 0
-                      ? Uri.http(Host.Server_hosting, json["ImageUrl"])
-                          .toString()
-                      : null
-                  : null,
+              imageUrl: imageUrls.length > 0 ? imageUrls.first : null,
               customerImageUrl: json["CustomerImageUrl"] != null
                   ? json["CustomerImageUrl"].toString().length > 0
                       ? Uri.http(Host.Server_hosting, json["CustomerImageUrl"])
@@ -53,6 +56,56 @@ class PostRepository {
                       : null
                   : null);
         }).toList();
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<Post> fetchPostByCode({String code}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+
+    Map<String, String> headers = {"Authorization": "bearer $token"};
+    try {
+      var response = await http.get(
+        Uri.http(Host.Server_hosting, "/api/posts/detail/$code"),
+        headers: headers,
+      );
+      var jsons = json.decode(response.body);
+      if (response.statusCode == 200) {
+        var body = jsons['data'] as List;
+        return body.map((dynamic json) {
+          List<String> imageUrls = [];
+          if (json["ImageUrl"] != null) {
+            List<String> list = json["ImageUrl"].split(',');
+            for (var item in list) {
+              imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+            }
+          }
+
+          return Post(
+              code: json["Code"] as String,
+              title: json["Title"] as String,
+              address: json["Address"] as String,
+              createAt: json["CreateAt"] as String,
+              finishAt: DateTime.parse(json["FinishAt"]),
+              fullname: json["Fullname"] as String,
+              position: json["Position"] as String,
+              desciption: json["Description"] as String,
+              status: json["status"] as int,
+              phone: json["Phone"] as String,
+              email: json["Email"] as String,
+              imageUrls: imageUrls,
+              customerImageUrl: json["CustomerImageUrl"] != null
+                  ? json["CustomerImageUrl"].toString().length > 0
+                      ? Uri.http(Host.Server_hosting, json["CustomerImageUrl"])
+                          .toString()
+                      : null
+                  : null);
+        }).first;
       }
       return null;
     } on Exception catch (e) {
@@ -80,7 +133,15 @@ class PostRepository {
       var jsons = json.decode(response.body);
       if (response.statusCode == 200) {
         var body = jsons['data'] as List;
+
         return body.map((dynamic json) {
+          List<String> imageUrls = [];
+          if (json["ImageUrl"] != null) {
+            List<String> list = json["ImageUrl"].split(',');
+            for (var item in list) {
+              imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+            }
+          }
           return Post(
               code: json["Code"] as String,
               title: json["Title"] as String,
@@ -93,12 +154,8 @@ class PostRepository {
               status: json["status"] as int,
               phone: json["Phone"] as String,
               email: json["Email"] as String,
-              imageUrl: json["ImageUrl"] != null
-                  ? json["ImageUrl"].toString().length > 0
-                      ? Uri.http(Host.Server_hosting, json["ImageUrl"])
-                          .toString()
-                      : null
-                  : null,
+              imageUrl:
+                  imageUrls.length > 0 ? imageUrls.first.toString() : null,
               customerImageUrl: json["CustomerImageUrl"] != null
                   ? json["CustomerImageUrl"].toString().length > 0
                       ? Uri.http(Host.Server_hosting, json["CustomerImageUrl"])
@@ -169,7 +226,7 @@ class PostRepository {
       String address,
       String finishAt,
       int status,
-      File file,
+      List<File> files,
       String description}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
@@ -187,12 +244,13 @@ class PostRepository {
       request.fields['status'] = status.toString();
       request.fields['Description'] = description == null ? "" : description;
 
-      if (file != null) {
-        request.files.add(http.MultipartFile(
-            'Image', file.readAsBytes().asStream(), file.lengthSync(),
-            filename: file.path.split("/").last));
+      if (files.length > 0) {
+        for (var file in files) {
+          request.files.add(http.MultipartFile(
+              'Image', file.readAsBytes().asStream(), file.lengthSync(),
+              filename: file.path.split("/").last));
+        }
       }
-
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
       return response;
@@ -201,20 +259,18 @@ class PostRepository {
     }
   }
 
-  Future<http.Response> workerApplyPost(
-      { 
-      String postCode,
-      }) async {
+  Future<http.Response> workerApplyPost({
+    String postCode,
+  }) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
-     Map<String, String> paramters = {
-      "code": postCode
-    };
+    Map<String, String> paramters = {"code": postCode};
     try {
-      var uri = Uri.http(Host.Server_hosting, "/api/posts/updatebyworker",paramters);
+      var uri =
+          Uri.http(Host.Server_hosting, "/api/posts/updatebyworker", paramters);
 
       var request = http.MultipartRequest('POST', uri);
-      request.headers['Authorization'] = "bearer $token"; 
+      request.headers['Authorization'] = "bearer $token";
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
       return response;

@@ -1,12 +1,18 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post/bloc/post_bloc.dart';
+import 'package:repairservice/modules/post/components/post_change_image.dart';
+import 'package:repairservice/modules/post/components/post_item_container.dart';
 import 'package:repairservice/modules/post/screens/post_form_select_service.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
@@ -22,10 +28,10 @@ class PostPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<PostBloc, PostState>(
         listener: (context, state) {
-          // if (state.pageStatus == PageStatus.sbumitSuccess) {
-          //   context.read<PostBloc>().add(PostFetched());
-          //   Navigator.pop(context);
-          // }
+          if (state.pageStatus == PostStatus.sbumitSuccess) {
+            context.read<HomeBloc>().add(HomeRefesh());
+            Navigator.pop(context);
+          }
         },
         child: Scaffold(
           appBar: AppBar(
@@ -54,32 +60,70 @@ class PostPage extends StatelessWidget {
                   horizontal: kDefaultPadding, vertical: kDefaultPadding),
               child: Column(
                 children: [
-                  DottedBorder(
-                    dashPattern: [5, 5],
-                    strokeWidth: 1,
-                    borderType: BorderType.RRect,
-                    radius: Radius.circular(12),
-                    padding: EdgeInsets.all(6),
-                    child: Container(
-                        padding: EdgeInsets.only(
-                          top: kDefaultPadding,
-                        ),
-                        height: AppTheme.fullHeight(context) * 0.2,
+                  // BlocBuilder<PostBloc, PostState>(
+                  //   builder: (context, state) {
+                  //     return PostChangedImage(
+                  //       height: AppTheme.fullHeight(context) * 0.2,
+                  //       width: AppTheme.fullWidth(context),
+                  //       iconsize: 100,
+                  //     ).ripple(() {
+                  //       context
+                  //           .read<PostBloc>()
+                  //           .add(PostAddImageMutiChanged(ImageSource.camera));
+                  //     }, borderRadius: BorderRadius.circular(10));
+                  //   },
+                  // ),
+                  // SizedBox(
+                  //   height: kDefaultPadding,
+                  // ),
+                  BlocBuilder<PostBloc, PostState>(
+                    builder: (context, state) {
+                      if (state.images.length == 0) {
+                        return PostChangedImage(
+                          height: AppTheme.fullHeight(context) * 0.2,
+                          width: AppTheme.fullWidth(context),
+                          iconsize: 100,
+                        ).ripple(() {
+                          context
+                              .read<PostBloc>()
+                              .add(PostAddImageMutiChanged(ImageSource.camera));
+                        }, borderRadius: BorderRadius.circular(10));
+                      }
+                      List<Widget> list = [];
+                      for (var item in state.images) {
+                        list.add(
+                          ImageSelected(
+                            file: item,
+                            status: false,
+                            target: state.images.indexOf(item),
+                          ),
+                        );
+                      }
+                      list.add(PostChangedImage(
+                        height: 150,
+                        width: 150,
+                        iconsize: 30,
+                      ).ripple(() {
+                        context
+                            .read<PostBloc>()
+                            .add(PostAddImageMutiChanged(ImageSource.camera));
+                      }, borderRadius: BorderRadius.circular(10)));
+
+                      return Container(
                         width: AppTheme.fullWidth(context),
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.camera_alt,
-                              color: Colors.amber,
-                              size: 100,
-                            ),
-                            TitleText(
-                              text: "Chọn ảnh",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            )
-                          ],
-                        )),
+                        height: AppTheme.fullWidth(context) * .3,
+                        child: GridView(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 5,
+                          ),
+                          scrollDirection: Axis.horizontal,
+                          children: list,
+                        ),
+                      );
+                    },
                   ),
                   SizedBox(
                     height: kDefaultPadding * 2,
@@ -181,8 +225,6 @@ class PostPage extends StatelessWidget {
                         color: LightColor.lightteal,
                         onPressed: () {
                           context.read<PostBloc>().add(PostCustomerSubmitted());
-                          context.read<HomeBloc>().add(HomeRefesh());
-                          Navigator.pop(context);
                         },
                       );
                     },
@@ -192,5 +234,59 @@ class PostPage extends StatelessWidget {
             ),
           ),
         ));
+  }
+}
+
+class ImageSelected extends StatelessWidget {
+  final String imageUrl;
+  final File file;
+  final bool status;
+  final int target;
+  const ImageSelected({
+    Key key,
+    this.imageUrl,
+    this.file,
+    this.status,
+    this.target,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150,
+      width: 150,
+      child: Stack(
+        children: [
+          Container(
+            margin: EdgeInsets.all(kDefaultPadding / 4),
+            decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(10),
+                image: status
+                    ? DecorationImage(
+                        fit: BoxFit.cover, image: NetworkImage(imageUrl))
+                    : DecorationImage(
+                        fit: BoxFit.cover, image: FileImage(file))),
+          ),
+          Positioned(
+              top: -1,
+              right: -1,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: Icon(
+                  Icons.cancel,
+                  color: Colors.red,
+                ),
+              ).ripple(() {
+                context
+                    .read<PostBloc>()
+                    .add(PostDeleteImageMutiChanged(target));
+              }, borderRadius: BorderRadius.all(Radius.circular(100))))
+        ],
+      ),
+    );
   }
 }

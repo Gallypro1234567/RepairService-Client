@@ -17,6 +17,18 @@ class PostFetched extends PostEvent {
   PostFetched(this.code);
 }
 
+class PostAddImageMutiChanged extends PostEvent {
+  final ImageSource imageSource;
+
+  PostAddImageMutiChanged(this.imageSource);
+}
+
+class PostDeleteImageMutiChanged extends PostEvent {
+  final int target;
+
+  PostDeleteImageMutiChanged(this.target);
+}
+
 class PostFetchedByPhone extends PostEvent {}
 
 class PostServiceChanged extends PostEvent {

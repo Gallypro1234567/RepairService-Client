@@ -38,22 +38,13 @@ class _ServiceImageState extends State<ServiceImage> {
                 padding: EdgeInsets.all(kDefaultPadding / 2),
                 child: BlocBuilder<UpdateserviceBloc, UpdateserviceState>(
                   builder: (context, state) {
-                    switch (state.fileStatus) {
-                      case FileStatus.loading:
-                        return SplashPage();
-                      case FileStatus.success:
-                        return CircleAvatar(
-                          backgroundImage: state.image != null
-                              ? FileImage(state.image)
-                              : state.imageUrl.isNotEmpty
-                                  ? NetworkImage(state.imageUrl)
-                                  : null,
-                        );
-                      case FileStatus.failure:
-                        return CircleAvatar(backgroundImage: null);
-                      default:
-                        return CircleAvatar(backgroundImage: null);
-                    }
+                    return CircleAvatar(
+                      backgroundImage: state.fileStatus == FileStatus.open
+                          ? FileImage(state.image)
+                          : state.imageUrl.isNotEmpty
+                              ? NetworkImage(state.imageUrl)
+                              : null,
+                    );
                   },
                 ),
               )),
