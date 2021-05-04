@@ -25,7 +25,7 @@ class WorkerregistermanagerBloc
     } else if (event is WorkerregistermanagerCode) {
       yield state.copyWith(workerOfServicesCode: event.value);
     } else if (event is WorkerregistermanagerApprovalChanged) {
-      yield state.copyWith(formIsApproval: event.value);
+      yield state.copyWith(formIsApproval: event.value, changed: true);
     } else if (event is WorkerregistermanagerSubmit) {
       yield* _mapWorkerregistermanagerSubmittedToState(event, state);
     }
@@ -66,6 +66,8 @@ class WorkerregistermanagerBloc
       WorkerregistermanagerFetchedDetail event,
       WorkerregistermanagerState state) {
     return state.copyWith(
-        workerOfServicesCode: event.code, formIsApproval: event.isApproval);
+        workerOfServicesCode: event.code,
+        formIsApproval: event.isApproval,
+        changed: false);
   }
 }

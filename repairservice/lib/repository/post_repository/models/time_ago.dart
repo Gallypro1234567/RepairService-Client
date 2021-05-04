@@ -6,10 +6,13 @@ class TimeAgo {
     DateTime notificationDate =
         DateFormat("yyyy-MM-dd'T'HH:mm:ss.SS").parse(dateString);
     final date2 = DateTime.now();
+
     final difference = date2.difference(notificationDate);
 
     if (difference.inDays > 8) {
-      return dateString;
+      DateTime dateago =
+          DateFormat("yyyy-MM-dd'T'HH:mm:ss.SS").parse(dateString);
+      return DateFormat('dd-MM-yyyy').format(dateago);
     } else if ((difference.inDays / 7).floor() >= 1) {
       return (numericDates) ? '1 tuần trước' : 'tuần trước';
     } else if (difference.inDays >= 2) {

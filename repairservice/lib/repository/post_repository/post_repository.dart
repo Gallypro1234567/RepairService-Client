@@ -99,6 +99,8 @@ class PostRepository {
               phone: json["Phone"] as String,
               email: json["Email"] as String,
               imageUrls: imageUrls,
+              serviceCode: json["ServiceCode"],
+              serviceText: json["ServiceText"],
               customerImageUrl: json["CustomerImageUrl"] != null
                   ? json["CustomerImageUrl"].toString().length > 0
                       ? Uri.http(Host.Server_hosting, json["CustomerImageUrl"])
@@ -192,6 +194,13 @@ class PostRepository {
       if (response.statusCode == 200) {
         var body = jsons['data'] as List;
         return body.map((dynamic json) {
+          List<String> imageUrls = [];
+          if (json["ImageUrl"] != null) {
+            List<String> list = json["ImageUrl"].split(',');
+            for (var item in list) {
+              imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+            }
+          }
           return Post(
               code: json["Code"] as String,
               title: json["Title"] as String,
@@ -204,12 +213,8 @@ class PostRepository {
               status: json["status"] as int,
               phone: json["Phone"] as String,
               email: json["Email"] as String,
-              imageUrl: json["ImageUrl"] != null
-                  ? json["ImageUrl"].toString().length > 0
-                      ? Uri.http(Host.Server_hosting, json["ImageUrl"])
-                          .toString()
-                      : null
-                  : null);
+              imageUrls: imageUrls,
+              imageUrl: imageUrls.length == 0 ? null : imageUrls.first);
         }).toList();
       }
       return null;
@@ -259,6 +264,50 @@ class PostRepository {
     }
   }
 
+  Future<http.Response> customerUpdatePost(
+      {String title,
+      String code,
+      String position,
+      String serviceCode,
+      String address,
+      String finishAt,
+      int status,
+      List<dynamic> files,
+      String description}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    Map<String, String> paramters = {"code": code};
+    try {
+      var uri = Uri.http(
+          Host.Server_hosting, "/api/posts/updatebycustomer", paramters);
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      request.fields['ServiceCode'] = serviceCode == null ? "" : serviceCode;
+      request.fields['Title'] = title == null ? "" : title;
+      request.fields['Position'] = position == null ? "" : position;
+      request.fields['Address'] = address == null ? "" : address;
+      request.fields['FinishAt'] =
+          DateTime.now().add(const Duration(days: 3)).toString();
+      request.fields['status'] = status.toString();
+      request.fields['Description'] = description == null ? "" : description;
+
+      if (files.length > 0) {
+        for (var file in files) {
+          if (file is File)
+            request.files.add(http.MultipartFile(
+                'Image', file.readAsBytes().asStream(), file.lengthSync(),
+                filename: file.path.split("/").last));
+        }
+      }
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
+
   Future<http.Response> workerApplyPost({
     String postCode,
   }) async {
@@ -268,6 +317,25 @@ class PostRepository {
     try {
       var uri =
           Uri.http(Host.Server_hosting, "/api/posts/updatebyworker", paramters);
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
+
+  Future<http.Response> deletePostByCustomer({
+    String postCode,
+  }) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    Map<String, String> paramters = {"code": postCode};
+    try {
+      var uri = Uri.http(Host.Server_hosting, "/api/posts/delete", paramters);
 
       var request = http.MultipartRequest('POST', uri);
       request.headers['Authorization'] = "bearer $token";

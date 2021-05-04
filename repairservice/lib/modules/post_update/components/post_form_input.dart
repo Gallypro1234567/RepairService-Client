@@ -25,9 +25,9 @@ class PostFormInput extends StatelessWidget {
       width: double.infinity,
       child: TextFormField(
         onChanged: onChanged,
-        controller: controler,
+        //controller: controler,
         readOnly: readOnly,
-        // initialValue: initialValue,
+        initialValue: initialValue,
         scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
         decoration: InputDecoration(
           labelText: '$title *',
@@ -69,7 +69,8 @@ class PostAreaInput extends StatelessWidget {
       width: double.infinity,
       child: TextFormField(
         onChanged: onChanged,
-        controller: controler,
+        //controller: controler,
+        initialValue: initialValue,
         readOnly: readOnly,
         keyboardType: TextInputType.multiline,
         minLines: 5,

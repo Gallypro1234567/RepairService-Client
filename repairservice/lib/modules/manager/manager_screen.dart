@@ -363,17 +363,23 @@ class _ManagerScreenState extends State<ManagerScreen>
                         ),
                       ),
                       Tab(
-                        child: BlocBuilder<ManagerBloc, ManagerState>(
-                          builder: (context, state) {
-                            return RefreshIndicator(
-                              child: ManagerGridViewPage(),
-                              onRefresh: () async {
-                                context
-                                    .read<ManagerBloc>()
-                                    .add(ManagerFetched());
-                              },
-                            );
+                        child: BlocListener<ManagerBloc, ManagerState>(
+                          listener: (context, state) {
+                            if (state.pageStatus == PageStatus.deleteSuccess)
+                              context.read<ManagerBloc>().add(ManagerFetched());
                           },
+                          child: BlocBuilder<ManagerBloc, ManagerState>(
+                            builder: (context, state) {
+                              return RefreshIndicator(
+                                child: ManagerGridViewPage(),
+                                onRefresh: () async {
+                                  context
+                                      .read<ManagerBloc>()
+                                      .add(ManagerFetched());
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ],

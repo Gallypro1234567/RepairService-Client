@@ -135,10 +135,10 @@ class Content extends StatelessWidget {
         BlocBuilder<WorkerregistermanagerBloc, WorkerregistermanagerState>(
           builder: (context, state) {
             return WorkerRegisterButton(
-              title: state.formIsApproval == 1 ? "Đã Duyệt" : "Duyệt",
+              title: state.changed == false ? "Đã Duyệt" : "Duyệt",
               color: LightColor.red,
               colorActive: LightColor.lightteal,
-              onPressed: state.formIsApproval == 1
+              onPressed: state.changed == false
                   ? null
                   : () {
                       context

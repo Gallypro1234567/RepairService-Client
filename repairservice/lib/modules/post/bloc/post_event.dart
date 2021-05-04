@@ -16,7 +16,7 @@ class PostFetched extends PostEvent {
 
   PostFetched(this.code);
 }
-
+class PostAddNewPage extends PostEvent {}
 class PostAddImageMutiChanged extends PostEvent {
   final ImageSource imageSource;
 

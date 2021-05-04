@@ -75,56 +75,12 @@ class CustomerManagerPostContainer extends StatelessWidget {
                               SizedBox(
                                 height: kDefaultPadding / 4,
                               ),
-                              // RichText(
-                              //   text: TextSpan(
-                              //     text: 'Thời gian kế thúc: ',
-                              //     style: TextStyle(
-                              //         fontWeight: FontWeight.normal,
-                              //         color: Colors.black),
-                              //     children: <TextSpan>[
-                              //       TextSpan(
-                              //           text:
-                              //               '${post.fullname == null ? "" : post.fullname}',
-                              //           style: TextStyle(
-                              //               fontWeight: FontWeight.bold)),
-                              //     ],
-                              //   ),
-                              // ),
                               SizedBox(
                                 height: kDefaultPadding / 4,
                               ),
-                              // RichText(
-                              //   text: TextSpan(
-                              //     text: 'SĐT: ',
-                              //     style: TextStyle(
-                              //         fontWeight: FontWeight.normal,
-                              //         color: Colors.black),
-                              //     children: <TextSpan>[
-                              //       TextSpan(
-                              //           text:
-                              //               '${post.phone == null ? "" : post.phone}',
-                              //           style: TextStyle(
-                              //               fontWeight: FontWeight.bold)),
-                              //     ],
-                              //   ),
-                              // ),
                               SizedBox(
                                 height: kDefaultPadding / 4,
                               ),
-                              // RichText(
-                              //   text: TextSpan(
-                              //     text: 'Chú ý: ',
-                              //     style: TextStyle(
-                              //         fontWeight: FontWeight.normal,
-                              //         color: Colors.black),
-                              //     children: <TextSpan>[
-                              //       TextSpan(
-                              //           text: 'Chưa check in',
-                              //           style: TextStyle(
-                              //               fontWeight: FontWeight.bold)),
-                              //     ],
-                              //   ),
-                              // ),
                               SizedBox(
                                 height: kDefaultPadding / 4,
                               ),
@@ -202,10 +158,7 @@ class CustomerManagerPostContainer extends StatelessWidget {
                 )),
           ],
         ),
-      ).ripple(() {
-        Navigator.push(
-            context, SlideFadeRoute(page: PostDetailPage(postCode: post.code)));
-      }),
+      ),
     );
   }
 }
@@ -402,10 +355,7 @@ class WorkerManagerPostContainer extends StatelessWidget {
                 )),
           ],
         ),
-      ).ripple(() {
-        Navigator.push(
-            context, SlideFadeRoute(page: PostDetailPage(postCode: post.code)));
-      }),
+      ),
     );
   }
 }

@@ -21,6 +21,7 @@ import 'modules/home/bloc/home_bloc.dart';
 import 'modules/manager/bloc/manager_bloc.dart';
 import 'modules/post/bloc/post_bloc.dart';
 import 'modules/post_detail/bloc/postdetail_bloc.dart';
+import 'modules/post_update/bloc/postupdate_bloc.dart';
 import 'modules/user/bloc/user_bloc.dart';
 import 'modules/user_profile/bloc/userprofile_bloc.dart';
 import 'modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
@@ -79,13 +80,16 @@ class AppProvider extends StatelessWidget {
                   postRepository: PostRepository(),
                 )..add(ManagerFetched())),
 
-        // Post Find Worker Page
+        // Post
         BlocProvider(
             create: (_) =>
                 PostBloc(postRepository: PostRepository())..add(PostInitial())),
         BlocProvider(
             create: (_) => PostdetailBloc(postRepository: PostRepository())
               ..add(PostdetailInitial())),
+        BlocProvider(
+            create: (_) => PostUpdateBloc(postRepository: PostRepository())
+              ..add(PostUpdateInitial())),
 
         // Admin - Dashboard
         // ServiceManaGer

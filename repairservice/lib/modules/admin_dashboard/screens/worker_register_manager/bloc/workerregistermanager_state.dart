@@ -7,25 +7,29 @@ class WorkerregistermanagerState extends Equatable {
       {this.status,
       this.workerregister,
       this.formIsApproval,
-      this.workerOfServicesCode});
+      this.workerOfServicesCode,
+      this.changed = false});
 
   final WorkerregistermanagerStatus status;
   final List<WorkerRegister> workerregister;
   final int formIsApproval;
   final String workerOfServicesCode;
+  final bool changed;
   @override
   List<Object> get props =>
-      [status, workerregister, formIsApproval, workerOfServicesCode];
+      [status, workerregister, formIsApproval, workerOfServicesCode, changed];
 
   WorkerregistermanagerState copyWith(
       {WorkerregistermanagerStatus status,
       int formIsApproval,
       String workerOfServicesCode,
-      List<WorkerRegister> workerregister}) {
+      List<WorkerRegister> workerregister,
+      bool changed}) {
     return WorkerregistermanagerState(
         status: status ?? this.status,
         formIsApproval: formIsApproval ?? this.formIsApproval,
         workerOfServicesCode: workerOfServicesCode ?? this.workerOfServicesCode,
-        workerregister: workerregister ?? this.workerregister);
+        workerregister: workerregister ?? this.workerregister,
+        changed: changed ?? this.changed);
   }
 }

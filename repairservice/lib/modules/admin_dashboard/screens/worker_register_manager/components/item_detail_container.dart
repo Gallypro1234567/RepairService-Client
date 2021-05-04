@@ -90,9 +90,9 @@ class ItemDetailSelectContainer extends StatelessWidget {
               itemBuilder: (_) => <PopupMenuItem<int>>[
                 new PopupMenuItem<int>(child: new Text('Chưa Duyệt'), value: 0),
                 new PopupMenuItem<int>(
-                    child: new Text('Duyệt thất bại'), value: 1),
+                    child: new Text('Duyệt thất bại'), value: -1),
                 new PopupMenuItem<int>(
-                    child: new Text('Duyệt thành công'), value: 2),
+                    child: new Text('Duyệt thành công'), value: 1),
               ],
             ),
           ),

@@ -1,13 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/manager/components/manager_post_item_container.dart';
+import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
+import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import '../../../utils/ui/extensions.dart';
 
 class ManagerGridViewPage extends StatelessWidget {
   @override
@@ -28,13 +34,38 @@ class ManagerGridViewPage extends StatelessWidget {
                         builder: (context, authenState) {
                   switch (authenState.user.isCustomer) {
                     case UserType.customer:
-                      return CustomerManagerPostContainer(
-                        post: state.posts[index],
+                      return SlidableContainer(
+                        child: CustomerManagerPostContainer(
+                          post: state.posts[index],
+                        ).ripple(() {
+                          context
+                              .read<PostdetailBloc>()
+                              .add(PostdetailFetched(state.posts[index].code));
+                          Navigator.push(
+                              context,
+                              SlideFadeRoute(
+                                  page: PostDetailPage(
+                                      postCode: state.posts[index].code)));
+                        }),
+                        onPressed: () {
+                          context.read<ManagerBloc>().add(
+                              ManagerCustomerDeletePost(
+                                  state.posts[index].code));
+                        },
                       );
                       break;
                     case UserType.worker:
-                      return WorkerManagerPostContainer(
-                        post: state.posts[index],
+                      return SlidableContainer(
+                        child: WorkerManagerPostContainer(
+                          post: state.posts[index],
+                        ).ripple(() {
+                          Navigator.push(
+                              context,
+                              SlideFadeRoute(
+                                  page: PostDetailPage(
+                                      postCode: state.posts[index].code)));
+                        }),
+                        onPressed: () {},
                       );
                       break;
                     default:
@@ -50,6 +81,36 @@ class ManagerGridViewPage extends StatelessWidget {
             return SplashPage();
         }
       },
+    );
+  }
+}
+
+class SlidableContainer extends StatelessWidget {
+  final Widget child;
+  final Function onPressed;
+  const SlidableContainer({
+    Key key,
+    this.child,
+    this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      secondaryActions: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(top: kDefaultPadding / 4),
+          child: IconSlideAction(
+            caption: 'Delete',
+            color: Colors.red,
+            icon: Icons.delete,
+            onTap: onPressed,
+          ),
+        ),
+      ],
+      child: child,
     );
   }
 }

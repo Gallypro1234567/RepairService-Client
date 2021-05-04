@@ -6,4 +6,13 @@ abstract class ManagerEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
- class ManagerFetched extends ManagerEvent {}
+
+class ManagerFetched extends ManagerEvent {}
+
+class ManagerCustomerDeletePost extends ManagerEvent {
+  final String postCode;
+
+  ManagerCustomerDeletePost(this.postCode);
+}
+
+class ManagerWorkerDeleteApply extends ManagerEvent {}

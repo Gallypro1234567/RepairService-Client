@@ -4,25 +4,19 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
-
 import 'package:repairservice/core/auth/authentication.dart';
-
 import 'package:repairservice/modules/admin_dashboard/dashboard_page.dart';
-
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/post/bloc/post_bloc.dart';
 import 'package:repairservice/modules/post/components/post_item_container.dart';
-
 import 'package:repairservice/modules/post/screens/post_form_page.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
-
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
-
 import 'package:shimmer/shimmer.dart';
 import 'components/home_background.dart';
-
 import 'components/post_recently_gridview.dart';
 import 'components/service_gridview.dart';
 import '../../utils/ui/extensions.dart';
@@ -142,6 +136,7 @@ class _HomePageState extends State<HomePage> {
                 child: FloatingActionButton(
                   backgroundColor: LightColor.lightteal,
                   onPressed: () {
+                    context.read<PostBloc>().add(PostAddNewPage());
                     Navigator.push(context, SlideFadeRoute(page: PostPage()));
                   },
                   child: Center(child: Icon(Entypo.plus)),

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:repairservice/repository/post_repository/models/post.dart';  
+import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/post_repository.dart';
 
 part 'manager_event.dart';
@@ -19,6 +19,8 @@ class ManagerBloc extends Bloc<ManagerEvent, ManagerState> {
   ) async* {
     if (event is ManagerFetched) {
       yield* _mapManagerFetchedByPhone(event, state);
+    } else if (event is ManagerCustomerDeletePost) {
+      yield* _mapManagerCustomerDeletePostToState(event, state);
     }
   }
 
@@ -35,4 +37,25 @@ class ManagerBloc extends Bloc<ManagerEvent, ManagerState> {
       yield state.copyWith(pageStatus: PageStatus.failure);
     }
   }
+
+  Stream<ManagerState> _mapManagerCustomerDeletePostToState(
+      ManagerCustomerDeletePost event, ManagerState state) async* {
+    yield state.copyWith(pageStatus: PageStatus.loading);
+    try {
+      var response =
+          await _postRepository.deletePostByCustomer(postCode: event.postCode);
+
+      if (response.statusCode == 200)
+        yield state.copyWith(
+          pageStatus: PageStatus.deleteSuccess,
+        );
+      else
+        yield state.copyWith(
+          pageStatus: PageStatus.failure,
+        );
+    } on Exception catch (_) {
+      yield state.copyWith(pageStatus: PageStatus.failure);
+    }
+  }
+   
 }

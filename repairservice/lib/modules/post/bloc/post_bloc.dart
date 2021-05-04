@@ -29,6 +29,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       yield* _mapPostFetched(event, state);
     } else if (event is PostRecently) {
       yield* _mapPostRecently(event, state);
+    } else if (event is PostAddNewPage) {
+      yield state.copyWith(images: <File>[], serviceCode: "", serviceText: "");
     } else if (event is PostAddImageMutiChanged) {
       yield* _mapPostAddImageMutiChangedToState(event, state);
     } else if (event is PostDeleteImageMutiChanged) {

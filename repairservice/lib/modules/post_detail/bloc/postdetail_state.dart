@@ -6,6 +6,7 @@ class PostdetailState extends Equatable {
   const PostdetailState({this.status = PostDetailStatus.none, this.post});
   final PostDetailStatus status;
   final Post post;
+  
   @override
   List<Object> get props => [status, post];
 

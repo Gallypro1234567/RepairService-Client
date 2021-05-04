@@ -1,6 +1,6 @@
 part of 'manager_bloc.dart';
 
-enum PageStatus { loading, success, failure }
+enum PageStatus { loading, success, deleteSuccess, failure }
 
 class ManagerState extends Equatable {
   const ManagerState({this.pageStatus, this.posts});

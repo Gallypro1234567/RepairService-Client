@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,10 +6,12 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/auth/authentication.dart';
+import 'package:repairservice/modules/post_update/bloc/postupdate_bloc.dart';
+import 'package:repairservice/modules/post_update/post_update_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'bloc/postdetail_bloc.dart';
 
 class PostDetailPage extends StatelessWidget {
@@ -42,20 +45,7 @@ class PostDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  BlocBuilder<PostdetailBloc, PostdetailState>(
-                    builder: (context, state) {
-                      List<Widget> list = [];
-                      for (var item in state.post.imageUrls) {
-                        list..add(Image.network(item));
-                      }
-
-                      return Expanded(
-                        child: ImageSlideshow(
-                          children: list,
-                        ),
-                      );
-                    },
-                  ),
+                  PostDetailImageShowBloc(),
                   SizedBox(
                     height: kDefaultPadding,
                   ),
@@ -94,12 +84,17 @@ class PostDetailPage extends StatelessWidget {
           }
         },
       ),
-      bottomSheet: PostDetailBottomSheet(),
+      bottomSheet: PostDetailBottomSheet(
+        postCode: postCode,
+      ),
     );
   }
 }
 
 class PostDetailBottomSheet extends StatelessWidget {
+  final String postCode;
+
+  const PostDetailBottomSheet({Key key, this.postCode}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
@@ -199,8 +194,78 @@ class PostDetailBottomSheet extends StatelessWidget {
             ),
           );
         }
-        return Container(
-          height: AppTheme.fullHeight(context) * 0.1,
+        return BlocBuilder<PostdetailBloc, PostdetailState>(
+          builder: (context, poststate) {
+            if (poststate.post.phone == state.user.phone)
+              return Container(
+                height: AppTheme.fullHeight(context) * 0.1,
+                color: Colors.grey,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.blue,
+                            shadowColor: LightColor.lightGrey,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(0))),
+                        key: key,
+                        child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50)),
+                              child: Center(
+                                  child: TitleText(
+                                text: "Cập nhật thông tin",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ))),
+                        ),
+                        onPressed: () {
+                          context
+                              .read<PostUpdateBloc>()
+                              .add(PostUpdateFetched(postCode));
+                          Navigator.push(
+                              context, SlideFadeRoute(page: PostUpdatePage()));
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: LightColor.lightGrey,
+                            shadowColor: LightColor.lightGrey,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(0))),
+                        key: key,
+                        child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50)),
+                              alignment: Alignment.center,
+                              child: Center(
+                                  child: TitleText(
+                                text: "Danh sách thợ",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ))),
+                        ),
+                        onPressed: () {},
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            return Container(height: AppTheme.fullHeight(context) * 0.1);
+          },
         );
       },
     );
@@ -346,24 +411,82 @@ class PostDetailTitleBloc extends StatelessWidget {
   }
 }
 
-class PostDetailImageShowBloc extends StatelessWidget {
+class PostDetailImageShowBloc extends StatefulWidget {
   const PostDetailImageShowBloc({
     Key key,
   }) : super(key: key);
 
   @override
+  _PostDetailImageShowBlocState createState() =>
+      _PostDetailImageShowBlocState();
+}
+
+class _PostDetailImageShowBlocState extends State<PostDetailImageShowBloc> {
+  int currentPos = 0;
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<PostdetailBloc, PostdetailState>(
       builder: (context, state) {
         List<Widget> list = [];
-        for (var item in state.post.imageUrls) {
-          list..add(Image.network(item));
+        if (state.post.imageUrls.length == 0) {
+          list
+            ..add(Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.fitWidth,
+                      image: AssetImage("assets/images/default.jpg"))),
+            ));
         }
-
-        return Expanded(
-          child: ImageSlideshow(
-            children: list,
-            autoPlayInterval: 1,
+        for (var item in state.post.imageUrls) {
+          list
+            ..add(Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.fitWidth, image: NetworkImage(item))),
+            ));
+        }
+        return Center(
+          child: Column(
+            children: [
+              CarouselSlider(
+                  items: list,
+                  options: CarouselOptions(
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 0.8,
+                    initialPage: 0,
+                    enableInfiniteScroll: true,
+                    reverse: false,
+                    autoPlay: state.post.imageUrls.length != 0 ? true : false,
+                    autoPlayInterval: Duration(seconds: 3),
+                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enlargeCenterPage: true,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        currentPos = index;
+                      });
+                    },
+                    scrollDirection: Axis.horizontal,
+                  )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: list.map((url) {
+                  int index = list.indexOf(url);
+                  return Container(
+                    width: 20.0,
+                    height: 2.0,
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: currentPos == index
+                          ? Color.fromRGBO(0, 0, 0, 0.9)
+                          : Color.fromRGBO(0, 0, 0, 0.4),
+                    ),
+                  );
+                }).toList(),
+              )
+            ],
           ),
         );
       },
