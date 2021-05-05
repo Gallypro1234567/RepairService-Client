@@ -58,7 +58,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           role: userRole.role,
           isCustomer: userRole.isCustomer,
           pagestatus: PageStatus.initial,
-          hasReachedMax: false,
+          hasReachedMax: postRecently.length < 5 ? true : false,
           postRecently: postRecently,
         );
       } else {
@@ -85,12 +85,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       final userRole = await _homeRepository.getRole();
       final services = await _homeRepository.fetchService();
-      final postRecently = await _postRepository.fetchRecentlyPost();
+      final postRecently =
+          await _postRepository.fetchRecentlyPost(start: 0, length: 5);
       yield state.copyWith(
           status: HomeStatus.initial,
           services: services,
           role: userRole.role,
-          hasReachedMax: false,
+          hasReachedMax: postRecently.length < 5 ? true : false,
           postRecently: postRecently);
     } on Exception catch (e) {
       yield state.copyWith(status: HomeStatus.failure, message: e.toString());

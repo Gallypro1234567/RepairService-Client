@@ -192,7 +192,8 @@ class _HomePageState extends State<HomePage> {
                       ? state.postRecently.length
                       : state.postRecently.length + 1,
                   itemBuilder: (BuildContext context, int index) {
-                    return index >= state.postRecently.length
+                    return index >= state.postRecently.length &&
+                            state.hasReachedMax == false
                         ? Center(
                             child: SizedBox(
                               height: 24,
@@ -201,19 +202,28 @@ class _HomePageState extends State<HomePage> {
                                   CircularProgressIndicator(strokeWidth: 1.5),
                             ),
                           )
-                        : ItemPostContainer(
-                            post: state.postRecently[index],
-                          ).ripple(() {
-                            context.read<PostdetailBloc>().add(
-                                PostdetailFetched(
-                                    state.postRecently[index].code));
-                            Navigator.push(
-                                context,
-                                SlideFadeRoute(
-                                    page: PostDetailPage(
-                                        postCode:
-                                            state.postRecently[index].code)));
-                          });
+                        : BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                            builder: (context, authstate) {
+                              return ItemPostContainer(
+                                post: state.postRecently[index],
+                              ).ripple(() {
+                                if (authstate.user.isCustomer ==
+                                    UserType.worker)
+                                  context.read<PostdetailBloc>().add(
+                                      PostdetailCheckWorker(
+                                          state.postRecently[index].code));
+                                context.read<PostdetailBloc>().add(
+                                    PostdetailFetched(
+                                        state.postRecently[index].code));
+                                Navigator.push(
+                                    context,
+                                    SlideFadeRoute(
+                                        page: PostDetailPage(
+                                      postCode: state.postRecently[index].code,
+                                    )));
+                              });
+                            },
+                          );
                   },
                 );
               case HomeStatus.initial:
@@ -223,7 +233,8 @@ class _HomePageState extends State<HomePage> {
                       ? state.postRecently.length
                       : state.postRecently.length + 1,
                   itemBuilder: (BuildContext context, int index) {
-                    return index >= state.postRecently.length
+                    return index >= state.postRecently.length &&
+                            state.hasReachedMax == false
                         ? Center(
                             child: SizedBox(
                               height: 24,
@@ -232,15 +243,28 @@ class _HomePageState extends State<HomePage> {
                                   CircularProgressIndicator(strokeWidth: 1.5),
                             ),
                           )
-                        : ItemPostContainer(
-                            post: state.postRecently[index],
-                          ).ripple(() {
-                            context.read<PostdetailBloc>().add(
-                                PostdetailFetched(
-                                    state.postRecently[index].code));
-                            Navigator.push(context,
-                                SlideFadeRoute(page: PostDetailPage()));
-                          });
+                        : BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                            builder: (context, authstate) {
+                              return ItemPostContainer(
+                                post: state.postRecently[index],
+                              ).ripple(() {
+                                if (authstate.user.isCustomer ==
+                                    UserType.worker)
+                                  context.read<PostdetailBloc>().add(
+                                      PostdetailCheckWorker(
+                                          state.postRecently[index].code));
+                                context.read<PostdetailBloc>().add(
+                                    PostdetailFetched(
+                                        state.postRecently[index].code));
+                                Navigator.push(
+                                    context,
+                                    SlideFadeRoute(
+                                        page: PostDetailPage(
+                                            postCode: state
+                                                .postRecently[index].code)));
+                              });
+                            },
+                          );
                   },
                 );
               default:

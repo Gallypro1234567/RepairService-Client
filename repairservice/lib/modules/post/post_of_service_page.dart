@@ -4,16 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
-
-import 'package:repairservice/modules/post/bloc/post_bloc.dart';
+import 'package:repairservice/core/auth/authentication.dart';
+import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 
 import 'package:repairservice/modules/splash/splash_page.dart';
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'bloc/post_bloc.dart';
 import 'components/post_item_container.dart';
 import '../../utils/ui//extensions.dart';
-import 'screens/post_detail_page.dart';
 
 class PostOfServicePage extends StatefulWidget {
   final String title;
@@ -109,16 +110,25 @@ class ListPostView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      physics: AlwaysScrollableScrollPhysics(),
-      itemCount: state.posts.length,
-      itemBuilder: (context, index) => ItemPostContainer(
-        post: state.posts[index],
-      ).ripple(() {
-        Navigator.push(
-            context,
-            SlideFadeRoute(
-                page: PostDetailPage(postCode: state.posts[index].code)));
-      }),
-    );
+        physics: AlwaysScrollableScrollPhysics(),
+        itemCount: state.posts.length,
+        itemBuilder: (context, index) =>
+            BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (context, authstate) {
+                return ItemPostContainer(
+                  post: state.posts[index],
+                ).ripple(() {
+                  if (authstate.user.isCustomer == UserType.worker)
+                    context
+                        .read<PostdetailBloc>()
+                        .add(PostdetailCheckWorker(state.posts[index].code));
+                  context
+                      .read<PostdetailBloc>()
+                      .add(PostdetailFetched(state.posts[index].code));
+                  Navigator.push(
+                      context, SlideFadeRoute(page: PostDetailPage()));
+                });
+              },
+            ));
   }
 }

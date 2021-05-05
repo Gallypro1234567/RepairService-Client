@@ -14,5 +14,9 @@ class ManagerCustomerDeletePost extends ManagerEvent {
 
   ManagerCustomerDeletePost(this.postCode);
 }
+class ManagerCustomerDeletePostApply extends ManagerEvent {
+  final String postApplyCode;
 
+  ManagerCustomerDeletePostApply(this.postApplyCode);
+}
 class ManagerWorkerDeleteApply extends ManagerEvent {}

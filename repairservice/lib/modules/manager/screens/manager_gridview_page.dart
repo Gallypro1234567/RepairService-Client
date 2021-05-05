@@ -7,6 +7,10 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/manager/components/manager_post_item_container.dart';
+import 'package:repairservice/modules/post_apply/bloc/postapply_bloc.dart';
+import 'package:repairservice/modules/post_apply/post_apply_page.dart';
+import 'package:repairservice/modules/post_apply_detail/bloc/postapplydetail_bloc.dart';
+import 'package:repairservice/modules/post_apply_detail/post_apply_detail_page.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 
@@ -34,38 +38,66 @@ class ManagerGridViewPage extends StatelessWidget {
                         builder: (context, authenState) {
                   switch (authenState.user.isCustomer) {
                     case UserType.customer:
-                      return SlidableContainer(
-                        child: CustomerManagerPostContainer(
-                          post: state.posts[index],
-                        ).ripple(() {
-                          context
-                              .read<PostdetailBloc>()
-                              .add(PostdetailFetched(state.posts[index].code));
-                          Navigator.push(
-                              context,
-                              SlideFadeRoute(
-                                  page: PostDetailPage(
-                                      postCode: state.posts[index].code)));
-                        }),
-                        onPressed: () {
-                          context.read<ManagerBloc>().add(
-                              ManagerCustomerDeletePost(
-                                  state.posts[index].code));
+                      return BlocBuilder<AuthenticationBloc,
+                          AuthenticationState>(
+                        builder: (context, authstate) {
+                          return SlidableContainer(
+                            child: CustomerManagerPostContainer(
+                              post: state.posts[index],
+                            ),
+                            onPressedDetail: () {
+                              context.read<PostapplyBloc>().add(
+                                  PostapplyFetched(state.posts[index].code));
+                              Navigator.push(
+                                  context,
+                                  SlideFadeRoute(
+                                      page: PostApplyPage(
+                                    postCode: state.posts[index].code,
+                                  )));
+                            },
+                            onPressedDelete: () {
+                              context.read<ManagerBloc>().add(
+                                  ManagerCustomerDeletePost(
+                                      state.posts[index].code));
+                            },
+                          );
                         },
                       );
                       break;
                     case UserType.worker:
-                      return SlidableContainer(
-                        child: WorkerManagerPostContainer(
-                          post: state.posts[index],
-                        ).ripple(() {
-                          Navigator.push(
-                              context,
-                              SlideFadeRoute(
-                                  page: PostDetailPage(
-                                      postCode: state.posts[index].code)));
-                        }),
-                        onPressed: () {},
+                      return BlocBuilder<AuthenticationBloc,
+                          AuthenticationState>(
+                        builder: (context, authstate) {
+                          return SlidableContainer(
+                            child: WorkerManagerPostContainer(
+                              post: state.posts[index],
+                            ),
+                            onPressedDetail: () {
+                              context
+                                  .read<PostdetailBloc>()
+                                  .add(PostdetailCheckWorker(
+                                    state.posts[index].code,
+                                  ));
+
+                              context
+                                  .read<PostdetailBloc>()
+                                  .add(PostdetailFetched(
+                                    state.posts[index].code,
+                                  ));
+                              Navigator.push(context,
+                                  SlideFadeRoute(page: PostDetailPage()));
+                            },
+                            onPressedDelete: () {
+                              context.read<ManagerBloc>().add(
+                                  ManagerCustomerDeletePostApply(
+                                      state.posts[index].code));
+                              Navigator.push(
+                                  context,
+                                  SlideFadeRoute(
+                                      page: PostApplyWorkerDetailPage()));
+                            },
+                          );
+                        },
                       );
                       break;
                     default:
@@ -87,11 +119,13 @@ class ManagerGridViewPage extends StatelessWidget {
 
 class SlidableContainer extends StatelessWidget {
   final Widget child;
-  final Function onPressed;
+  final Function onPressedDelete;
+  final Function onPressedDetail;
   const SlidableContainer({
     Key key,
     this.child,
-    this.onPressed,
+    this.onPressedDelete,
+    this.onPressedDetail,
   }) : super(key: key);
 
   @override
@@ -103,10 +137,19 @@ class SlidableContainer extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: kDefaultPadding / 4),
           child: IconSlideAction(
-            caption: 'Delete',
+            caption: 'Chi tiết',
+            color: Colors.blue,
+            icon: Icons.more_vert,
+            onTap: onPressedDetail,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: kDefaultPadding / 4),
+          child: IconSlideAction(
+            caption: 'Xóa',
             color: Colors.red,
             icon: Icons.delete,
-            onTap: onPressed,
+            onTap: onPressedDelete,
           ),
         ),
       ],

@@ -14,8 +14,21 @@ class PostdetailFetched extends PostdetailEvent {
 
   PostdetailFetched(this.postCode);
 }
+
 class PostdetailWorkerApplySubmitted extends PostdetailEvent {
   final String postCode;
+  final String workerphone;
 
-  PostdetailWorkerApplySubmitted(this.postCode);
+  PostdetailWorkerApplySubmitted({
+    this.postCode,
+    this.workerphone,
+  });
+}
+
+class PostdetailCheckWorker extends PostdetailEvent {
+  final String postCode;
+
+  PostdetailCheckWorker(
+    this.postCode,
+  );
 }

@@ -111,7 +111,7 @@ class CustomerManagerPostContainer extends StatelessWidget {
                                           : post.status == 1
                                               ? "Đang tiếp nhận "
                                               : post.status == 2
-                                                  ? "Đã hoàn thành"
+                                                  ? "Bạn đã chấp nhận"
                                                   : "đã hủy",
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
@@ -303,12 +303,12 @@ class WorkerManagerPostContainer extends StatelessWidget {
                                         borderRadius:
                                             BorderRadius.circular(10)),
                                     child: TitleText(
-                                      text: post.status == 0
-                                          ? "Tin đã đăng"
-                                          : post.status == 1
-                                              ? "Đang tiếp nhận "
-                                              : post.status == 2
-                                                  ? "Đã hoàn thành"
+                                      text: post.status == 1
+                                          ? "Đang chờ"
+                                          : post.status == 2
+                                              ? "Khách hàng chấp nhận"
+                                              : post.status == 3
+                                                  ? "Đã Check In"
                                                   : "đã hủy",
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,

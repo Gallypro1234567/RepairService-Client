@@ -6,6 +6,8 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/auth/authentication.dart';
+import 'package:repairservice/modules/post_apply/bloc/postapply_bloc.dart';
+import 'package:repairservice/modules/post_apply/post_apply_page.dart';
 import 'package:repairservice/modules/post_update/bloc/postupdate_bloc.dart';
 import 'package:repairservice/modules/post_update/post_update_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
@@ -13,6 +15,7 @@ import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'bloc/postdetail_bloc.dart';
+import 'components/post_detail_button.dart';
 
 class PostDetailPage extends StatelessWidget {
   final String postCode;
@@ -84,8 +87,25 @@ class PostDetailPage extends StatelessWidget {
           }
         },
       ),
-      bottomSheet: PostDetailBottomSheet(
-        postCode: postCode,
+      bottomSheet: BlocBuilder<PostdetailBloc, PostdetailState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case PostDetailStatus.success:
+              return PostDetailBottomSheet(
+                postCode: postCode,
+              );
+              break;
+            case PostDetailStatus.submitted:
+              return PostDetailBottomSheet(
+                postCode: postCode,
+              );
+              break;
+            default:
+              return Container(
+                height: 10,
+              );
+          }
+        },
       ),
     );
   }
@@ -98,8 +118,9 @@ class PostDetailBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      builder: (context, state) {
-        if (state.user.isCustomer == UserType.worker && state.user.role == 1) {
+      builder: (context, authstate) {
+        if (authstate.user.isCustomer == UserType.worker &&
+            authstate.user.role == 1) {
           return Container(
             height: AppTheme.fullHeight(context) * 0.1,
             color: Colors.grey,
@@ -109,84 +130,52 @@ class PostDetailBottomSheet extends StatelessWidget {
               children: [
                 Expanded(
                   child: BlocBuilder<PostdetailBloc, PostdetailState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.green,
-                            shadowColor: LightColor.lightGrey,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0))),
-                        key: key,
-                        child: Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: Center(
-                                  child: TitleText(
-                                text: "Nhận đơn",
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ))),
-                        ),
-                        onPressed: () {
-                          context.read<PostdetailBloc>().add(
-                              PostdetailWorkerApplySubmitted(state.post.code));
-                          Navigator.pop(context);
-                        },
-                      );
+                    builder: (context, postDtstate) {
+                      if (postDtstate.statusApply == 0)
+                        return PostDetailButton(
+                          title: "Apply",
+                          primaryColor: Colors.green,
+                          shadowColor: LightColor.lightGrey,
+                          onPressed: () {
+                            context
+                                .read<PostdetailBloc>()
+                                .add(PostdetailWorkerApplySubmitted(
+                                  postCode: postDtstate.post.code,
+                                ));
+                            Navigator.pop(context);
+                          },
+                        );
+                      else if (postDtstate.statusApply == 1)
+                        return PostDetailButton(
+                          title: "Đang chờ xác nhận",
+                          primaryColor: Colors.amber,
+                          shadowColor: LightColor.lightGrey,
+                          onPressed: () {},
+                        );
+                      else
+                        return PostDetailButton(
+                          title: "Đang trong quá trình",
+                          primaryColor: Colors.blue,
+                          shadowColor: LightColor.lightGrey,
+                          textColor: Colors.white,
+                          onPressed: () {},
+                        );
                     },
                   ),
                 ),
                 Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: LightColor.lightGrey,
-                        shadowColor: LightColor.lightGrey,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0))),
-                    key: key,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50)),
-                          child: Center(
-                              child: TitleText(
-                            text: "Nhắn tin",
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ))),
-                    ),
+                  child: PostDetailButton(
+                    title: "nhắn tin",
+                    primaryColor: LightColor.lightGrey,
+                    shadowColor: LightColor.lightGrey,
                     onPressed: () {},
                   ),
                 ),
                 Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: LightColor.lightGrey,
-                        shadowColor: LightColor.lightGrey,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0))),
-                    key: key,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50)),
-                          child: Center(
-                              child: TitleText(
-                            text: "Chat",
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ))),
-                    ),
+                  child: PostDetailButton(
+                    title: "Chat",
+                    primaryColor: LightColor.lightGrey,
+                    shadowColor: LightColor.lightGrey,
                     onPressed: () {},
                   ),
                 ),
@@ -196,7 +185,7 @@ class PostDetailBottomSheet extends StatelessWidget {
         }
         return BlocBuilder<PostdetailBloc, PostdetailState>(
           builder: (context, poststate) {
-            if (poststate.post.phone == state.user.phone)
+            if (poststate.post.phone == authstate.user.phone)
               return Container(
                 height: AppTheme.fullHeight(context) * 0.1,
                 color: Colors.grey,
@@ -205,27 +194,11 @@ class PostDetailBottomSheet extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: Colors.blue,
-                            shadowColor: LightColor.lightGrey,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0))),
-                        key: key,
-                        child: Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: Center(
-                                  child: TitleText(
-                                text: "Cập nhật thông tin",
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ))),
-                        ),
+                      child: PostDetailButton(
+                        title: "Cập nhật thông tin",
+                        primaryColor: Colors.blue,
+                        shadowColor: LightColor.lightGrey,
+                        textColor: Colors.white,
                         onPressed: () {
                           context
                               .read<PostUpdateBloc>()
@@ -236,29 +209,21 @@ class PostDetailBottomSheet extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            primary: LightColor.lightGrey,
-                            shadowColor: LightColor.lightGrey,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0))),
-                        key: key,
-                        child: Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50)),
-                              alignment: Alignment.center,
-                              child: Center(
-                                  child: TitleText(
-                                text: "Danh sách thợ",
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ))),
-                        ),
-                        onPressed: () {},
+                      child: PostDetailButton(
+                        title: "Danh sách thợ",
+                        primaryColor: LightColor.lightGrey,
+                        shadowColor: LightColor.lightGrey,
+                        onPressed: () {
+                          context
+                              .read<PostapplyBloc>()
+                              .add(PostapplyFetched(postCode));
+                          Navigator.push(
+                              context,
+                              SlideFadeRoute(
+                                  page: PostApplyPage(
+                                postCode: postCode,
+                              )));
+                        },
                       ),
                     ),
                   ],

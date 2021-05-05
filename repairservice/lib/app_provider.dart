@@ -20,6 +20,8 @@ import 'modules/admin_dashboard/screens/worker_register_manager/bloc/workerregis
 import 'modules/home/bloc/home_bloc.dart';
 import 'modules/manager/bloc/manager_bloc.dart';
 import 'modules/post/bloc/post_bloc.dart';
+import 'modules/post_apply/bloc/postapply_bloc.dart';
+import 'modules/post_apply_detail/bloc/postapplydetail_bloc.dart';
 import 'modules/post_detail/bloc/postdetail_bloc.dart';
 import 'modules/post_update/bloc/postupdate_bloc.dart';
 import 'modules/user/bloc/user_bloc.dart';
@@ -90,7 +92,14 @@ class AppProvider extends StatelessWidget {
         BlocProvider(
             create: (_) => PostUpdateBloc(postRepository: PostRepository())
               ..add(PostUpdateInitial())),
-
+        BlocProvider(
+            create: (_) => PostapplyBloc(postRepository: PostRepository())
+              ..add(PostApplyInitial())),
+        BlocProvider(
+            create: (_) => PostapplydetailBloc(
+                postRepository: PostRepository(),
+                userRepository: UserRepository())
+              ..add(PostApplyDetailInitial())),
         // Admin - Dashboard
         // ServiceManaGer
         BlocProvider(

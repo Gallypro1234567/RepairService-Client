@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
+import 'package:repairservice/repository/post_repository/models/post_apply.dart';
 import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/service/server_hosting.dart' as Host;
 import 'models/user_enum.dart';
 
 class UserRepository {
- 
   Future<UserDetail> fetchUser({String phone, String password}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
@@ -55,9 +55,58 @@ class UserRepository {
       return null;
     }
   }
-Future<UserDetail> tryGetUser() async {
+
+  Future<WorkerApply> fetchWorkerDetail({String phone, String wOfsCode}) async {
     var pref = await SharedPreferences.getInstance();
-    var token = pref.getString("token"); 
+    var token = pref.getString("token");
+    Map<String, String> headers = {"Authorization": "bearer $token"};
+    Map<String, String> paramters = {"code": wOfsCode};
+    try {
+      var response = await http.get(
+        Uri.http(Host.Server_hosting, "/api/workerofservices/$phone/detail",
+            paramters),
+        headers: headers,
+      );
+      var jsons = json.decode(response.body);
+      if (response.statusCode == 200) {
+        var body = jsons['data'] as List;
+        if (body != null)
+          return body.map((dynamic json) {
+            return WorkerApply(
+              fullname: json["Fullname"] as String,
+              phone: json["Phone"] as String,
+              address: json["Address"] as String,
+              sex: json["Sex"] as int == 1
+                  ? Sex.male
+                  : json["Sex"] as int == 2
+                      ? Sex.female
+                      : json["Sex"] as int == 3
+                          ? Sex.orther
+                          : Sex.empty,
+              cmnd: json["CMND"] as String,
+              email: json["Email"] as String,
+              createAt: json["CreateAt"] as String,
+              serviceName: json["ServiceName"] as String,
+              
+              imageUrl: json["ImageUrl"] != null
+                  ? json["ImageUrl"].toString().length > 0
+                      ? Uri.http(Host.Server_hosting, json["ImageUrl"])
+                          .toString()
+                      : null
+                  : null,
+            );
+          }).first;
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<UserDetail> tryGetUser() async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
     Map<String, String> headers = {"Authorization": "bearer $token"};
     try {
       var response = await http.get(
@@ -87,7 +136,9 @@ Future<UserDetail> tryGetUser() async {
                           .toString()
                       : null
                   : null,
-              isCustomer:  json["isCustomer"] as bool ? UserType.customer : UserType.worker,
+              isCustomer: json["isCustomer"] as bool
+                  ? UserType.customer
+                  : UserType.worker,
               role: json["Role"] as int,
             );
           }).first;
@@ -98,6 +149,7 @@ Future<UserDetail> tryGetUser() async {
       return null;
     }
   }
+
   Future<http.Response> modifyOfUserProfile(
       {String fullname,
       String phone,
