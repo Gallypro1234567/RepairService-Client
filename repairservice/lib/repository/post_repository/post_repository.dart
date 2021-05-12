@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/service/server_hosting.dart' as Host;
 import 'models/post.dart';
 import 'models/post_apply.dart';
+import 'models/post_detail_pefect.dart';
 
 class PostRepository {
   Future<List<Post>> fetchPost({String serviceCode}) async {
@@ -144,10 +146,11 @@ class PostRepository {
             fullname: json["Fullname"] as String,
             phone: json["Phone"] as String,
             address: json["Address"] as String,
-            status: json["Status"] as int,
+            status: json["ApplyStatus"] as int,
             cmnd: json["CMND"] as String,
             serviceName: json["ServiceName"] as String,
             createAt: json["CreateAt"] as String,
+            postStatus: json["PostStatus"] as int,
             imageUrl: json["ImageUrl"] != null
                 ? json["ImageUrl"].toString().length > 0
                     ? Uri.http(Host.Server_hosting, json["ImageUrl"]).toString()
@@ -160,6 +163,116 @@ class PostRepository {
       return null;
     } on Exception catch (e) {
       print(e);
+      return null;
+    }
+  }
+
+  Future<WorkerRate> fetchFeedbackReviewByWofSCode({String wofscode}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+
+    Map<String, String> headers = {"Authorization": "bearer $token"};
+    Map<String, String> paramters = {"wofscode": wofscode};
+    try {
+      var response = await http.get(
+        Uri.http(Host.Server_hosting, "/api/feedbacks/getdetail", paramters),
+        headers: headers,
+      );
+      var jsons = json.decode(response.body);
+      if (response.statusCode == 200) {
+        var body = jsons['data'] as List;
+        return body.map((dynamic json) {
+          return WorkerRate(
+              fullname: json["Fullname"] as String,
+              phone: json["Phone"] as String,
+              services: json["WorkerOfServiceText"] as String,
+              avgPoint: json["AVGPoint"] == null
+                  ? 0.0
+                  : double.parse(json["AVGPoint"].toString()),
+              postAmount: int.parse(json["PostAmount"].toString()),
+              finishAmount: int.parse(json["PostFinishAmount"].toString()),
+              cancelAmount: int.parse(json["PostCancelAmount"].toString()),
+              fivePercent: double.parse(json["FivePercent"].toString()), 
+              fourPercent: double.parse(json["FourPercent"].toString()), 
+              threePercent: double.parse(json["ThreePercent"].toString()), 
+              twoPercent: double.parse(json["TwoPercent"].toString()), 
+              onePercent: double.parse(json["OnePercent"].toString()), 
+              imageUrl: json["ImageUrl"] != null
+                  ? json["ImageUrl"].toString().length > 0
+                      ? Uri.http(Host.Server_hosting, json["ImageUrl"])
+                          .toString()
+                      : null
+                  : null);
+        }).first;
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<List<FeedBack>> fetchFeedbackByWofSCode(
+      {String wofscode, int start, int length}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+
+    Map<String, String> headers = {"Authorization": "bearer $token"};
+    Map<String, String> paramters = {
+      "wofscode": wofscode,
+      "start": start.toString(),
+      "length": length.toString()
+    };
+    try {
+      var response = await http.get(
+        Uri.http(Host.Server_hosting, "/api/feedbacks/getby", paramters),
+        headers: headers,
+      );
+      var jsons = json.decode(response.body);
+      if (response.statusCode == 200) {
+        var body = jsons['data'] as List;
+        return body.map((dynamic json) {
+          return FeedBack(
+              username: json["Fullname"] as String,
+              description: json["Description"] as String,
+              createAt: json["CreateAt"] as String,
+              rate: double.parse(json["PointRating"].toString()),
+              userImageUrl: json["ImageUrl"] != null
+                  ? json["ImageUrl"].toString().length > 0
+                      ? Uri.http(Host.Server_hosting, json["ImageUrl"])
+                          .toString()
+                      : null
+                  : null);
+        }).toList();
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<http.Response> customerPostReviewRating(
+      {String workerofservicecode,
+      String postcode,
+      String description,
+      double pointrating}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    try {
+      var uri = Uri.http(Host.Server_hosting, "/api/feedbacks/add");
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      request.fields['workerofservicecode'] = workerofservicecode;
+      request.fields['postcode'] = postcode;
+      request.fields['description'] = description == null ? "" : description;
+      request.fields['pointrating'] =
+          pointrating == null ? "" : pointrating.toString();
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
       return null;
     }
   }
@@ -231,6 +344,7 @@ class PostRepository {
               status: json["status"] as int,
               phone: json["Phone"] as String,
               email: json["Email"] as String,
+              serviceText: json["ServiceName"] as String,
               imageUrl:
                   imageUrls.length > 0 ? imageUrls.first.toString() : null,
               customerImageUrl: json["CustomerImageUrl"] != null
@@ -240,6 +354,49 @@ class PostRepository {
                       : null
                   : null);
         }).toList();
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<PostPerfect> fetchPostPerfect({String postCode}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+
+    Map<String, String> headers = {"Authorization": "bearer $token"};
+    Map<String, String> paramters = {"postcode": postCode};
+    try {
+      var response = await http.get(
+        Uri.http(
+            Host.Server_hosting, "/api/posts/getdetailfinishby", paramters),
+        headers: headers,
+      );
+      var jsons = json.decode(response.body);
+      if (response.statusCode == 200) {
+        var body = jsons['data'] as List;
+
+        return body.map((dynamic json) {
+          return PostPerfect(
+            customerfullname: json["CustomerFullname"] as String,
+            customerAddress: json["CustomerAddress"] as String,
+            customerphone: json["CustomerPhone"] as String,
+            workerfullname: json["WorkerFullname"] as String,
+            workerAddress: json["WorkerAddress"] as String,
+            workerphone: json["WorkerPhone"] as String,
+            workerCMND: json["WorkerCMND"] as String,
+            wofsCode: json["WorkerOfServiceCode"] as String,
+            postCode: json["PostCode"] as String,
+            postTitle: json["PostTitle"] as String,
+            postStatus: int.parse(json["PostStatus"].toString()),
+            feedbackStatus: int.parse(json["FeedbackStatus"].toString()),
+            serviceCode: json["ServiceCode"] as String,
+            serviceName: json["ServiceName"] as String,
+            applyStatus: int.parse(json["ApplyStatus"].toString()),
+          );
+        }).first;
       }
       return null;
     } on Exception catch (e) {
@@ -334,13 +491,12 @@ class PostRepository {
           return Post(
             fullname: json["CustomerFullname"] as String,
             phone: json["CustomerPhone"] as String,
-            code: json["Code"] as String,
+            code: json["PostCode"] as String,
             title: json["Title"] as String,
-            //address: json["Address"] as String,
             createAt: json["CreateAt"] as String,
             wofsCode: json["WorkerOfServiceCode"] as String,
-            status: int.parse(json["Status"].toString()),
-            // email: json["Email"] as String,
+            status: int.parse(json["PostStatus"].toString()),
+            applystatus: int.parse(json["ApplyStatus"].toString()),
           );
         }).toList();
       }
@@ -435,11 +591,11 @@ class PostRepository {
     }
   }
 
-  Future<http.Response> customerAcceptPostApply({
-    String workerofservicecode,
-    String postcode,
-    int status,
-  }) async {
+  Future<http.Response> customerAcceptPostApply(
+      {String workerofservicecode,
+      String postcode,
+      int status,
+      int poststatus}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
     try {
@@ -450,7 +606,76 @@ class PostRepository {
       request.fields['workerofservice'] = workerofservicecode;
       request.fields['postcode'] = postcode == null ? "" : postcode;
       request.fields['status'] = status.toString();
+      request.fields['poststatus'] = poststatus.toString();
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
 
+  Future<http.Response> workerPostApplyFinish(
+      {String workerofservicecode,
+      String postcode,
+      int applystatus,
+      int poststatus}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    try {
+      var uri =
+          Uri.http(Host.Server_hosting, "/api/applies/checkinbyworker/finish");
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      request.fields['workerofservice'] = workerofservicecode;
+      request.fields['postcode'] = postcode == null ? "" : postcode;
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
+
+  Future<http.Response> workerPostApplyFinishCancel(
+      {String workerofservicecode,
+      String postcode,
+      int applystatus,
+      int poststatus}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    try {
+      var uri =
+          Uri.http(Host.Server_hosting, "/api/applies/checkinbyworker/cancel");
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      request.fields['workerofservice'] = workerofservicecode;
+      request.fields['postcode'] = postcode == null ? "" : postcode;
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
+
+  Future<http.Response> customerCancelPostApply(
+      {String workerofservicecode,
+      String postcode,
+      int status,
+      int poststatus}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    try {
+      var uri = Uri.http(Host.Server_hosting, "/api/applies/deletebycustomer");
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      request.fields['workerofservice'] = workerofservicecode;
+      request.fields['postcode'] = postcode == null ? "" : postcode;
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
       return response;

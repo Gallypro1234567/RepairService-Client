@@ -23,6 +23,8 @@ import 'modules/post/bloc/post_bloc.dart';
 import 'modules/post_apply/bloc/postapply_bloc.dart';
 import 'modules/post_apply_detail/bloc/postapplydetail_bloc.dart';
 import 'modules/post_detail/bloc/postdetail_bloc.dart';
+import 'modules/post_detail_perfect/bloc/postdetailperfect_bloc.dart';
+import 'modules/post_rating/bloc/postrate_bloc.dart';
 import 'modules/post_update/bloc/postupdate_bloc.dart';
 import 'modules/user/bloc/user_bloc.dart';
 import 'modules/user_profile/bloc/userprofile_bloc.dart';
@@ -100,6 +102,15 @@ class AppProvider extends StatelessWidget {
                 postRepository: PostRepository(),
                 userRepository: UserRepository())
               ..add(PostApplyDetailInitial())),
+        BlocProvider(
+            create: (_) =>
+                PostdetailperfectBloc(postRepository: PostRepository())
+                  ..add(PostdetailperfectInitial())),
+        // FeedBack
+        BlocProvider(
+            create: (_) => PostrateBloc(postRepository: PostRepository())
+              ..add(PostrateInitial())),
+
         // Admin - Dashboard
         // ServiceManaGer
         BlocProvider(

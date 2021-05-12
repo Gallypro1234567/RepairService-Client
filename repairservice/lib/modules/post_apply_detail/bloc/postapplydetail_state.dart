@@ -1,6 +1,6 @@
 part of 'postapplydetail_bloc.dart';
 
-enum ApplyDetailStatus { loading, success, failure }
+enum ApplyDetailStatus { loading, success, acceptSubmitted,cancelSubmitted, failure }
 enum AcceptStatus { none, accept, cancel }
 
 class PostapplydetailState extends Equatable {

@@ -31,6 +31,8 @@ class PostapplydetailBloc
       yield* _mapPostApplyOpenDetailPhoneCallToState(event, state);
     else if (event is PostdetailAcceptSubmitted)
       yield* _mapPostdetailAcceptSubmittedToState(event, state);
+    else if (event is PostApplyDetailCancelSubmitted)
+      yield* _mapPostApplyDetailCancelSubmittedToState(event, state);
   }
 
   Stream<PostapplydetailState> _mapPostApplyDetailFetchedToState(
@@ -53,12 +55,8 @@ class PostapplydetailBloc
 
   Stream<PostapplydetailState> _mapPostApplyOpenDetailPhoneCallToState(
       PostApplyOpenPhoneCall event, PostapplydetailState state) async* {
-    yield state.copyWith(status: ApplyDetailStatus.loading);
     try {
       await launch("tel: ${event.phone}");
-      yield state.copyWith(
-        status: ApplyDetailStatus.success,
-      );
     } on Exception catch (_) {
       yield state.copyWith(status: ApplyDetailStatus.failure);
     }
@@ -71,10 +69,28 @@ class PostapplydetailBloc
       var response = await _postRepository.customerAcceptPostApply(
           postcode: event.postCode,
           workerofservicecode: event.workerofservicecode,
-          status: 2);
+          status: 2,
+          poststatus: 1);
       if (response.statusCode == 200)
         yield state.copyWith(
-          status: ApplyDetailStatus.success,
+          status: ApplyDetailStatus.acceptSubmitted,
+        );
+    } on Exception catch (_) {
+      yield state.copyWith(status: ApplyDetailStatus.failure);
+    }
+  }
+
+  Stream<PostapplydetailState> _mapPostApplyDetailCancelSubmittedToState(
+      PostApplyDetailCancelSubmitted event, PostapplydetailState state) async* {
+    yield state.copyWith(status: ApplyDetailStatus.loading);
+    try {
+      var response = await _postRepository.customerCancelPostApply(
+        postcode: event.postCode,
+        workerofservicecode: event.workerofservicecode,
+      );
+      if (response.statusCode == 200)
+        yield state.copyWith(
+          status: ApplyDetailStatus.cancelSubmitted,
         );
     } on Exception catch (_) {
       yield state.copyWith(status: ApplyDetailStatus.failure);

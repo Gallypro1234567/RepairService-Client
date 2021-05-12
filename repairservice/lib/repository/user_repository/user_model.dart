@@ -83,7 +83,6 @@ class UserDetail extends Equatable {
 
 class WorkerRegister extends Equatable {
   final String fullname;
-
   final String email;
   final String address;
   final String phone;
@@ -129,12 +128,74 @@ class WorkerRegister extends Equatable {
       ];
 }
 
+class FeedBack extends Equatable {
+  final String username;
+  final String userImageUrl;
+  final String createAt;
+  final String description;
+  final double rate;
+
+  FeedBack(
+      {this.username,
+      this.userImageUrl,
+      this.createAt,
+      this.description,
+      this.rate});
+
+  @override
+  List<Object> get props =>
+      [rate, username, userImageUrl, createAt, description];
+}
+
+class WorkerRate extends Equatable {
+  final String fullname;
+  final String phone;
+  final String imageUrl;
+  final String services;
+  final double avgPoint;
+  final int postAmount;
+  final int finishAmount;
+  final int cancelAmount;
+  final double fivePercent;
+  final double fourPercent;
+  final double threePercent;
+  final double twoPercent;
+  final double onePercent;
+  WorkerRate({
+    this.fullname,
+    this.phone,
+    this.services,
+    this.avgPoint,
+    this.postAmount,
+    this.finishAmount,
+    this.cancelAmount,
+    this.imageUrl,
+    this.fivePercent,
+    this.fourPercent,
+    this.threePercent,
+    this.twoPercent,
+    this.onePercent,
+  });
+
+  @override
+  List<Object> get props => [
+        fullname,
+        phone,
+        services,
+        avgPoint,
+        postAmount,
+        finishAmount,
+        cancelAmount,
+        imageUrl, fivePercent,  fourPercent,  threePercent, twoPercent, onePercent, 
+      ];
+}
+
 class UserRole extends Equatable {
-  final UserType isCustomer; 
+  final UserType isCustomer;
   final int role;
 
   UserRole({this.isCustomer, this.role});
 
   @override
-  List<Object> get props => [role,isCustomer];
+  List<Object> get props => [role, isCustomer];
 }

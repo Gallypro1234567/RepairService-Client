@@ -6,6 +6,8 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/worker_register_manager/components/item_detail_container.dart';
 import 'package:repairservice/modules/home/home_page.dart';
+import 'package:repairservice/modules/main_screen.dart';
+import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/components/post_detail_button.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/post_apply.dart';
@@ -18,7 +20,17 @@ import '../../../utils/ui/extensions.dart';
 import 'bloc/postapplydetail_bloc.dart';
 import 'components/post_apply_detail_container.dart';
 
-class PostApplyWorkerDetailPage extends StatelessWidget {
+class PostApplyWorkerDetailPage extends StatefulWidget {
+  final int status;
+
+  const PostApplyWorkerDetailPage({Key key, this.status}) : super(key: key);
+
+  @override
+  _PostApplyWorkerDetailPageState createState() =>
+      _PostApplyWorkerDetailPageState();
+}
+
+class _PostApplyWorkerDetailPageState extends State<PostApplyWorkerDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,30 +49,61 @@ class PostApplyWorkerDetailPage extends StatelessWidget {
             },
             icon: Icon(Icons.arrow_back)),
       ),
-      body: BlocBuilder<PostapplydetailBloc, PostapplydetailState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case ApplyDetailStatus.loading:
-              return SplashPage();
-              break;
-            case ApplyDetailStatus.success:
-              return PostApplyDetailContainer(
-                children: [
-                  WorkerProfile(model: state.postApply),
-                  Content(model: state.postApply)
-                ],
-              );
-              break;
-            case ApplyDetailStatus.failure:
-              return Center(
-                child: Text("Error"),
-              );
-              break;
-            default:
-              return SplashPage();
-              break;
+      body: BlocListener<PostapplydetailBloc, PostapplydetailState>(
+        listener: (context, state) {
+          if (state.status == ApplyDetailStatus.acceptSubmitted ||
+              state.status == ApplyDetailStatus.cancelSubmitted) {
+            context.read<PostdetailBloc>().add(PostdetailFetched(
+                  state.postCode,
+                ));
           }
         },
+        child: BlocBuilder<PostapplydetailBloc, PostapplydetailState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case ApplyDetailStatus.loading:
+                return SplashPage();
+                break;
+              case ApplyDetailStatus.success:
+                return PostApplyDetailContainer(
+                  children: [
+                    WorkerProfile(model: state.postApply),
+                    Content(model: state.postApply, status: widget.status)
+                  ],
+                );
+                break;
+              case ApplyDetailStatus.acceptSubmitted:
+                return PostApplyDetailContainer(
+                  children: [
+                    WorkerProfile(model: state.postApply),
+                    Content(model: state.postApply, status: 2)
+                  ],
+                );
+                break;
+              case ApplyDetailStatus.cancelSubmitted:
+                return PostApplyDetailContainer(
+                  children: [
+                    WorkerProfile(model: state.postApply),
+                    Content(model: state.postApply, status: 1)
+                  ],
+                );
+                break;
+              case ApplyDetailStatus.failure:
+                return Center(
+                  child: Text("Error"),
+                );
+                break;
+              default:
+                return PostApplyDetailContainer(
+                  children: [
+                    WorkerProfile(model: state.postApply),
+                    Content(model: state.postApply, status: widget.status)
+                  ],
+                );
+                break;
+            }
+          },
+        ),
       ),
       bottomSheet: Container(
         height: AppTheme.fullHeight(context) * 0.1,
@@ -86,14 +129,6 @@ class PostApplyWorkerDetailPage extends StatelessWidget {
                 },
               ),
             ),
-            Expanded(
-              child: PostDetailButton(
-                title: "Nhắn tin",
-                primaryColor: Colors.amber,
-                shadowColor: LightColor.lightGrey,
-                onPressed: () {},
-              ),
-            ),
           ],
         ),
       ),
@@ -101,49 +136,94 @@ class PostApplyWorkerDetailPage extends StatelessWidget {
   }
 }
 
-class Content extends StatelessWidget {
+class Content extends StatefulWidget {
   final WorkerApply model;
+  final int status;
+  const Content({Key key, this.model, this.status}) : super(key: key);
 
-  const Content({Key key, this.model}) : super(key: key);
+  @override
+  _ContentState createState() => _ContentState();
+}
+
+class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ItemDetailContainer(
           title: "SĐT:",
-          value: model.phone,
+          value: widget.model.phone,
         ),
         ItemDetailContainer(
           title: "Địa chỉ:",
-          value: model.address == null ? "" : model.address,
+          value: widget.model.address == null ? "" : widget.model.address,
         ),
         ItemDetailContainer(
           title: "CMND:",
-          value: model.cmnd == null ? "" : model.cmnd,
+          value: widget.model.cmnd == null ? "" : widget.model.cmnd,
         ),
-        ItemDetailContainer(title: "Nghề nghiệp:", value: model.serviceName),
+        ItemDetailContainer(
+            title: "Nghề nghiệp:", value: widget.model.serviceName),
         ItemDetailContainer(
           title: "Thời gian apply:",
-          value: model.createAt,
+          value: widget.model.createAt,
         ),
         SizedBox(
           height: kDefaultPadding,
         ),
-        BlocBuilder<PostapplydetailBloc, PostapplydetailState>(
-          builder: (context, state) {
-            return WorkerRegisterButton(
-              title: "Chấp nhận",
-              color: LightColor.red,
-              colorActive: LightColor.lightteal,
-              onPressed: () {
-                context.read<PostapplydetailBloc>().add(
-                    PostdetailAcceptSubmitted(
-                        postCode: state.postCode,
-                        workerofservicecode: state.wofscode));
-                Navigator.push(context, SlideFadeRoute(page: HomePage()));
-              },
-            );
-          },
+        Row(
+          children: [
+            Expanded(
+              child: BlocBuilder<PostapplydetailBloc, PostapplydetailState>(
+                builder: (context, state) {
+                  return WorkerRegisterButton(
+                    title: widget.status != 1 ? "Màn hình chính" : "Chấp nhận",
+                    color: widget.status != 1 ? Colors.green : LightColor.red,
+                    colorActive: LightColor.lightteal,
+                    onPressed: widget.status != 1
+                        ? () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                SlideFadeRoute(page: MainPage()),
+                                (route) => false);
+                          }
+                        : () {
+                            context.read<PostapplydetailBloc>().add(
+                                PostdetailAcceptSubmitted(
+                                    postCode: state.postCode,
+                                    workerofservicecode: state.wofscode));
+                          },
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              width: kDefaultPadding / 2,
+            ),
+            widget.status != 2
+                ? Container()
+                : Expanded(
+                    child:
+                        BlocBuilder<PostapplydetailBloc, PostapplydetailState>(
+                      builder: (context, state) {
+                        return WorkerRegisterButton(
+                          title: "Hủy bỏ",
+                          color: LightColor.red,
+                          colorActive: LightColor.lightteal,
+                          onPressed: () {
+                            context.read<PostapplydetailBloc>().add(
+                                PostApplyDetailCancelSubmitted(
+                                    postCode: state.postCode,
+                                    workerofservicecode: state.wofscode));
+                          },
+                        );
+                      },
+                    ),
+                  ),
+          ],
+        ),
+        SizedBox(
+          height: kDefaultPadding,
         ),
       ],
     );
@@ -255,7 +335,7 @@ class WorkerRegisterButton extends StatelessWidget {
             child: Center(
                 child: TitleText(
               text: title,
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ))),

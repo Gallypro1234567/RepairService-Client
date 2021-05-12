@@ -55,20 +55,46 @@ class ItemPostContainer extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: kDefaultPadding / 4),
+                        child: TitleText(
+                          text: post.title,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       Expanded(
-                        child: Container(
-                          child: TitleText(
-                            text: post.title,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
+                        flex: 3,
+                        child: Container(),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: kDefaultPadding / 4),
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Danh mục: ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 12,
+                                color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text:
+                                      '${post.serviceText == null ? "" : post.serviceText}',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.normal)),
+                            ],
                           ),
                         ),
                       ),
+                      Expanded(
+                        child: Container(),
+                      ),
                       Row(
-                        //crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           SizedBox(

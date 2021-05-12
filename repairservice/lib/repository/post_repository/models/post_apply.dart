@@ -12,6 +12,7 @@ class WorkerApply extends Equatable {
   final String workerOfServiceCode;
   final String serviceName;
   final String createAt;
+  final int postStatus;
   final int status;
   WorkerApply(
       {this.fullname,
@@ -24,6 +25,7 @@ class WorkerApply extends Equatable {
       this.workerOfServiceCode,
       this.status,
       this.createAt,
+      this.postStatus,
       this.serviceName});
   @override
   List<Object> get props => [
@@ -37,6 +39,7 @@ class WorkerApply extends Equatable {
         workerOfServiceCode,
         status,
         serviceName,
-        createAt
+        createAt,
+        postStatus,
       ];
 }

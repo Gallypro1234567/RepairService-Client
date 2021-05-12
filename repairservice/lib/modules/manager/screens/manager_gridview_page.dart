@@ -13,6 +13,8 @@ import 'package:repairservice/modules/post_apply_detail/bloc/postapplydetail_blo
 import 'package:repairservice/modules/post_apply_detail/post_apply_detail_page.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
+import 'package:repairservice/modules/post_detail_perfect/bloc/postdetailperfect_bloc.dart';
+import 'package:repairservice/modules/post_detail_perfect/post_detail_perfect_page.dart';
 
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
@@ -22,7 +24,11 @@ import '../../../utils/ui/extensions.dart';
 class ManagerGridViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ManagerBloc, ManagerState>(
+    return BlocListener<ManagerBloc, ManagerState>(listener: (context, state) {
+      if (state.pageStatus == PageStatus.deleteSuccess) {
+        context.read<ManagerBloc>().add(ManagerFetched());
+      }
+    }, child: BlocBuilder<ManagerBloc, ManagerState>(
       builder: (context, state) {
         switch (state.pageStatus) {
           case PageStatus.loading:
@@ -44,14 +50,38 @@ class ManagerGridViewPage extends StatelessWidget {
                           return SlidableContainer(
                             child: CustomerManagerPostContainer(
                               post: state.posts[index],
-                            ),
+                            ).ripple(state.posts[index].status >= 2
+                                ? () {
+                                    context.read<PostdetailperfectBloc>().add(
+                                        PostdetailperfectFetched(
+                                            postCode: state.posts[index].code,
+                                            isCustomer: true));
+                                    Navigator.push(
+                                        context,
+                                        SlideFadeRoute(
+                                            page: PostDetailPerfectPage()));
+                                  }
+                                : () {
+                                    context.read<PostapplyBloc>().add(
+                                        PostapplyFetched(
+                                            state.posts[index].code));
+                                    Navigator.push(
+                                        context,
+                                        SlideFadeRoute(
+                                            page: PostApplyPage(
+                                          postCode: state.posts[index].code,
+                                        )));
+                                  }),
                             onPressedDetail: () {
-                              context.read<PostapplyBloc>().add(
-                                  PostapplyFetched(state.posts[index].code));
+                              context
+                                  .read<PostdetailBloc>()
+                                  .add(PostdetailFetched(
+                                    state.posts[index].code,
+                                  ));
                               Navigator.push(
                                   context,
                                   SlideFadeRoute(
-                                      page: PostApplyPage(
+                                      page: PostDetailPage(
                                     postCode: state.posts[index].code,
                                   )));
                             },
@@ -68,10 +98,40 @@ class ManagerGridViewPage extends StatelessWidget {
                       return BlocBuilder<AuthenticationBloc,
                           AuthenticationState>(
                         builder: (context, authstate) {
+                          if (state.posts[index].applystatus == -1) {
+                            return WorkerManagerPostDisableContainer(
+                              post: state.posts[index],
+                            );
+                          }
                           return SlidableContainer(
                             child: WorkerManagerPostContainer(
                               post: state.posts[index],
-                            ),
+                            ).ripple(state.posts[index].applystatus == 2 ||
+                                    state.posts[index].applystatus == 3
+                                ? () {
+                                    context.read<PostdetailperfectBloc>().add(
+                                        PostdetailperfectFetched(
+                                            postCode: state.posts[index].code,
+                                            isCustomer: false));
+                                    Navigator.push(
+                                        context,
+                                        SlideFadeRoute(
+                                            page: PostDetailPerfectPage()));
+                                  }
+                                : () {
+                                    context
+                                        .read<PostdetailBloc>()
+                                        .add(PostdetailCheckWorker(
+                                          state.posts[index].code,
+                                        ));
+                                    context
+                                        .read<PostdetailBloc>()
+                                        .add(PostdetailFetched(
+                                          state.posts[index].code,
+                                        ));
+                                    Navigator.push(context,
+                                        SlideFadeRoute(page: PostDetailPage()));
+                                  }),
                             onPressedDetail: () {
                               context
                                   .read<PostdetailBloc>()
@@ -88,13 +148,11 @@ class ManagerGridViewPage extends StatelessWidget {
                                   SlideFadeRoute(page: PostDetailPage()));
                             },
                             onPressedDelete: () {
-                              context.read<ManagerBloc>().add(
-                                  ManagerCustomerDeletePostApply(
-                                      state.posts[index].code));
-                              Navigator.push(
-                                  context,
-                                  SlideFadeRoute(
-                                      page: PostApplyWorkerDetailPage()));
+                              context
+                                  .read<ManagerBloc>()
+                                  .add(ManagerWorkerDeleteApply(
+                                    state.posts[index].code,
+                                  ));
                             },
                           );
                         },
@@ -113,7 +171,7 @@ class ManagerGridViewPage extends StatelessWidget {
             return SplashPage();
         }
       },
-    );
+    ));
   }
 }
 

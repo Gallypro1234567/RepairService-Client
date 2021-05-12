@@ -66,7 +66,9 @@ class WorkerHistoryWorkView extends StatelessWidget {
         builder: (context, state) {
           return RefreshIndicator(
             onRefresh: () async {
-              context.read<WorkerregisterworkBloc>().add(WorkerregisterworkServiceRegisterLoad());
+              context
+                  .read<WorkerregisterworkBloc>()
+                  .add(WorkerregisterworkServiceRegisterLoad());
             },
             child: ServiceGridview(
               state: state,
@@ -108,6 +110,7 @@ class ServiceGridview extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(kDefaultPadding / 2),
           child: _PostSelectServiceContainer(
+            code: state.serviceRegisters[index].code,
             title: state.serviceRegisters[index].serviceName,
             imageUrl: state.serviceRegisters[index].serviceImageurl == null
                 ? ""
@@ -143,6 +146,7 @@ class ServiceGridview extends StatelessWidget {
 
 class _PostSelectServiceContainer extends StatelessWidget {
   final String title;
+  final String code;
   final String imageUrl;
   final Color headerColor;
   final Color backgroundColor;
@@ -154,6 +158,7 @@ class _PostSelectServiceContainer extends StatelessWidget {
     this.headerColor,
     this.backgroundColor,
     this.state,
+    this.code,
   }) : super(key: key);
 
   final HomeState state;
@@ -169,11 +174,27 @@ class _PostSelectServiceContainer extends StatelessWidget {
           Container(
             height: AppTheme.fullHeight(context) * 0.05,
             width: AppTheme.fullWidth(context) * 0.2,
+            padding: EdgeInsets.only(left: kDefaultPadding / 2),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10)),
                 color: headerColor),
+            alignment: Alignment.centerLeft,
+            child: RichText(
+              text: TextSpan(
+                text: 'Mã Code: ',
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  color: Colors.white,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: code,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
           ),
           Expanded(
             flex: 2,

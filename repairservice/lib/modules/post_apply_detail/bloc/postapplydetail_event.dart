@@ -28,3 +28,9 @@ class PostdetailAcceptSubmitted extends PostapplydetailEvent {
 
   PostdetailAcceptSubmitted({this.workerofservicecode, this.postCode});
 }
+class PostApplyDetailCancelSubmitted extends PostapplydetailEvent {
+  final String workerofservicecode;
+  final String postCode;
+
+  PostApplyDetailCancelSubmitted({this.workerofservicecode, this.postCode});
+}

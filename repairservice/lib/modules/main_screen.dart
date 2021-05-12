@@ -2,11 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:repairservice/config/themes/light_theme.dart';
-
 import 'package:repairservice/modules/home/home_page.dart';
-
 import 'package:repairservice/modules/user/user_manager_page.dart';
-
 import 'package:repairservice/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
 
 import 'manager/manager_screen.dart';
@@ -17,7 +14,11 @@ class MainPage extends StatefulWidget {
     return MaterialPageRoute<void>(builder: (_) => MainPage());
   }
 
-  MainPage({Key key}) : super(key: key);
+  final int selectIndex;
+  MainPage({
+    Key key,
+    this.selectIndex = -1,
+  }) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -29,6 +30,11 @@ class _MainPageState extends State<MainPage> {
   void onBottomIconPressed(int index) {
     setState(() {
       _selectedIndex = index;
+      // if (widget.selectIndex == -1) {
+
+      // } else {
+      //   _selectedIndex = widget.selectIndex;
+      // }
     });
   }
 
@@ -55,7 +61,7 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     Expanded(
                       child: AnimatedSwitcher(
-                        duration: Duration(milliseconds: 300),
+                        duration: Duration(milliseconds: 200),
                         switchInCurve: Curves.easeInToLinear,
                         switchOutCurve: Curves.easeOutBack,
                         child: children[_selectedIndex],

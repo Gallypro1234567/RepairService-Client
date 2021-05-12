@@ -5,6 +5,8 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/modules/post_apply_detail/bloc/postapplydetail_bloc.dart';
 import 'package:repairservice/modules/post_apply_detail/post_apply_detail_page.dart';
+import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
+import 'package:repairservice/modules/post_rating/post_rating.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
@@ -50,22 +52,73 @@ class PostApplyPage extends StatelessWidget {
               return PostApplyGridView(
                 length: state.postApply.length,
                 itemBuilder: (BuildContext context, int index) {
+                  if (state.postApply[index].status == -1)
+                    return Padding(
+                      padding: const EdgeInsets.only(top: kDefaultPadding / 4),
+                      child: PostApplyDisableContainer(
+                          status: state.postApply[index].status,
+                          postStatus: state.postApply[index].postStatus,
+                          textColor: Colors.black45,
+                          backgroundColor: Colors.white54,
+                          postApply: state.postApply[index]),
+                    );
                   return Padding(
                     padding: const EdgeInsets.only(top: kDefaultPadding / 4),
                     child: PostApplyContainer(
+                            status: state.postApply[index].status,
+                            postStatus: state.postApply[index].postStatus,
                             textColor: Colors.black,
-                            backgroundColor: Colors.white,
+                            boxShadows: [
+                              new BoxShadow(
+                                offset: Offset(0.0, -5.0),
+                                color: Color(0xffEDEDED),
+                                blurRadius: 20,
+                              ),
+                            ],
+                            backgroundColor: state.postApply[index].status == -1
+                                ? Colors.grey
+                                : Colors.white,
                             postApply: state.postApply[index])
-                        .ripple(() {
-                      context.read<PostapplydetailBloc>().add(
-                          PostApplyDetailFetched(
-                              phone: state.postApply[index].phone,
-                              postCode: postCode,
-                              wofscode:
-                                  state.postApply[index].workerOfServiceCode));
-                      Navigator.push(context,
-                          SlideFadeRoute(page: PostApplyWorkerDetailPage()));
-                    }),
+                        .ripple(state.postApply[index].postStatus == 1
+                            ? () {
+                                context.read<PostapplydetailBloc>().add(
+                                    PostApplyDetailFetched(
+                                        phone: state.postApply[index].phone,
+                                        postCode: postCode,
+                                        wofscode: state.postApply[index]
+                                            .workerOfServiceCode));
+                                Navigator.push(
+                                    context,
+                                    SlideFadeRoute(
+                                        page: PostApplyWorkerDetailPage(
+                                      status: state.postApply[index].status,
+                                    )));
+                              }
+                            : state.postApply[index].postStatus == 0 &&
+                                    state.postApply[index].status == 1
+                                ? () {
+                                    context.read<PostapplydetailBloc>().add(
+                                        PostApplyDetailFetched(
+                                            phone: state.postApply[index].phone,
+                                            postCode: postCode,
+                                            wofscode: state.postApply[index]
+                                                .workerOfServiceCode));
+                                    Navigator.push(
+                                        context,
+                                        SlideFadeRoute(
+                                            page: PostApplyWorkerDetailPage(
+                                          status: state.postApply[index].status,
+                                        )));
+                                  }
+                                : () {
+                                    context.read<PostrateBloc>().add(
+                                        PostrateFetched(
+                                            postCode: "",
+                                            wofscode: state.postApply[index]
+                                                .workerOfServiceCode));
+                                    Navigator.push(context,
+                                        SlideFadeRoute(page: PostRatingPage()));
+                                  }),
                   );
                 },
               );

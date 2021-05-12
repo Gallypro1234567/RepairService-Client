@@ -1,10 +1,7 @@
-import 'dart:async';
-import 'dart:ffi';
-import 'dart:io';
-
+import 'dart:async'; 
+import 'dart:io'; 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:equatable/equatable.dart'; 
 import 'package:image_picker/image_picker.dart';
 import 'package:repairservice/repository/dashboard_repository/dashboard_repository.dart';
 

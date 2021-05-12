@@ -21,8 +21,8 @@ class ManagerBloc extends Bloc<ManagerEvent, ManagerState> {
       yield* _mapManagerFetchedByPhone(event, state);
     } else if (event is ManagerCustomerDeletePost) {
       yield* _mapManagerCustomerDeletePostToState(event, state);
-    } else if (event is ManagerCustomerDeletePostApply) {
-      yield* _mapManagerCustomerDeletePostApplyToState(event, state);
+    } else if (event is ManagerWorkerDeleteApply) {
+      yield* _mapManagerWorkerDeleteApplyToState(event, state);
     }
   }
 
@@ -60,12 +60,12 @@ class ManagerBloc extends Bloc<ManagerEvent, ManagerState> {
     }
   }
 
-  Stream<ManagerState> _mapManagerCustomerDeletePostApplyToState(
-      ManagerCustomerDeletePostApply event, ManagerState state) async* {
+  Stream<ManagerState> _mapManagerWorkerDeleteApplyToState(
+      ManagerWorkerDeleteApply event, ManagerState state) async* {
     yield state.copyWith(pageStatus: PageStatus.loading);
     try {
-      var response =
-          await _postRepository.deletePostApplyByWorker(postCode: event.postApplyCode);
+      var response = await _postRepository.deletePostApplyByWorker(
+          postCode: event.postApplyCode);
 
       if (response.statusCode == 200)
         yield state.copyWith(
@@ -79,4 +79,6 @@ class ManagerBloc extends Bloc<ManagerEvent, ManagerState> {
       yield state.copyWith(pageStatus: PageStatus.failure);
     }
   }
+
+   
 }
