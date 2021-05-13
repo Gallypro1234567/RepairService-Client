@@ -22,6 +22,25 @@ class SelectServicePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: LightColor.lightGrey,
         centerTitle: true,
+        leading: BlocBuilder<PostBloc, PostState>(
+          builder: (context, state) {
+            return IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+              ),
+              onPressed: () {
+                state.serviceCode.length > 0
+                    ? context
+                        .read<PostBloc>()
+                        .add(PostServiceChanged(invalid: false))
+                    : context
+                        .read<PostBloc>()
+                        .add(PostServiceChanged(invalid: true));
+                Navigator.pop(context);
+              },
+            );
+          },
+        ),
         title: Text("Chọn danh mục"),
       ),
       body: Container(
@@ -89,7 +108,8 @@ class ServiceGridview extends StatelessWidget {
         ).ripple(() {
           context.read<PostBloc>().add(PostServiceChanged(
               text: state.services[index].name,
-              code: state.services[index].code));
+              code: state.services[index].code,
+              invalid: false));
           Navigator.pop(context);
         });
       },

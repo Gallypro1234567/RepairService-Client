@@ -153,6 +153,7 @@ class WorkerRate extends Equatable {
   final String imageUrl;
   final String services;
   final double avgPoint;
+  final int feedbackAmount;
   final int postAmount;
   final int finishAmount;
   final int cancelAmount;
@@ -166,6 +167,7 @@ class WorkerRate extends Equatable {
     this.phone,
     this.services,
     this.avgPoint,
+    this.feedbackAmount,
     this.postAmount,
     this.finishAmount,
     this.cancelAmount,
@@ -183,10 +185,16 @@ class WorkerRate extends Equatable {
         phone,
         services,
         avgPoint,
+        feedbackAmount,
         postAmount,
         finishAmount,
         cancelAmount,
-        imageUrl, fivePercent,  fourPercent,  threePercent, twoPercent, onePercent, 
+        imageUrl,
+        fivePercent,
+        fourPercent,
+        threePercent,
+        twoPercent,
+        onePercent,
       ];
 }
 

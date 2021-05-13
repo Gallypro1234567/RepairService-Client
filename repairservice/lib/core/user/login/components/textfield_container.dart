@@ -48,10 +48,7 @@ class TextFieldContainerBloc extends StatelessWidget {
         contentPadding: EdgeInsets.only(top: kDefaultPadding / 2),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            borderSide: BorderSide(color: Colors.grey)),
-        // focusedErrorBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        //     borderSide: BorderSide(color: Colors.deepOrange, width: 2)),
+            borderSide: BorderSide(color: Colors.grey)), 
         prefixIcon: Container(
           margin: EdgeInsets.symmetric(
               vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 4),

@@ -1,13 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:repairservice/config/themes/constants.dart';
 
 import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/core/auth/bloc/authentication_bloc.dart';
 import 'package:repairservice/modules/home/home_page.dart';
+import 'package:repairservice/modules/post/post_form_page.dart';
 import 'package:repairservice/modules/user/user_manager_page.dart';
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
 
 import 'manager/manager_screen.dart';
 import 'notification/notification_screen.dart';
+import 'post/bloc/post_bloc.dart';
 
 class MainPage extends StatefulWidget {
   static Route route() {
@@ -30,11 +39,6 @@ class _MainPageState extends State<MainPage> {
   void onBottomIconPressed(int index) {
     setState(() {
       _selectedIndex = index;
-      // if (widget.selectIndex == -1) {
-
-      // } else {
-      //   _selectedIndex = widget.selectIndex;
-      // }
     });
   }
 
@@ -49,7 +53,7 @@ class _MainPageState extends State<MainPage> {
 
   Widget _main(List<Widget> children) {
     return Scaffold(
-      backgroundColor: LightColor.lightteal,
+      backgroundColor: LightColor.lightGrey,
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
@@ -61,6 +65,13 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     Expanded(
                       child: AnimatedSwitcher(
+                        transitionBuilder: (child, animation) {
+                          return FadeTransition(
+                            alwaysIncludeSemantics: true,
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
                         duration: Duration(milliseconds: 200),
                         switchInCurve: Curves.easeInToLinear,
                         switchOutCurve: Curves.easeOutBack,
@@ -75,10 +86,72 @@ class _MainPageState extends State<MainPage> {
                 bottom: 0,
                 right: 0,
                 child: CustomBottomNavigationBar(
-                    onIconPresedCallback: onBottomIconPressed))
+                    onIconPresedCallback: onBottomIconPressed)),
+            Positioned(
+                bottom: AppTheme.fullHeight(context) * .1,
+                right: kDefaultPadding / 2,
+                child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                  builder: (context, state) {
+                    switch (state.user.isCustomer) {
+                      case UserType.customer:
+                        return Padding(
+                          padding:
+                              const EdgeInsets.only(bottom: kDefaultPadding),
+                          child: FloatingActionButton(
+                            backgroundColor: Colors.cyan,
+                            onPressed: () {
+                              context.read<PostBloc>().add(PostAddNewPage());
+                              Navigator.push(
+                                  context, SlideFadeRoute(page: PostPage()));
+                            },
+                            child: Center(child: Icon(FontAwesome.edit)),
+                          ),
+                        );
+                        break;
+                      default:
+                        return Container();
+                    }
+                  },
+                ))
           ],
         ),
       ),
+      // bottomNavigationBar: BottomAppBar(
+      //   shape: CircularNotchedRectangle(),
+      //   clipBehavior: Clip.hardEdge,
+      //   child: BottomNavigationBar(type: BottomNavigationBarType.fixed, items: [
+      //     BottomNavigationBarItem(
+      //       label: "heleo",
+      //       icon: Icon(Icons.cancel),
+      //     ),
+      //     BottomNavigationBarItem(label: "heleo", icon: Icon(Icons.cancel)),
+      //     BottomNavigationBarItem(
+      //       icon: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      //         builder: (context, state) {
+      //           switch (state.user.isCustomer) {
+      //             case UserType.customer:
+      //               return FloatingActionButton(
+      //                 backgroundColor: LightColor.lightteal,
+      //                 onPressed: () {
+      //                   context.read<PostBloc>().add(PostAddNewPage());
+      //                   Navigator.push(
+      //                       context, SlideFadeRoute(page: PostPage()));
+      //                 },
+      //                 child: Center(child: Icon(Entypo.plus)),
+      //               );
+      //               break;
+      //             default:
+      //               return Container();
+      //           }
+      //         },
+      //       ),
+      //       label: "",
+      //     ),
+      //     BottomNavigationBarItem(label: "heleo", icon: Icon(Icons.cancel)),
+      //     BottomNavigationBarItem(label: "heleo", icon: Icon(Icons.cancel)),
+      //   ]),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.,
     );
   }
 

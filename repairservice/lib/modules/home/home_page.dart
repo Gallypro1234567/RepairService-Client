@@ -9,9 +9,11 @@ import 'package:repairservice/modules/admin_dashboard/dashboard_page.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post/bloc/post_bloc.dart';
 import 'package:repairservice/modules/post/components/post_item_container.dart';
-import 'package:repairservice/modules/post/screens/post_form_page.dart';
+import 'package:repairservice/modules/post_get_list/components/post_search_container.dart';
+import 'package:repairservice/modules/post/post_form_page.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
+import 'package:repairservice/modules/post_get_list/components/post_item_container.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
@@ -48,23 +50,7 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
-          child: TextFormField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  borderSide: BorderSide(color: Colors.grey)),
-              focusColor: LightColor.grey,
-              contentPadding: EdgeInsets.only(top: kDefaultPadding / 2),
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  borderSide: BorderSide(color: Colors.grey)),
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.grey,
-              ),
-              hintText: "Bạn cần tìm dịch vụ gì ?",
-            ),
-          ),
+          child: SearchContainer(),
         ),
         leadingWidth: 30,
         leading: BlocBuilder<AuthenticationBloc, AuthenticationState>(
@@ -126,28 +112,6 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
-      floatingActionButton:
-          BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (context, state) {
-          switch (state.user.isCustomer) {
-            case UserType.customer:
-              return Padding(
-                padding: const EdgeInsets.only(bottom: kDefaultPadding),
-                child: FloatingActionButton(
-                  backgroundColor: LightColor.lightteal,
-                  onPressed: () {
-                    context.read<PostBloc>().add(PostAddNewPage());
-                    Navigator.push(context, SlideFadeRoute(page: PostPage()));
-                  },
-                  child: Center(child: Icon(Entypo.plus)),
-                ),
-              );
-              break;
-            default:
-              return Container();
-          }
-        },
-      ),
     );
   }
 
@@ -172,11 +136,10 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ServiceGridview(
-              size: _size,
               model: state.services,
             ),
             SizedBox(
-              height: kDefaultPadding / 2,
+              height: kDefaultPadding / 6,
             ),
           ],
         ),

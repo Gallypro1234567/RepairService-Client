@@ -6,7 +6,7 @@ import 'package:repairservice/widgets/title_text.dart';
 
 class ReviewFeedBack extends StatelessWidget {
   final int amount;
-  final int customerAmount;
+  final int feedbackAmount;
   final double avgPointRating;
   final int finishAmount;
   final int cancelAmount;
@@ -14,9 +14,9 @@ class ReviewFeedBack extends StatelessWidget {
     Key key,
     this.avgPointRating,
     this.amount,
-    this.customerAmount,
     this.finishAmount,
     this.cancelAmount,
+    this.feedbackAmount,
   }) : super(key: key);
 
   @override
@@ -34,7 +34,7 @@ class ReviewFeedBack extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TitleText(
-                      text: avgPointRating.toString(),
+                      text: avgPointRating.toString().replaceAll('.', ','),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -51,7 +51,7 @@ class ReviewFeedBack extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TitleText(
-                      text: customerAmount.toString(),
+                      text: feedbackAmount.toString(),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),

@@ -231,8 +231,24 @@ class PostDetailPerfectPage extends StatelessWidget {
                         children: [
                           Expanded(
                             child: WorkerRegisterButton(
-                              title: "Đã Đánh giá",
+                              title: "Màn hình chính",
+                              color: Colors.green,
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    SlideFadeRoute(page: MainPage()),
+                                    (route) => false);
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: kDefaultPadding / 2,
+                          ),
+                          Expanded(
+                            child: WorkerRegisterButton(
+                              title: "Đã đánh giá",
                               color: LightColor.lightteal,
+                              colorText: Colors.black,
                               onPressed: null,
                             ),
                           ),
@@ -253,9 +269,9 @@ class PostDetailPerfectPage extends StatelessWidget {
                             title: "Đánh giá",
                             color: LightColor.lightteal,
                             onPressed: () {
-                              context
-                                  .read<PostrateBloc>()
-                                  .add(PostrateFetched(postCode:  state.post.postCode, wofscode:state.post.wofsCode));
+                              context.read<PostrateBloc>().add(PostrateFetched(
+                                  postCode: state.post.postCode,
+                                  wofscode: state.post.wofsCode));
                               Navigator.push(context,
                                   SlideFadeRoute(page: PostRatingPage()));
                             },
@@ -552,13 +568,15 @@ class WorkerRegisterButton extends StatelessWidget {
   final Function onPressed;
   final Color color;
   final Color shadowColor;
-  const WorkerRegisterButton({
-    Key key,
-    this.title,
-    this.onPressed,
-    this.color,
-    this.shadowColor,
-  }) : super(key: key);
+  final Color colorText;
+  const WorkerRegisterButton(
+      {Key key,
+      this.title,
+      this.onPressed,
+      this.color,
+      this.shadowColor,
+      this.colorText = Colors.white})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -580,7 +598,7 @@ class WorkerRegisterButton extends StatelessWidget {
                 text: title,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: colorText,
                 textAlign: TextAlign.center)),
       ),
       onPressed: onPressed,

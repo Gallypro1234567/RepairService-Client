@@ -118,11 +118,12 @@ class Body extends StatelessWidget {
                 wofsText: model.workerRating.services,
               ),
               ReviewFeedBack(
+                feedbackAmount: model.workerRating.feedbackAmount,
                 avgPointRating: model.workerRating.avgPoint,
                 amount: model.workerRating.postAmount,
                 finishAmount: model.workerRating.finishAmount,
                 cancelAmount: model.workerRating.cancelAmount,
-                customerAmount: model.workerRating.postAmount,
+                
               ),
               SizedBox(
                 height: kDefaultPadding,
@@ -141,8 +142,8 @@ class Body extends StatelessWidget {
                         BlocBuilder<PostrateBloc, PostrateState>(
                           builder: (context, state) {
                             return ReviewChart(
-                              pointRating: state.workerRating.avgPoint,
-                              customerAmount: state.workerRating.postAmount,
+                              pointRating:  state.workerRating.avgPoint,
+                              feedbackAmount: state.workerRating.feedbackAmount,
                               fivePercent: state.workerRating.fivePercent * 100,
                               fourPercent: state.workerRating.fourPercent * 100,
                               threePercent:

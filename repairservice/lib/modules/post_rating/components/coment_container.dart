@@ -47,11 +47,11 @@ class CommentsContainer extends StatelessWidget {
           children: [
             SmoothStarRating(
                 allowHalfRating: false,
-                onRated: (v) {},
+                onRated: null,
                 starCount: 5,
                 rating: pointRating,
                 size: 20,
-                isReadOnly: false,
+                isReadOnly: true,
                 color: Colors.green,
                 borderColor: Colors.grey,
                 spacing: 0),

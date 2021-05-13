@@ -11,7 +11,7 @@ class ReviewChart extends StatelessWidget {
   final double twoPercent;
   final double onePercent;
   final double pointRating;
-  final int customerAmount;
+  final int feedbackAmount;
 
   const ReviewChart({
     Key key,
@@ -21,7 +21,7 @@ class ReviewChart extends StatelessWidget {
     this.twoPercent,
     this.onePercent,
     this.pointRating,
-    this.customerAmount,
+    this.feedbackAmount,
   }) : super(key: key);
 
   @override
@@ -48,7 +48,7 @@ class ReviewChart extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TitleText(
-                      text: pointRating.toString(),
+                      text: pointRating.toString().replaceAll('.', ','),
                       fontSize: 60,
                       fontWeight: FontWeight.w500,
                     ),
@@ -63,7 +63,7 @@ class ReviewChart extends StatelessWidget {
                         borderColor: Colors.grey,
                         spacing: 0),
                     TitleText(
-                      text: customerAmount.toString(),
+                      text: feedbackAmount.toString(),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),

@@ -25,3 +25,4 @@ class TitleText extends StatelessWidget {
             fontSize: fontSize, fontWeight: fontWeight, color: color));
   }
 }
+ 

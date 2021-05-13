@@ -64,7 +64,8 @@ class Post extends Equatable {
         wofsCode
       ];
 }
- 
+
+
 class PostApplyOfWorker extends Equatable {
   final String code;
 

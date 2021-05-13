@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post/screens/post_detail_page.dart';
@@ -26,6 +27,42 @@ class CustomerManagerPostContainer extends StatelessWidget {
           horizontal: kDefaultPadding / 2,
         ),
         height: AppTheme.fullHeight(context) * 0.2,
+        foregroundDecoration: RotatedCornerDecoration(
+          color: post.status == 0
+              ? Colors.amber
+              : post.status != 1
+                  ? post.status != 2
+                      ? post.status != 3
+                          ? Colors.blue
+                          : Colors.red
+                      : Colors.green
+                  : Colors.green,
+          geometry: BadgeGeometry(width: 124, height: 64),
+          textSpan: TextSpan(
+            text: post.status == 0
+                ? "Tin đã đăng"
+                : post.status != 1
+                    ? post.status != 2
+                        ? post.status != 3
+                            ? "Đã hoàn thành"
+                            : "Đã hủy"
+                        : "Đã hoàn thành"
+                    : "Bạn đã chấp nhận",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+              color: post.status == 0
+                  ? Colors.white
+                  : post.status != 1
+                      ? post.status != 2
+                          ? post.status != 3
+                              ? Colors.white
+                              : Colors.white
+                          : Colors.white
+                      : Colors.white,
+            ),
+          ),
+        ),
         decoration: BoxDecoration(color: Colors.white),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -76,22 +113,36 @@ class CustomerManagerPostContainer extends StatelessWidget {
                               SizedBox(
                                 height: kDefaultPadding / 4,
                               ),
-                              SizedBox(
-                                height: kDefaultPadding / 4,
-                              ),
-                              SizedBox(
-                                height: kDefaultPadding / 4,
-                              ),
-                              SizedBox(
-                                height: kDefaultPadding / 4,
-                              ),
                               Row(
                                 children: [
+                                  // TitleText(
+                                  //   text: "Danh mục: ",
+                                  //   fontSize: 14,
+                                  //   fontWeight: FontWeight.normal,
+                                  // ),
                                   TitleText(
-                                    text: "Trạng thái: ",
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
+                                    text: post.serviceText,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
                                   ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: kDefaultPadding / 4,
+                              ),
+                              // SizedBox(
+                              //   height: kDefaultPadding / 4,
+                              // ),
+                              // SizedBox(
+                              //   height: kDefaultPadding / 4,
+                              // ),
+                              Row(
+                                children: [
+                                  // TitleText(
+                                  //   text: "Trạng thái: ",
+                                  //   fontSize: 14,
+                                  //   fontWeight: FontWeight.normal,
+                                  // ),
                                   Container(
                                     padding: EdgeInsets.symmetric(
                                         vertical: kDefaultPadding / 4,

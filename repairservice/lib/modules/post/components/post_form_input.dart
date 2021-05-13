@@ -8,6 +8,8 @@ class PostFormInput extends StatelessWidget {
   final Function(String) onChanged;
   final String initialValue;
   final bool readOnly;
+  final bool invalid;
+  final String errorText;
   final TextEditingController controler;
   const PostFormInput({
     Key key,
@@ -17,6 +19,8 @@ class PostFormInput extends StatelessWidget {
     this.initialValue,
     this.controler,
     this.readOnly = false,
+    this.invalid = true,
+    this.errorText,
   }) : super(key: key);
 
   @override
@@ -27,11 +31,9 @@ class PostFormInput extends StatelessWidget {
         onChanged: onChanged,
         controller: controler,
         readOnly: readOnly,
-        // initialValue: initialValue,
         scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
         decoration: InputDecoration(
           labelText: '$title *',
-          hintText: hintText,
           hintStyle: TextStyle(fontWeight: FontWeight.w500),
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
@@ -40,6 +42,8 @@ class PostFormInput extends StatelessWidget {
             borderSide: BorderSide(color: Colors.blue),
           ),
           border: UnderlineInputBorder(),
+          hintText: invalid ? null : hintText,
+          errorText: errorText,
         ),
       ),
     );
@@ -52,6 +56,8 @@ class PostAreaInput extends StatelessWidget {
   final Function(String) onChanged;
   final String initialValue;
   final bool readOnly;
+  final bool invalid;
+  final String errorText;
   final TextEditingController controler;
   const PostAreaInput({
     Key key,
@@ -61,6 +67,8 @@ class PostAreaInput extends StatelessWidget {
     this.initialValue,
     this.controler,
     this.readOnly = false,
+    this.invalid,
+    this.errorText,
   }) : super(key: key);
 
   @override
@@ -72,12 +80,11 @@ class PostAreaInput extends StatelessWidget {
         controller: controler,
         readOnly: readOnly,
         keyboardType: TextInputType.multiline,
-        minLines: 5,
+        minLines: 1,
         maxLines: 20,
         maxLength: 1000,
         scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
         decoration: InputDecoration(
-          hintText: hintText,
           hintStyle: TextStyle(fontWeight: FontWeight.w500),
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
@@ -86,6 +93,8 @@ class PostAreaInput extends StatelessWidget {
             borderSide: BorderSide(color: Colors.blue),
           ),
           border: UnderlineInputBorder(),
+          hintText: invalid ? null : hintText,
+          errorText: errorText,
         ),
       ),
     );

@@ -5,9 +5,9 @@ import 'package:repairservice/config/themes/constants.dart';
 
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/components/service_container.dart';
-import 'package:repairservice/modules/post/bloc/post_bloc.dart';
+import 'package:repairservice/modules/post_get_list/bloc/postgetlist_bloc.dart';
+import 'package:repairservice/modules/post_get_list/post_get_list_page.dart';
 
-import 'package:repairservice/modules/post/post_of_service_page.dart';
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
@@ -15,17 +15,16 @@ import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
 
 class ServiceGridview extends StatelessWidget {
-  final dynamic size;
   final List<Service> model;
 
-  const ServiceGridview({Key key, this.size, this.model}) : super(key: key);
+  const ServiceGridview({Key key, this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: kDefaultPadding / 2),
+      padding: EdgeInsets.only(bottom: kDefaultPadding / 4),
       width: AppTheme.fullWidth(context),
-      height: AppTheme.fullWidth(context) * .7,
+      height: AppTheme.fullWidth(context) * .62,
       color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -33,15 +32,15 @@ class ServiceGridview extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(
-                top: kDefaultPadding, left: kDefaultPadding / 2),
+                top: kDefaultPadding / 2, left: kDefaultPadding / 2),
             child: TitleText(
               text: "Khám phá danh mục",
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
           SizedBox(
-            height: kDefaultPadding / 2,
+            height: kDefaultPadding / 4,
           ),
           Expanded(
             child: GridView(
@@ -51,15 +50,18 @@ class ServiceGridview extends StatelessWidget {
                 crossAxisSpacing: 10,
               ),
               scrollDirection: Axis.horizontal,
-              children:  model
+              children: model
                   .map(
-                    (obj) => Container(child: BlocBuilder<PostBloc, PostState>(
+                    (obj) => Container(
+                        child: BlocBuilder<PostgetlistBloc, PostgetlistState>(
                       builder: (context, state) {
                         return ServiceContainer(
                           title: obj.name,
                           imageUrl: obj.imageUrl,
                         ).ripple(() {
-                          context.read<PostBloc>().add(PostFetched(obj.code));
+                          context
+                              .read<PostgetlistBloc>()
+                              .add(PostgetlistFetched(obj.code));
                           Navigator.push(
                               context,
                               SlideFadeRoute(

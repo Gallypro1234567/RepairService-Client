@@ -5,11 +5,97 @@ import 'package:http/http.dart' as http;
 import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/service/server_hosting.dart' as Host;
+import 'models/city_model.dart';
 import 'models/post.dart';
 import 'models/post_apply.dart';
 import 'models/post_detail_pefect.dart';
 
 class PostRepository {
+  Future<List<City>> fetchCities() async {
+    try {
+      var response = await http.get(
+        Uri.http('thongtindoanhnghiep.co', "/api/city"),
+      );
+      var jsons = json.decode(response.body);
+      if (response.statusCode == 200) {
+        var body = jsons['LtsItem'] as List;
+
+        return body.map((dynamic json) {
+          return City(
+            id: json["ID"] as int,
+            title: json["Title"] as String,
+            solrId: json["SolrId"] as String,
+            stt: json["Stt"] as int,
+            totalDoanhNghiep: json["TotalDoanhNghiep"] as int,
+            type: json["Type"] as int,
+          );
+        }).toList();
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<List<District>> fetchDistrictbyCityId({String id}) async {
+    try {
+      var response = await http.get(
+        Uri.http('thongtindoanhnghiep.co', "/api/city/$id/district"),
+      );
+      if (response.statusCode == 200) {
+        var body = json.decode(response.body) as List;
+        return body.map((dynamic json) {
+          return District(
+            id: json["ID"] as int,
+            title: json["Title"] as String,
+            solrId: json["SolrId"] as String,
+            stt: json["Stt"] as int,
+            tinhThanhId: json["TinhThanhId"] as int,
+            tinhThanhTitle: json["TinhThanhTitle"] as String,
+            tinhThanhTitleAscii: json["TinhThanhTitleAscii"] as String,
+            type: json["Type"] as int,
+            isActived: 0,
+          );
+        }).toList();
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<List<Ward>> fetchWardbyDisctrictId({String id}) async {
+    try {
+      var response = await http.get(
+        Uri.http('thongtindoanhnghiep.co', "/api/district/$id/ward"),
+      );
+      if (response.statusCode == 200) {
+        var body = json.decode(response.body) as List;
+        return body.map((dynamic json) {
+          return Ward(
+            id: json["ID"] as int,
+            title: json["Title"] as String,
+            solrId: json["SolrId"] as String,
+            stt: json["Stt"] as int,
+            tinhThanhId: json["TinhThanhId"] as int,
+            tinhThanhTitle: json["TinhThanhTitle"] as String,
+            tinhThanhTitleAscii: json["TinhThanhTitleAscii"] as String,
+            quanHuyenId: json["QQuanHuyenId"] as int,
+            quanHuyenTitle: json["QuanHuyenTitle"] as String,
+            quanHuyenTitleAscii: json["QuanHuyenTitleAscii"] as String,
+            type: json["Type"] as int,
+          );
+        }).toList();
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   Future<List<Post>> fetchPost({String serviceCode}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
@@ -189,14 +275,15 @@ class PostRepository {
               avgPoint: json["AVGPoint"] == null
                   ? 0.0
                   : double.parse(json["AVGPoint"].toString()),
+              feedbackAmount: int.parse(json["FeedbackAmount"].toString()),
               postAmount: int.parse(json["PostAmount"].toString()),
               finishAmount: int.parse(json["PostFinishAmount"].toString()),
               cancelAmount: int.parse(json["PostCancelAmount"].toString()),
-              fivePercent: double.parse(json["FivePercent"].toString()), 
-              fourPercent: double.parse(json["FourPercent"].toString()), 
-              threePercent: double.parse(json["ThreePercent"].toString()), 
-              twoPercent: double.parse(json["TwoPercent"].toString()), 
-              onePercent: double.parse(json["OnePercent"].toString()), 
+              fivePercent: double.parse(json["FivePercent"].toString()),
+              fourPercent: double.parse(json["FourPercent"].toString()),
+              threePercent: double.parse(json["ThreePercent"].toString()),
+              twoPercent: double.parse(json["TwoPercent"].toString()),
+              onePercent: double.parse(json["OnePercent"].toString()),
               imageUrl: json["ImageUrl"] != null
                   ? json["ImageUrl"].toString().length > 0
                       ? Uri.http(Host.Server_hosting, json["ImageUrl"])
@@ -445,6 +532,8 @@ class PostRepository {
           return Post(
               code: json["Code"] as String,
               wofsCode: json["WorkerOfServiceCode"] as String,
+              serviceCode: json["ServiceCode"] as String,
+              serviceText: json["ServiceName"] as String,
               title: json["Title"] as String,
               address: json["Address"] as String,
               createAt: json["CreateAt"] as String,

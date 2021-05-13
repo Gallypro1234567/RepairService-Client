@@ -1,10 +1,8 @@
 import 'dart:io';
-
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
@@ -12,18 +10,17 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post/bloc/post_bloc.dart';
 import 'package:repairservice/modules/post/components/post_change_image.dart';
-import 'package:repairservice/modules/post/components/post_item_container.dart';
-import 'package:repairservice/modules/post/screens/post_find_worker_page.dart';
+
 import 'package:repairservice/modules/post/screens/post_form_select_service.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
-import '../components/post_button.dart';
-import '../components/post_form_input.dart';
+import 'components/post_button.dart';
+import 'components/post_form_input.dart';
 
-import '../../../utils/ui/extensions.dart';
+import '../../utils/ui/extensions.dart';
 
 class PostPage extends StatelessWidget {
   @override
@@ -149,6 +146,8 @@ class FormBody extends StatelessWidget {
                 return PostFormInput(
                   title: "Danh mục tin",
                   hintText: "Chưa có thông tin",
+                  invalid: state.serviceInvalid,
+                  errorText: state.serviceInvalid ? 'không được trống' : null,
                   controler: new TextEditingController(text: state.serviceText),
                 ).ripple(() {
                   Navigator.push(
@@ -188,10 +187,14 @@ class FormBody extends StatelessWidget {
               height: kDefaultPadding / 2,
             ),
             BlocBuilder<PostBloc, PostState>(
+              buildWhen: (previous, current) =>
+                  previous.address != current.address,
               builder: (context, state) {
                 return PostFormInput(
                   title: "Địa chỉ",
                   hintText: "số nhà, quận huyện, thành phô",
+                  invalid: state.address.invalid,
+                  errorText: state.address.invalid ? 'không được trống' : null,
                   onChanged: (value) {
                     context.read<PostBloc>().add(PostAddressChanged(value));
                   },
@@ -202,10 +205,13 @@ class FormBody extends StatelessWidget {
               height: kDefaultPadding / 2,
             ),
             BlocBuilder<PostBloc, PostState>(
+              buildWhen: (previous, current) => previous.title != current.title,
               builder: (context, state) {
                 return PostFormInput(
                   title: "Tiêu đề",
                   hintText: "Chưa có thông tin",
+                  invalid: state.title.invalid,
+                  errorText: state.title.invalid ? 'không được trống' : null,
                   onChanged: (value) {
                     context.read<PostBloc>().add(PostTitleChanged(value));
                   },
@@ -222,12 +228,18 @@ class FormBody extends StatelessWidget {
                   text: "Thêm mô tả *",
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
+                  color: Colors.black54,
                 ),
               ],
             ),
             BlocBuilder<PostBloc, PostState>(
+              buildWhen: (previous, current) =>
+                  previous.description != current.description,
               builder: (context, state) {
                 return PostAreaInput(
+                  invalid: state.description.invalid,
+                  errorText:
+                      state.description.invalid ? 'không được trống' : null,
                   onChanged: (value) {
                     context.read<PostBloc>().add(PostDescriptionChanged(value));
                   },

@@ -9,14 +9,8 @@ class PostEvent extends Equatable {
 
 class PostInitial extends PostEvent {}
 
-class PostRecently extends PostEvent {}
-
-class PostFetched extends PostEvent {
-  final String code;
-
-  PostFetched(this.code);
-}
 class PostAddNewPage extends PostEvent {}
+
 class PostAddImageMutiChanged extends PostEvent {
   final ImageSource imageSource;
 
@@ -34,7 +28,12 @@ class PostFetchedByPhone extends PostEvent {}
 class PostServiceChanged extends PostEvent {
   final String text;
   final String code;
-  PostServiceChanged({this.text, this.code});
+  final bool invalid;
+  PostServiceChanged({
+    this.text,
+    this.code,
+    this.invalid,
+  });
 }
 
 class PostService extends PostEvent {
