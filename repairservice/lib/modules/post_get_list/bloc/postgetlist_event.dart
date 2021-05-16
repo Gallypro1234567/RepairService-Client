@@ -18,8 +18,8 @@ class PostgetlistCityFetched extends PostgetlistEvent {}
 
 class PostgetlistCitySelectChanged extends PostgetlistEvent {
   final String cityTitle;
-
-  PostgetlistCitySelectChanged(this.cityTitle);
+  final int cityId;
+  PostgetlistCitySelectChanged({this.cityTitle, this.cityId});
 }
 
 class PostgetlistDistrictFetched extends PostgetlistEvent {
@@ -29,7 +29,8 @@ class PostgetlistDistrictFetched extends PostgetlistEvent {
 
 class PostgetlistDistrictSelectChanged extends PostgetlistEvent {
   final String districtText;
-  PostgetlistDistrictSelectChanged(this.districtText);
+  final int districtId;
+  PostgetlistDistrictSelectChanged({this.districtText, this.districtId});
 }
 
 class PostgetlistWardFetched extends PostgetlistEvent {

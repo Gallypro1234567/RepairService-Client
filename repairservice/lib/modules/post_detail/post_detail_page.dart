@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
@@ -24,7 +25,7 @@ class PostDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Trang tin chi tiết",
           fontSize: 16,
@@ -151,6 +152,10 @@ class PostDetailBottomSheet extends StatelessWidget {
                       builder: (context, postDtstate) {
                         if (postDtstate.statusApply == 0)
                           return PostDetailButton(
+                            icon: Icon(
+                              FontAwesome.edit,
+                              size: 30,
+                            ),
                             title: "Apply",
                             primaryColor: Colors.green,
                             shadowColor: LightColor.lightGrey,
@@ -164,6 +169,10 @@ class PostDetailBottomSheet extends StatelessWidget {
                           );
                         if (postDtstate.statusApply == 1)
                           return PostDetailButton(
+                            icon: Icon(
+                              FontAwesome.edit,
+                              size: 30,
+                            ),
                             title: "Đang chờ",
                             primaryColor: Colors.amber,
                             shadowColor: LightColor.lightGrey,
@@ -172,6 +181,10 @@ class PostDetailBottomSheet extends StatelessWidget {
                           );
                         else if (postDtstate.statusApply == 2)
                           return PostDetailButton(
+                            icon: Icon(
+                              FontAwesome.edit,
+                              size: 30,
+                            ),
                             title: "Đã chấp nhận",
                             primaryColor: Colors.blue,
                             shadowColor: LightColor.lightGrey,
@@ -180,16 +193,36 @@ class PostDetailBottomSheet extends StatelessWidget {
                           );
                         else if (postDtstate.statusApply == 3)
                           return PostDetailButton(
+                            icon: Icon(
+                              FontAwesome.edit,
+                              size: 30,
+                            ),
                             title: "Đã hoàn thành",
                             primaryColor: Colors.blue,
                             shadowColor: LightColor.lightGrey,
                             textColor: Colors.white,
                             onPressed: () {},
                           );
-                        else
+                        else if (postDtstate.statusApply == 1)
                           return PostDetailButton(
+                            icon: Icon(
+                              FontAwesome.edit,
+                              size: 30,
+                            ),
                             title:
                                 "Không thể apply khi bạn đã hủy việc này trước đó",
+                            primaryColor: Colors.red,
+                            shadowColor: LightColor.lightGrey,
+                            textColor: Colors.white,
+                            onPressed: () {},
+                          );
+                        else
+                          return PostDetailButton(
+                            icon: Icon(
+                              FontAwesome.edit,
+                              size: 30,
+                            ),
+                            title: "Bạn Chưa đủ điều kiện apply",
                             primaryColor: Colors.red,
                             shadowColor: LightColor.lightGrey,
                             textColor: Colors.white,
@@ -214,6 +247,10 @@ class PostDetailBottomSheet extends StatelessWidget {
                     children: [
                       Expanded(
                         child: PostDetailButton(
+                          icon: Icon(
+                            FontAwesome.edit,
+                            size: 30,
+                          ),
                           title: "Cập nhật thông tin",
                           primaryColor: Colors.blue,
                           shadowColor: LightColor.lightGrey,
@@ -229,11 +266,16 @@ class PostDetailBottomSheet extends StatelessWidget {
                       ),
                       Expanded(
                         child: PostDetailButton(
+                          icon: Icon(
+                            FontAwesome.list_ul,
+                            size: 30,
+                            color: Colors.black,
+                          ),
                           title: "Danh sách thợ",
+                          textColor: Colors.black,
                           primaryColor: LightColor.lightGrey,
                           shadowColor: LightColor.lightGrey,
                           onPressed: () {
-                             
                             context
                                 .read<PostapplyBloc>()
                                 .add(PostapplyFetched(postCode));

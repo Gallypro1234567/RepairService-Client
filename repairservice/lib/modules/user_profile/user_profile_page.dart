@@ -63,7 +63,7 @@ class UserProfileView extends StatelessWidget {
         }
       },
       child: Scaffold(
-          appBar: AppBar(
+          appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
             backgroundColor: Colors.white,
             title: Text("Tài khoản"),
             centerTitle: true,

@@ -14,6 +14,7 @@ class WorkerApply extends Equatable {
   final String createAt;
   final int postStatus;
   final int status;
+  final double pointFeedback;
   WorkerApply(
       {this.fullname,
       this.phone,
@@ -26,7 +27,8 @@ class WorkerApply extends Equatable {
       this.status,
       this.createAt,
       this.postStatus,
-      this.serviceName});
+      this.serviceName,
+      this.pointFeedback});
   @override
   List<Object> get props => [
         fullname,
@@ -41,5 +43,6 @@ class WorkerApply extends Equatable {
         serviceName,
         createAt,
         postStatus,
+        pointFeedback
       ];
 }

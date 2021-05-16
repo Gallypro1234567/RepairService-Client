@@ -33,11 +33,12 @@ class PostFormInput extends StatelessWidget {
         readOnly: readOnly,
         scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
         decoration: InputDecoration(
-          labelText: '$title *',
+          labelText: '$title (*)',
           hintStyle: TextStyle(fontWeight: FontWeight.w500),
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),
+          contentPadding: EdgeInsets.only(top: kDefaultPadding / 2),
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.blue),
           ),
@@ -118,7 +119,7 @@ class PostSelectInput extends StatelessWidget {
             controller: controler,
             scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
             decoration: InputDecoration(
-              labelText: '$title *',
+              labelText: '$title (*)',
               hintText: hintText,
               hintStyle: TextStyle(fontWeight: FontWeight.w500),
               enabledBorder: UnderlineInputBorder(

@@ -22,8 +22,6 @@ class PostapplyBloc extends Bloc<PostapplyEvent, PostapplyState> {
       yield state.copyWith();
     else if (event is PostapplyFetched)
       yield* _mapPostapplyFetchedToState(event, state);
-    else if (event is PostApplyOpenPhoneCall)
-      yield* _mapPostApplyOpenPhoneCallToState(event, state);
   }
 
   Stream<PostapplyState> _mapPostapplyFetchedToState(
@@ -36,19 +34,6 @@ class PostapplyBloc extends Bloc<PostapplyEvent, PostapplyState> {
       yield state.copyWith(
         status: ApplyStatus.success,
         postApply: data,
-      );
-    } on Exception catch (_) {
-      yield state.copyWith(status: ApplyStatus.failure);
-    }
-  }
-
-  Stream<PostapplyState> _mapPostApplyOpenPhoneCallToState(
-      PostApplyOpenPhoneCall event, PostapplyState state) async* {
-    yield state.copyWith(status: ApplyStatus.loading);
-    try {
-      await launch("tel: ${event.phone}"); 
-      yield state.copyWith(
-        status: ApplyStatus.success,
       );
     } on Exception catch (_) {
       yield state.copyWith(status: ApplyStatus.failure);

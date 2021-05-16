@@ -21,6 +21,7 @@ import '../../../utils/ui/extensions.dart';
 import 'bloc/postupdate_bloc.dart';
 import 'components/post_change_image.dart';
 import 'components/post_form_input.dart';
+import 'screens/post_form_select_position.dart';
 import 'screens/post_form_select_service.dart';
 
 class PostUpdatePage extends StatelessWidget {
@@ -34,7 +35,7 @@ class PostUpdatePage extends StatelessWidget {
           }
         },
         child: Scaffold(
-          appBar: AppBar(
+          appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
             backgroundColor: Colors.white,
             titleSpacing: 0,
             bottomOpacity: 0,
@@ -75,189 +76,6 @@ class PostUpdatePage extends StatelessWidget {
             },
           ),
         ));
-  }
-}
-
-class FormBody extends StatelessWidget {
-  const FormBody({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: kDefaultPadding, vertical: kDefaultPadding),
-        child: Column(
-          children: [
-            BlocBuilder<PostUpdateBloc, PostUpdateState>(
-              builder: (context, state) {
-                if (state.images.length == 0) {
-                  return PostChangedImage(
-                    height: AppTheme.fullHeight(context) * 0.2,
-                    width: AppTheme.fullWidth(context),
-                    iconsize: 100,
-                  ).ripple(() {
-                    context
-                        .read<PostUpdateBloc>()
-                        .add(PostUpdateAddImageMutiChanged(ImageSource.camera));
-                  }, borderRadius: BorderRadius.circular(10));
-                }
-                List<Widget> list = [];
-                for (var item in state.images) {
-                  list.add(
-                    ImageSelected(
-                      file: item,
-                      status: false,
-                      target: state.images.indexOf(item),
-                    ),
-                  );
-                }
-                list.add(PostChangedImage(
-                  height: 150,
-                  width: 150,
-                  iconsize: 30,
-                ).ripple(() {
-                  context
-                      .read<PostUpdateBloc>()
-                      .add(PostUpdateAddImageMutiChanged(ImageSource.camera));
-                }, borderRadius: BorderRadius.circular(10)));
-
-                return Container(
-                  width: AppTheme.fullWidth(context),
-                  height: AppTheme.fullWidth(context) * .3,
-                  child: GridView(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 5,
-                    ),
-                    scrollDirection: Axis.horizontal,
-                    children: list,
-                  ),
-                );
-              },
-            ),
-            SizedBox(
-              height: kDefaultPadding * 2,
-            ),
-            BlocBuilder<PostUpdateBloc, PostUpdateState>(
-              builder: (context, state) {
-                return PostFormInput(
-                  title: "Danh mục tin",
-                  hintText: "Chưa có thông tin",
-                  controler: new TextEditingController(text: state.serviceText),
-                ).ripple(() {
-                  Navigator.push(
-                      context, SlideFadeRoute(page: SelectServicePage()));
-                });
-              },
-            ),
-            SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-            BlocBuilder<UserBloc, UserState>(
-              builder: (context, usestate) {
-                return PostFormInput(
-                  title: "Bạn là",
-                  hintText: "Chưa có thông tin",
-                  readOnly: true,
-                  controler:
-                      new TextEditingController(text: usestate.user.fullname),
-                );
-              },
-            ),
-            SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-            BlocBuilder<UserBloc, UserState>(
-              builder: (context, usestate) {
-                return PostFormInput(
-                  title: "SĐT",
-                  hintText: "Chưa có thông tin",
-                  readOnly: true,
-                  controler:
-                      new TextEditingController(text: usestate.user.phone),
-                );
-              },
-            ),
-            SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-            BlocBuilder<PostUpdateBloc, PostUpdateState>(
-              builder: (context, state) {
-                return PostFormInput(
-                  title: "Địa chỉ",
-                  hintText: "số nhà, quận huyện, thành phô",
-                  onChanged: (value) {
-                    context
-                        .read<PostUpdateBloc>()
-                        .add(PostUpdateAddressChanged(value));
-                  },
-                );
-              },
-            ),
-            SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-            BlocBuilder<PostUpdateBloc, PostUpdateState>(
-              builder: (context, state) {
-                return PostFormInput(
-                  title: "Tiêu đề",
-                  hintText: "Chưa có thông tin",
-                  onChanged: (value) {
-                    context
-                        .read<PostUpdateBloc>()
-                        .add(PostUpdateTitleChanged(value));
-                  },
-                );
-              },
-            ),
-            SizedBox(
-              height: kDefaultPadding / 1,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TitleText(
-                  text: "Thêm mô tả *",
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ],
-            ),
-            BlocBuilder<PostUpdateBloc, PostUpdateState>(
-              builder: (context, state) {
-                return PostAreaInput(
-                  onChanged: (value) {
-                    context
-                        .read<PostUpdateBloc>()
-                        .add(PostUpdateDescriptionChanged(value));
-                  },
-                );
-              },
-            ),
-            SizedBox(
-              height: kDefaultPadding / 1,
-            ),
-            BlocBuilder<PostUpdateBloc, PostUpdateState>(
-              builder: (context, state) {
-                return PostButton(
-                  title: "Đăng tin ngay",
-                  color: LightColor.lightteal,
-                  onPressed: () {
-                    context
-                        .read<PostUpdateBloc>()
-                        .add(PostUpdateCustomerSubmitted());
-                  },
-                );
-              },
-            )
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -329,7 +147,8 @@ class FormBodyUpdate extends StatelessWidget {
                 return PostFormInput(
                   title: "Danh mục tin",
                   hintText: "Chưa có thông tin",
-                  initialValue: state.serviceText,
+                  controler: new TextEditingController(text: state.serviceText),
+                  // initialValue: state.serviceText,
                 ).ripple(() {
                   Navigator.push(
                       context, SlideFadeRoute(page: SelectServicePage()));
@@ -371,16 +190,59 @@ class FormBodyUpdate extends StatelessWidget {
             ),
             BlocBuilder<PostUpdateBloc, PostUpdateState>(
               builder: (context, state) {
-                return PostFormInput(
-                  title: "Địa chỉ",
-                  hintText: "số nhà, quận huyện, thành phô",
-                  initialValue: state.address.value,
-                  onChanged: (value) {
-                    context
-                        .read<PostUpdateBloc>()
-                        .add(PostUpdateAddressChanged(value));
-                  },
-                );
+                return PostFormSelectInput(
+                  title: "Tỉnh, thành phố",
+                  hintText: "Chưa có thông tin",
+                  errorText: state.cityInvalid ? 'không được trống' : null,
+                  initialValue: state.cityText,
+                  controler: new TextEditingController(text: state.cityText),
+                ).ripple(() {
+                  context.read<PostUpdateBloc>().add(PostUpdateCityFetched());
+                  Navigator.push(context,
+                      SlideFadeRoute(page: PostUpdateSelectCityPage()));
+                });
+              },
+            ),
+            BlocBuilder<PostUpdateBloc, PostUpdateState>(
+              builder: (context, state) {
+                return PostFormSelectInput(
+                  title: "Quận, huyện",
+                  hintText: "Chưa có thông tin",
+                  invalid: state.districtInvalid,
+                  errorText: state.districtInvalid ? 'không được trống' : null,
+                  controler:
+                      new TextEditingController(text: state.districtText),
+                ).ripple(state.cityText.length == 0
+                    ? null
+                    : () {
+                        context
+                            .read<PostUpdateBloc>()
+                            .add(PostUpdateDistrictFetched(state.cityId));
+                        Navigator.push(
+                            context,
+                            SlideFadeRoute(
+                                page: PostUpdateSelectDistrictPage()));
+                      });
+              },
+            ),
+            BlocBuilder<PostUpdateBloc, PostUpdateState>(
+              builder: (context, state) {
+                return PostFormSelectInput(
+                  title: "Phường, xã",
+                  hintText: "Chưa có thông tin",
+                  invalid: state.wardInvalid,
+                  initialValue: state.wardText,
+                  errorText: state.wardInvalid ? 'không được trống' : null,
+                  controler: new TextEditingController(text: state.wardText),
+                ).ripple(state.districtText.length == 0
+                    ? null
+                    : () {
+                        context
+                            .read<PostUpdateBloc>()
+                            .add(PostUpdateWardFetched(state.districtId));
+                        Navigator.push(context,
+                            SlideFadeRoute(page: PostUpdateSelectWardPage()));
+                      });
               },
             ),
             SizedBox(
@@ -392,6 +254,8 @@ class FormBodyUpdate extends StatelessWidget {
                   title: "Tiêu đề",
                   hintText: "Chưa có thông tin",
                   initialValue: state.title.value,
+                  invalid: state.title.invalid,
+                  errorText: state.title.invalid ? 'không được trống' : null,
                   onChanged: (value) {
                     context
                         .read<PostUpdateBloc>()
@@ -414,9 +278,14 @@ class FormBodyUpdate extends StatelessWidget {
               ],
             ),
             BlocBuilder<PostUpdateBloc, PostUpdateState>(
+              buildWhen: (previous, current) =>
+                  previous.description != current.description,
               builder: (context, state) {
                 return PostAreaInput(
+                  invalid: state.description.invalid,
                   initialValue: state.description.value,
+                  errorText:
+                      state.description.invalid ? 'không được trống' : null,
                   onChanged: (value) {
                     context
                         .read<PostUpdateBloc>()

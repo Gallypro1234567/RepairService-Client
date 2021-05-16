@@ -21,6 +21,7 @@ import 'components/post_button.dart';
 import 'components/post_form_input.dart';
 
 import '../../utils/ui/extensions.dart';
+import 'screens/post_form_select_position.dart';
 
 class PostPage extends StatelessWidget {
   @override
@@ -33,7 +34,7 @@ class PostPage extends StatelessWidget {
           }
         },
         child: Scaffold(
-          appBar: AppBar(
+          appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
             backgroundColor: Colors.white,
             titleSpacing: 0,
             bottomOpacity: 0,
@@ -59,17 +60,26 @@ class PostPage extends StatelessWidget {
                 case PostStatus.loading:
                   return SplashPage();
                   break;
-                case PostStatus.none:
-                  return FormBody();
-                  break;
-                case PostStatus.loadSuccess:
-                  return FormBody();
-                  break;
-                case PostStatus.sbumitSuccess:
-                  return FormBody();
+                case PostStatus.failure:
+                  return Center(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Error",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.normal),
+                      ),
+                      SizedBox(
+                        height: kDefaultPadding / 2,
+                      ),
+                      Text(state.message)
+                    ],
+                  ));
                   break;
                 default:
-                  return Center(child: Text("Error"));
+                  return FormBody();
+                  break;
               }
             },
           ),
@@ -187,18 +197,57 @@ class FormBody extends StatelessWidget {
               height: kDefaultPadding / 2,
             ),
             BlocBuilder<PostBloc, PostState>(
-              buildWhen: (previous, current) =>
-                  previous.address != current.address,
               builder: (context, state) {
                 return PostFormInput(
-                  title: "Địa chỉ",
-                  hintText: "số nhà, quận huyện, thành phô",
-                  invalid: state.address.invalid,
-                  errorText: state.address.invalid ? 'không được trống' : null,
-                  onChanged: (value) {
-                    context.read<PostBloc>().add(PostAddressChanged(value));
-                  },
-                );
+                  title: "Tỉnh, thành phố",
+                  hintText: "Chưa có thông tin",
+                  invalid: state.cityInvalid,
+                  errorText: state.cityInvalid ? 'không được trống' : null,
+                  controler: new TextEditingController(text: state.cityText),
+                ).ripple(() {
+                  context.read<PostBloc>().add(PostCityFetched());
+                  Navigator.push(
+                      context, SlideFadeRoute(page: PostSelectCityPage()));
+                });
+              },
+            ),
+            BlocBuilder<PostBloc, PostState>(
+              builder: (context, state) {
+                return PostFormInput(
+                  title: "Quận, huyện",
+                  hintText: "Chưa có thông tin",
+                  invalid: state.districtInvalid,
+                  errorText: state.districtInvalid ? 'không được trống' : null,
+                  controler:
+                      new TextEditingController(text: state.districtText),
+                ).ripple(state.cityText.length == 0
+                    ? null
+                    : () {
+                        context
+                            .read<PostBloc>()
+                            .add(PostDistrictFetched(state.cityId));
+                        Navigator.push(context,
+                            SlideFadeRoute(page: PostSelectDistrictPage()));
+                      });
+              },
+            ),
+            BlocBuilder<PostBloc, PostState>(
+              builder: (context, state) {
+                return PostFormInput(
+                  title: "Phường, xã",
+                  hintText: "Chưa có thông tin",
+                  invalid: state.wardInvalid,
+                  errorText: state.wardInvalid ? 'không được trống' : null,
+                  controler: new TextEditingController(text: state.wardText),
+                ).ripple(state.districtText.length == 0
+                    ? null
+                    : () {
+                        context
+                            .read<PostBloc>()
+                            .add(PostWardFetched(state.districtId));
+                        Navigator.push(context,
+                            SlideFadeRoute(page: PostSelectWardPage()));
+                      });
               },
             ),
             SizedBox(

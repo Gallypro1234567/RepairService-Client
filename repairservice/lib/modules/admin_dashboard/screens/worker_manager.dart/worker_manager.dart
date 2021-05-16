@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
@@ -11,7 +12,7 @@ class WorkerManagerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
             text: "Quản lý thợ", fontSize: 16, fontWeight: FontWeight.w500),
         centerTitle: true,

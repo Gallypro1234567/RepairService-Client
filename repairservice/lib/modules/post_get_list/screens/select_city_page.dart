@@ -33,11 +33,11 @@ class SelectCityPage extends StatelessWidget {
       ),
       body: BlocBuilder<PostgetlistBloc, PostgetlistState>(
         builder: (context, state) {
-          switch (state.pageStatus) {
-            case PostGetStatus.loading:
+          switch (state.postGetPositionStatus) {
+            case PostGetPositionStatus.loading:
               return SplashPage();
               break;
-            case PostGetStatus.failure:
+            case PostGetPositionStatus.failure:
               return SplashPage();
 
               break;
@@ -48,10 +48,16 @@ class SelectCityPage extends StatelessWidget {
                     SelectContainer(
                       title: "Toàn quốc",
                     ).ripple(() {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          SlideFadeRoute(page: PostOfServicePage()),
-                          (route) => false);
+                      context.read<PostgetlistBloc>().add(
+                          PostgetlistCitySelectChanged(
+                              cityId: -1, cityTitle: "Toàn quốc"));
+                      context.read<PostgetlistBloc>().add(
+                          PostgetlistDistrictSelectChanged(
+                              districtId: -1, districtText: ""));
+                      context
+                          .read<PostgetlistBloc>()
+                          .add(PostgetlistFetched(state.serviceCode));
+                      Navigator.pop(context);
                     }),
                     ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
@@ -63,7 +69,8 @@ class SelectCityPage extends StatelessWidget {
                         ).ripple(() {
                           context.read<PostgetlistBloc>().add(
                               PostgetlistCitySelectChanged(
-                                  state.cities[index].title));
+                                  cityTitle: state.cities[index].title,
+                                  cityId: state.cities[index].id));
                           context.read<PostgetlistBloc>().add(
                               PostgetlistDistrictFetched(
                                   state.cities[index].id));

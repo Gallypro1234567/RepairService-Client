@@ -96,7 +96,8 @@ class PostRepository {
     }
   }
 
-  Future<List<Post>> fetchPost({String serviceCode}) async {
+  Future<List<Post>> fetchPost(
+      {String serviceCode, String cityId, String districtId}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
 
@@ -107,6 +108,8 @@ class PostRepository {
       "order": "1",
       "status": "0",
       "servicecode": serviceCode,
+      "cityid": cityId,
+      "districtId": districtId
     };
     try {
       var response = await http.get(
@@ -119,20 +122,33 @@ class PostRepository {
 
         return body.map((dynamic json) {
           List<String> imageUrls = [];
+          String addressShort;
           if (json["ImageUrl"] != null) {
-            List<String> list = json["ImageUrl"].split(',');
-            for (var item in list) {
-              imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+            if (json["ImageUrl"].toString().isNotEmpty) {
+              List<String> list = json["ImageUrl"].split(',');
+              for (var item in list) {
+                imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+              }
+            }
+          }
+          if (json["Address"] != null) {
+            if (json["Address"].toString().isNotEmpty) {
+              List<String> list = json["Address"].split(',');
+              if (list.length == 3) {
+                addressShort = list[1].toString() + "," + list[2];
+              } else
+                addressShort = json["Address"].toString();
             }
           }
           return Post(
               code: json["Code"] as String,
               title: json["Title"] as String,
-              address: json["Address"] as String,
+              address: addressShort,
               createAt: json["CreateAt"] as String,
               finishAt: DateTime.parse(json["FinishAt"]),
               fullname: json["Fullname"] as String,
-              position: json["Position"] as String,
+              cityId: json["CityId"] as int,
+              districtId: json["DistrictId"] as int,
               desciption: json["Description"] as String,
               status: json["status"] as int,
               phone: json["Phone"] as String,
@@ -169,9 +185,11 @@ class PostRepository {
         return body.map((dynamic json) {
           List<String> imageUrls = [];
           if (json["ImageUrl"] != null) {
-            List<String> list = json["ImageUrl"].split(',');
-            for (var item in list) {
-              imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+            if (json["ImageUrl"].toString().isNotEmpty) {
+              List<String> list = json["ImageUrl"].split(',');
+              for (var item in list) {
+                imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+              }
             }
           }
 
@@ -182,7 +200,9 @@ class PostRepository {
               createAt: json["CreateAt"] as String,
               finishAt: DateTime.parse(json["FinishAt"]),
               fullname: json["Fullname"] as String,
-              position: json["Position"] as String,
+              cityId: json["CityId"] as int,
+              districtId: json["DistrictId"] as int,
+              wardId: json["WardId"] as int,
               desciption: json["Description"] as String,
               status: json["status"] as int,
               phone: json["Phone"] as String,
@@ -237,6 +257,7 @@ class PostRepository {
             serviceName: json["ServiceName"] as String,
             createAt: json["CreateAt"] as String,
             postStatus: json["PostStatus"] as int,
+            pointFeedback: json["AVGFeedbackPoint"] as double,
             imageUrl: json["ImageUrl"] != null
                 ? json["ImageUrl"].toString().length > 0
                     ? Uri.http(Host.Server_hosting, json["ImageUrl"]).toString()
@@ -413,20 +434,33 @@ class PostRepository {
 
         return body.map((dynamic json) {
           List<String> imageUrls = [];
+          String addressShort = "";
           if (json["ImageUrl"] != null) {
-            List<String> list = json["ImageUrl"].split(',');
-            for (var item in list) {
-              imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+            if (json["ImageUrl"].toString().isNotEmpty) {
+              List<String> list = json["ImageUrl"].split(',');
+              for (var item in list) {
+                imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+              }
+            }
+          }
+          if (json["Address"] != null) {
+            if (json["Address"].toString().isNotEmpty) {
+              List<String> list = json["Address"].split(',');
+              if (list.length == 3) {
+                addressShort = list[1].toString() + "," + list[2];
+              } else
+                addressShort = json["Address"].toString();
             }
           }
           return Post(
               code: json["Code"] as String,
               title: json["Title"] as String,
-              address: json["Address"] as String,
+              address: addressShort,
               createAt: json["CreateAt"] as String,
               finishAt: DateTime.parse(json["FinishAt"]),
               fullname: json["Fullname"] as String,
-              position: json["Position"] as String,
+              cityId: json["CityId"] as int,
+              districtId: json["DistrictId"] as int,
               desciption: json["Description"] as String,
               status: json["status"] as int,
               phone: json["Phone"] as String,
@@ -523,10 +557,22 @@ class PostRepository {
         var body = jsons['data'] as List;
         return body.map((dynamic json) {
           List<String> imageUrls = [];
+          String addressShort;
           if (json["ImageUrl"] != null) {
-            List<String> list = json["ImageUrl"].split(',');
-            for (var item in list) {
-              imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+            if (json["ImageUrl"].toString().isNotEmpty) {
+              List<String> list = json["ImageUrl"].split(',');
+              for (var item in list) {
+                imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+              }
+            }
+          }
+          if (json["Address"] != null) {
+            if (json["Address"].toString().isNotEmpty) {
+              List<String> list = json["Address"].split(',');
+              if (list.length == 3) {
+                addressShort = list[1].toString() + "," + list[2];
+              } else
+                addressShort = json["Address"].toString();
             }
           }
           return Post(
@@ -535,13 +581,14 @@ class PostRepository {
               serviceCode: json["ServiceCode"] as String,
               serviceText: json["ServiceName"] as String,
               title: json["Title"] as String,
-              address: json["Address"] as String,
+              address: addressShort,
               createAt: json["CreateAt"] as String,
               finishAt: json["FinishAt"] == null
                   ? null
                   : DateTime.parse(json["FinishAt"]),
               fullname: json["Fullname"] as String,
-              position: json["Position"] as String,
+              cityId: json["CityId"] as int,
+              districtId: json["DistrictId"] as int,
               desciption: json["Description"] as String,
               status: json["status"] as int,
               phone: json["Phone"] as String,
@@ -598,7 +645,9 @@ class PostRepository {
 
   Future<http.Response> customerAddPost(
       {String title,
-      String position,
+      String cityId,
+      String districtId,
+      String wardId,
       String serviceCode,
       String address,
       String finishAt,
@@ -614,7 +663,9 @@ class PostRepository {
       request.headers['Authorization'] = "bearer $token";
       request.fields['ServiceCode'] = serviceCode == null ? "" : serviceCode;
       request.fields['Title'] = title == null ? "" : title;
-      request.fields['Position'] = position == null ? "" : position;
+      request.fields['CityId'] = cityId == null ? "" : cityId;
+      request.fields['DistrictId'] = districtId == null ? "" : districtId;
+      request.fields['WardId'] = wardId == null ? "" : wardId;
       request.fields['Address'] = address == null ? "" : address;
       request.fields['FinishAt'] =
           DateTime.now().add(const Duration(days: 3)).toString();
@@ -639,6 +690,9 @@ class PostRepository {
   Future<http.Response> customerUpdatePost(
       {String title,
       String code,
+      String cityId,
+      String districtId,
+      String wardId,
       String position,
       String serviceCode,
       String address,
@@ -657,7 +711,9 @@ class PostRepository {
       request.headers['Authorization'] = "bearer $token";
       request.fields['ServiceCode'] = serviceCode == null ? "" : serviceCode;
       request.fields['Title'] = title == null ? "" : title;
-      request.fields['Position'] = position == null ? "" : position;
+      request.fields['CityId'] = cityId == null ? "" : cityId;
+      request.fields['DistrictId'] = districtId == null ? "" : districtId;
+      request.fields['WardId'] = wardId == null ? "" : wardId;
       request.fields['Address'] = address == null ? "" : address;
       request.fields['FinishAt'] =
           DateTime.now().add(const Duration(days: 3)).toString();

@@ -22,7 +22,7 @@ class PostRatingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
+        appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
           backgroundColor: Colors.white,
           leadingWidth: 30,
           leading: IconButton(

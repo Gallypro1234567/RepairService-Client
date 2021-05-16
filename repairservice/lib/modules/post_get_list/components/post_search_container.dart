@@ -12,7 +12,7 @@ class SearchContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppTheme.fullHeight(context) * .05,
+      height: AppTheme.fullHeight(context) * .04,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(5.0)),

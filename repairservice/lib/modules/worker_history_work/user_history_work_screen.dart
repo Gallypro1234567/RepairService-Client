@@ -53,6 +53,7 @@ class WorkerHistoryWorkView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: AppTheme.fullHeight(context) * .06,
         backgroundColor: LightColor.lightteal,
         centerTitle: false,
         leadingWidth: 30,

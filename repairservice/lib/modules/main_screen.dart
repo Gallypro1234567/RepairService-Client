@@ -53,7 +53,7 @@ class _MainPageState extends State<MainPage> {
 
   Widget _main(List<Widget> children) {
     return Scaffold(
-      backgroundColor: LightColor.lightGrey,
+      backgroundColor: LightColor.lightteal,
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
@@ -87,32 +87,6 @@ class _MainPageState extends State<MainPage> {
                 right: 0,
                 child: CustomBottomNavigationBar(
                     onIconPresedCallback: onBottomIconPressed)),
-            Positioned(
-                bottom: AppTheme.fullHeight(context) * .1,
-                right: kDefaultPadding / 2,
-                child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                  builder: (context, state) {
-                    switch (state.user.isCustomer) {
-                      case UserType.customer:
-                        return Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: kDefaultPadding),
-                          child: FloatingActionButton(
-                            backgroundColor: Colors.cyan,
-                            onPressed: () {
-                              context.read<PostBloc>().add(PostAddNewPage());
-                              Navigator.push(
-                                  context, SlideFadeRoute(page: PostPage()));
-                            },
-                            child: Center(child: Icon(FontAwesome.edit)),
-                          ),
-                        );
-                        break;
-                      default:
-                        return Container();
-                    }
-                  },
-                ))
           ],
         ),
       ),

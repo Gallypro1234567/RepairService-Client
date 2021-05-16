@@ -25,6 +25,7 @@ class _WorkerRegisterManagerPageState extends State<WorkerRegisterManagerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+         toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
             text: "Quản lý thợ đăng ký",
             fontSize: 16,

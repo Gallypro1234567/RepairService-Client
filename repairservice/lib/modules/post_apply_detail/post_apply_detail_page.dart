@@ -7,8 +7,11 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/worker_register_manager/components/item_detail_container.dart';
 import 'package:repairservice/modules/home/home_page.dart';
 import 'package:repairservice/modules/main_screen.dart';
+import 'package:repairservice/modules/post_apply/bloc/postapply_bloc.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/components/post_detail_button.dart';
+import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
+import 'package:repairservice/modules/post_rating/post_rating.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/post_apply.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
@@ -35,7 +38,7 @@ class _PostApplyWorkerDetailPageState extends State<PostApplyWorkerDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LightColor.lightGrey,
-      appBar: AppBar(
+      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Thông tin chi tiết",
           fontSize: 16,
@@ -53,7 +56,7 @@ class _PostApplyWorkerDetailPageState extends State<PostApplyWorkerDetailPage> {
         listener: (context, state) {
           if (state.status == ApplyDetailStatus.acceptSubmitted ||
               state.status == ApplyDetailStatus.cancelSubmitted) {
-            context.read<PostdetailBloc>().add(PostdetailFetched(
+            context.read<PostapplyBloc>().add(PostapplyFetched(
                   state.postCode,
                 ));
           }
@@ -116,6 +119,10 @@ class _PostApplyWorkerDetailPageState extends State<PostApplyWorkerDetailPage> {
               child: BlocBuilder<PostapplydetailBloc, PostapplydetailState>(
                 builder: (context, state) {
                   return PostDetailButton(
+                    icon: Icon(
+                      Icons.call,
+                      size: 30,
+                    ),
                     title: "Gọi điện",
                     textColor: Colors.white,
                     primaryColor: Colors.green,
@@ -124,6 +131,28 @@ class _PostApplyWorkerDetailPageState extends State<PostApplyWorkerDetailPage> {
                       context
                           .read<PostapplydetailBloc>()
                           .add(PostApplyOpenPhoneCall(state.postApply.phone));
+                    },
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              child: BlocBuilder<PostapplydetailBloc, PostapplydetailState>(
+                builder: (context, state) {
+                  return PostDetailButton(
+                    icon: Icon(
+                      Icons.thumb_up,
+                      size: 30,
+                    ),
+                    title: "Xem Đánh giá",
+                    textColor: Colors.white,
+                    primaryColor: Colors.indigo,
+                    shadowColor: LightColor.lightGrey,
+                    onPressed: () {
+                      context.read<PostrateBloc>().add(PostrateFetched(
+                          postCode: "", wofscode: state.wofscode));
+                      Navigator.push(
+                          context, SlideFadeRoute(page: PostRatingPage()));
                     },
                   );
                 },

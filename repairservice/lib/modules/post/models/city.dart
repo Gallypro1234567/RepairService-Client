@@ -1,13 +1,13 @@
 import 'package:formz/formz.dart';
 
-enum CityValidationError { empty }
+// enum CitiesValidationError { empty }
 
-class City extends FormzInput<String, CityValidationError> {
-  const City.pure() : super.pure('');
-  const City.dirty([String value = '']) : super.dirty(value);
+// class Cities extends FormzInput<String, CitiesValidationError> {
+//   const Cities.pure() : super.pure('');
+//   const Cities.dirty([String value = '']) : super.dirty(value);
 
-  @override
-  CityValidationError validator(String value) {
-     return value?.isNotEmpty == true ? null : CityValidationError.empty;
-  }
-}
+//   @override
+//   CitiesValidationError validator(String value) {
+//      return value?.isNotEmpty == true ? null : CitiesValidationError.empty;
+//   }
+// }

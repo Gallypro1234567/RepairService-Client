@@ -10,7 +10,9 @@ class Post extends Equatable {
   final DateTime finishAt;
   final String imageUrl;
   final String customerImageUrl;
-  final String position;
+  final int districtId;
+  final int cityId;
+  final int wardId;
   final int status;
   final int applystatus;
   final String fullname;
@@ -30,7 +32,9 @@ class Post extends Equatable {
       this.finishAt,
       this.imageUrl,
       this.customerImageUrl,
-      this.position,
+      this.districtId,
+      this.cityId,
+      this.wardId,
       this.status,
       this.applystatus,
       this.fullname,
@@ -51,7 +55,9 @@ class Post extends Equatable {
         finishAt,
         imageUrl,
         customerImageUrl,
-        position,
+        districtId,
+        cityId,
+        wardId,
         status,
         applystatus,
         fullname,
@@ -65,7 +71,6 @@ class Post extends Equatable {
       ];
 }
 
-
 class PostApplyOfWorker extends Equatable {
   final String code;
 
@@ -76,7 +81,6 @@ class PostApplyOfWorker extends Equatable {
   final DateTime finishAt;
   final String imageUrl;
   final String customerImageUrl;
-  final String position;
   final String fullname;
   final String phone;
   final String email;
@@ -96,7 +100,6 @@ class PostApplyOfWorker extends Equatable {
       this.finishAt,
       this.imageUrl,
       this.customerImageUrl,
-      this.position,
       this.postStatus,
       this.applyStatus,
       this.fullname,
@@ -117,7 +120,6 @@ class PostApplyOfWorker extends Equatable {
         finishAt,
         imageUrl,
         customerImageUrl,
-        position,
         postStatus,
         applyStatus,
         fullname,

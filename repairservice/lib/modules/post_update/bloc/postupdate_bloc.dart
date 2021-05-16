@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:repairservice/modules/post_update/models/address.dart';
 import 'package:repairservice/modules/post_update/models/description.dart';
 import 'package:repairservice/modules/post_update/models/title.dart';
+import 'package:repairservice/repository/post_repository/models/city_model.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/post_repository.dart';
 
@@ -23,34 +24,130 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
   Stream<PostUpdateState> mapEventToState(
     PostUpdateEvent event,
   ) async* {
-    if (event is PostUpdateInitial) {
+    if (event is PostUpdateInitial)
       yield state.copyWith();
-    } else if (event is PostUpdateFetched) {
+    else if (event is PostUpdateFetched)
       yield* _mapPostUpdateFetched(event, state);
-    } else if (event is PostUpdateAddNewPage) {
+    else if (event is PostUpdateAddNewPage)
       yield state.copyWith(images: <File>[], serviceCode: "", serviceText: "");
-    } else if (event is PostUpdateAddImageMutiChanged) {
+    // Position Fetched
+    else if (event is PostUpdateCityFetched)
+      yield* _mapPostCityFetchedToState(event, state);
+    else if (event is PostUpdateDistrictFetched)
+      yield* _mapPostDistrictFetchedToState(event, state);
+    else if (event is PostUpdateWardFetched)
+      yield* _mapPostWardFetchedToState(event, state);
+    // Field
+    else if (event is PostUpdateCityChanged)
+      yield _mapPostCityChangedToState(event, state);
+    else if (event is PostUpdateDistrictChanged)
+      yield _mapPostDistrictChangedToState(event, state);
+    else if (event is PostUpdateWardChanged)
+      yield _mapPostWardChangedToState(event, state);
+    else if (event is PostUpdateAddImageMutiChanged)
       yield* _mapPostUpdateAddImageMutiChangedToState(event, state);
-    } else if (event is PostUpdateDeleteImageMutiChanged) {
+    else if (event is PostUpdateDeleteImageMutiChanged)
       yield _mapPostUpdateDeleteImageMutiChangedToState(event, state);
-    } else if (event is PostUpdateServiceChanged) {
-      yield state.copyWith(serviceText: event.text, serviceCode: event.code);
-    } else if (event is PostUpdateAddressChanged) {
-      yield state.copyWith(address: Address.dirty(event.value));
-    } else if (event is PostUpdateTitleChanged) {
+    else if (event is PostUpdateServiceChanged)
+      yield _mapPostUpdateServiceChangedToState(event, state);
+    else if (event is PostUpdateTitleChanged)
       yield _mapPostUpdateTitleChangedToState(event, state);
-    } else if (event is PostUpdateDescriptionChanged) {
-      yield state.copyWith(description: Description.dirty(event.value));
-    } else if (event is PostUpdateCustomerSubmitted) {
+    else if (event is PostUpdateDescriptionChanged)
+      yield _mapPostUpdateDescriptionChangedToState(event, state);
+    else if (event is PostUpdateCustomerSubmitted)
       yield* _mapPostUpdateSubmittedToState(event, state);
+  }
+
+  Stream<PostUpdateState> _mapPostCityFetchedToState(
+      PostUpdateCityFetched event, PostUpdateState state) async* {
+    if (state.cities.length > 0)
+      yield state.copyWith(positionUpdateStatus: PositionUpdateStatus.success);
+    else {
+      yield state.copyWith(positionUpdateStatus: PositionUpdateStatus.loading);
+      try {
+        var listData = await _postRepository.fetchCities();
+
+        yield state.copyWith(
+            positionUpdateStatus: PositionUpdateStatus.success,
+            cities: listData);
+      } on Exception catch (_) {
+        yield state.copyWith(
+            positionUpdateStatus: PositionUpdateStatus.failure);
+      }
     }
+  }
+
+  Stream<PostUpdateState> _mapPostDistrictFetchedToState(
+      PostUpdateDistrictFetched event, PostUpdateState state) async* {
+    yield state.copyWith(positionUpdateStatus: PositionUpdateStatus.loading);
+    try {
+      var listData = await _postRepository.fetchDistrictbyCityId(
+          id: event.cityid.toString());
+
+      yield state.copyWith(
+          positionUpdateStatus: PositionUpdateStatus.success,
+          districts: listData);
+    } on Exception catch (_) {
+      yield state.copyWith(positionUpdateStatus: PositionUpdateStatus.failure);
+    }
+  }
+
+  Stream<PostUpdateState> _mapPostWardFetchedToState(
+      PostUpdateWardFetched event, PostUpdateState state) async* {
+    yield state.copyWith(positionUpdateStatus: PositionUpdateStatus.loading);
+    try {
+      var listData = await _postRepository.fetchWardbyDisctrictId(
+          id: event.districtId.toString());
+
+      yield state.copyWith(
+          positionUpdateStatus: PositionUpdateStatus.success, wards: listData);
+    } on Exception catch (_) {
+      yield state.copyWith(positionUpdateStatus: PositionUpdateStatus.failure);
+    }
+  }
+
+  _mapPostWardChangedToState(
+      PostUpdateWardChanged event, PostUpdateState state) {
+    return state.copyWith(
+        wardId: event.id, wardText: event.text, wardInvalid: event.invalid);
+  }
+
+  _mapPostDistrictChangedToState(
+      PostUpdateDistrictChanged event, PostUpdateState state) {
+    return state.copyWith(
+        districtId: event.id,
+        districtText: event.text,
+        districtInvalid: event.invalid);
+  }
+
+  _mapPostCityChangedToState(
+      PostUpdateCityChanged event, PostUpdateState state) {
+    return state.copyWith(
+        cityId: event.id, cityText: event.text, cityInvalid: event.invalid);
+  }
+
+  _mapPostUpdateServiceChangedToState(
+      PostUpdateServiceChanged event, PostUpdateState state) {
+    return state.copyWith(
+        serviceCode: event.code,
+        serviceText: event.text,
+        serviceInvalid: event.invalid);
   }
 
   _mapPostUpdateTitleChangedToState(
       PostUpdateTitleChanged event, PostUpdateState state) {
     final value = Title.dirty(event.value);
     return state.copyWith(
-        title: value, status: Formz.validate([value, state.description]));
+        title: value,
+        status: Formz.validate([value, state.description, state.address]));
+  }
+
+  _mapPostUpdateDescriptionChangedToState(
+      PostUpdateDescriptionChanged event, PostUpdateState state) {
+    final value = Description.dirty(event.value);
+    return state.copyWith(
+        description: value,
+        status: Formz.validate([value, state.title, state.address]));
   }
 
   Stream<PostUpdateState> _mapPostUpdateFetched(
@@ -58,13 +155,31 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
     yield state.copyWith(pageStatus: PostUpdateStatus.loading);
     try {
       var data = await _postRepository.fetchPostByCode(code: event.code);
-
+      String cityText = "";
+      String districtText = "";
+      String wardText = "";
+      if (data.address != null) {
+        if (data.address.toString().isNotEmpty) {
+          List<String> list = data.address.split(', ');
+          if (list.length == 3) {
+            wardText = list[0];
+            districtText = list[1];
+            cityText = list[2];
+          }
+        }
+      }
       yield state.copyWith(
           pageStatus: PostUpdateStatus.loadSuccess,
           images: data.imageUrls,
           serviceCode: data.serviceCode,
           serviceText: data.serviceText,
           address: Address.dirty(data.address),
+          cityText: cityText,
+          districtText: districtText,
+          wardText: wardText,
+          cityId: data.cityId,
+          districtId: data.districtId,
+          wardId: data.wardId,
           description: Description.dirty(data.desciption),
           title: Title.dirty(data.title),
           code: data.code);
@@ -108,7 +223,11 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
           code: state.code,
           serviceCode: state.serviceCode,
           title: state.title.value,
-          address: state.address.value,
+          address:
+              "${state.wardText}, ${state.districtText}, ${state.cityText}",
+          cityId: state.cityId.toString(),
+          districtId: state.districtId.toString(),
+          wardId: state.wardId.toString(),
           description: state.description.value,
           files: state.images,
           finishAt: null,

@@ -284,6 +284,7 @@ class _ManagerScreenState extends State<ManagerScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
             return TitleText(

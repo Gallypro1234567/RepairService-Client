@@ -13,10 +13,5 @@ class PostapplyFetched extends PostapplyEvent {
   final String postCode;
 
   PostapplyFetched(this.postCode);
-}
-
-class PostApplyOpenPhoneCall extends PostapplyEvent {
-  final String phone;
-
-  PostApplyOpenPhoneCall(this.phone);
-}
+} 
+ 

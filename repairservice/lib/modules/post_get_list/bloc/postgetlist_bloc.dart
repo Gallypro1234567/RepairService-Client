@@ -31,9 +31,10 @@ class PostgetlistBloc extends Bloc<PostgetlistEvent, PostgetlistState> {
     else if (event is PostgetlistWardFetched)
       yield* _mapPostgetlistWardFetchedToState(event, state);
     else if (event is PostgetlistCitySelectChanged)
-      yield state.copyWith(cityQuery: event.cityTitle);
+      yield state.copyWith(cityQuery: event.cityTitle, cityId: event.cityId);
     else if (event is PostgetlistDistrictSelectChanged)
-      yield state.copyWith(districtQuery: event.districtText);
+      yield state.copyWith(
+          districtQuery: event.districtText, districtId: event.districtId);
   }
 
   Stream<PostgetlistState> _mapPostFetched(
@@ -42,9 +43,15 @@ class PostgetlistBloc extends Bloc<PostgetlistEvent, PostgetlistState> {
       yield state.copyWith(pageStatus: PostGetStatus.loadSuccess);
     yield state.copyWith(pageStatus: PostGetStatus.loading);
     try {
-      var datas = await _postRepository.fetchPost(serviceCode: event.code);
+      var datas = await _postRepository.fetchPost(
+          serviceCode: event.code,
+          cityId: state.cityId.toString(),
+          districtId: state.districtId.toString());
 
-      yield state.copyWith(pageStatus: PostGetStatus.loadSuccess, posts: datas);
+      yield state.copyWith(
+          pageStatus: PostGetStatus.loadSuccess,
+          posts: datas,
+          serviceCode: event.code);
     } on Exception catch (_) {
       yield state.copyWith(pageStatus: PostGetStatus.failure);
     }
@@ -52,48 +59,50 @@ class PostgetlistBloc extends Bloc<PostgetlistEvent, PostgetlistState> {
 
   Stream<PostgetlistState> _mapPostgetlistCityFetchedToState(
       PostgetlistCityFetched event, PostgetlistState state) async* {
-    if (state.pageStatus == PostGetStatus.loadSuccess)
-      yield state.copyWith(pageStatus: PostGetStatus.loadSuccess);
-    yield state.copyWith(pageStatus: PostGetStatus.loading);
-    try {
-      var listData = await _postRepository.fetchCities();
-
+    if (state.cities.length > 0)
       yield state.copyWith(
-          pageStatus: PostGetStatus.loadSuccess, cities: listData);
-    } on Exception catch (_) {
-      yield state.copyWith(pageStatus: PostGetStatus.failure);
+          postGetPositionStatus: PostGetPositionStatus.success);
+    else {
+      yield state.copyWith(
+          postGetPositionStatus: PostGetPositionStatus.loading);
+      try {
+        var listData = await _postRepository.fetchCities();
+
+        yield state.copyWith(
+          postGetPositionStatus: PostGetPositionStatus.success,
+          cities: listData,
+        );
+      } on Exception catch (_) {
+        yield state.copyWith(postGetPositionStatus: PostGetPositionStatus.failure);
+      }
     }
   }
 
   Stream<PostgetlistState> _mapPostgetlistDistrictFetchedToState(
       PostgetlistDistrictFetched event, PostgetlistState state) async* {
-    if (state.pageStatus == PostGetStatus.loadSuccess)
-      yield state.copyWith(pageStatus: PostGetStatus.loadSuccess);
-    yield state.copyWith(pageStatus: PostGetStatus.loading);
+    yield state.copyWith(postGetPositionStatus: PostGetPositionStatus.loading);
     try {
       var listData = await _postRepository.fetchDistrictbyCityId(
           id: event.cityId.toString());
 
       yield state.copyWith(
-          pageStatus: PostGetStatus.loadSuccess, distrists: listData);
+          postGetPositionStatus: PostGetPositionStatus.success, distrists: listData);
     } on Exception catch (_) {
-      yield state.copyWith(pageStatus: PostGetStatus.failure);
+      yield state.copyWith(postGetPositionStatus: PostGetPositionStatus.failure);
     }
   }
 
   Stream<PostgetlistState> _mapPostgetlistWardFetchedToState(
       PostgetlistWardFetched event, PostgetlistState state) async* {
-    if (state.pageStatus == PostGetStatus.loadSuccess)
-      yield state.copyWith(pageStatus: PostGetStatus.loadSuccess);
-    yield state.copyWith(pageStatus: PostGetStatus.loading);
+    yield state.copyWith(postGetPositionStatus: PostGetPositionStatus.loading);
     try {
       var listData = await _postRepository.fetchWardbyDisctrictId(
           id: event.districtId.toString());
 
       yield state.copyWith(
-          pageStatus: PostGetStatus.loadSuccess, wards: listData);
+          postGetPositionStatus: PostGetPositionStatus.success, wards: listData);
     } on Exception catch (_) {
-      yield state.copyWith(pageStatus: PostGetStatus.failure);
+      yield state.copyWith(postGetPositionStatus: PostGetPositionStatus.failure);
     }
   }
 }

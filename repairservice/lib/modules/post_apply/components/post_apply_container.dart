@@ -165,7 +165,7 @@ class PostApplyContainer extends StatelessWidget {
                                 allowHalfRating: false,
                                 onRated: (v) {},
                                 starCount: 5,
-                                rating: 3,
+                                rating: postApply.pointFeedback,
                                 size: 20.0,
                                 isReadOnly: true,
                                 color: Colors.green,

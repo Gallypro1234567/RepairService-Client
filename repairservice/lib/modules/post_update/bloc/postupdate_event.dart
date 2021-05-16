@@ -9,6 +9,8 @@ class PostUpdateEvent extends Equatable {
 
 class PostUpdateInitial extends PostUpdateEvent {}
 
+class PostUpdateAddNewPage extends PostUpdateEvent {}
+
 class PostUpdateRecently extends PostUpdateEvent {}
 
 class PostUpdateFetched extends PostUpdateEvent {
@@ -16,7 +18,42 @@ class PostUpdateFetched extends PostUpdateEvent {
 
   PostUpdateFetched(this.code);
 }
-class PostUpdateAddNewPage extends PostUpdateEvent {}
+
+class PostUpdateCityFetched extends PostUpdateEvent {}
+
+class PostUpdateDistrictFetched extends PostUpdateEvent {
+  final int cityid;
+
+  PostUpdateDistrictFetched(this.cityid);
+}
+
+class PostUpdateWardFetched extends PostUpdateEvent {
+  final int districtId;
+
+  PostUpdateWardFetched(this.districtId);
+}
+
+class PostUpdateCityChanged extends PostUpdateEvent {
+  final String text;
+  final int id;
+  final bool invalid;
+  PostUpdateCityChanged({this.text, this.invalid, this.id});
+}
+
+class PostUpdateDistrictChanged extends PostUpdateEvent {
+  final String text;
+  final int id;
+  final bool invalid;
+  PostUpdateDistrictChanged({this.text, this.invalid, this.id});
+}
+
+class PostUpdateWardChanged extends PostUpdateEvent {
+  final String text;
+  final int id;
+  final bool invalid;
+  PostUpdateWardChanged({this.text, this.invalid, this.id});
+}
+
 class PostUpdateAddImageMutiChanged extends PostUpdateEvent {
   final ImageSource imageSource;
 
@@ -34,7 +71,8 @@ class PostUpdateFetchedByPhone extends PostUpdateEvent {}
 class PostUpdateServiceChanged extends PostUpdateEvent {
   final String text;
   final String code;
-  PostUpdateServiceChanged({this.text, this.code});
+  final bool invalid;
+  PostUpdateServiceChanged({this.text, this.invalid, this.code});
 }
 
 class PostUpdateService extends PostUpdateEvent {

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
@@ -10,7 +11,7 @@ class CustomerManagerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
             text: "Quản lý Khách hàng",
             fontSize: 16,

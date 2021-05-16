@@ -15,6 +15,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+         toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Thông tin cá nhân",
           fontSize: 16,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
 
 import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'package:repairservice/modules/user_profile/bloc/userprofile_bloc.dart';
@@ -58,7 +59,7 @@ class UserWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Thông tin cá nhân",
           fontSize: 16,

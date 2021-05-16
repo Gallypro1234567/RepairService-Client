@@ -72,6 +72,8 @@ class ManagerGridViewPage extends StatelessWidget {
                                           postCode: state.posts[index].code,
                                         )));
                                   }),
+                            isDelete:
+                                state.posts[index].status >= 2 ? false : true,
                             onPressedDetail: () {
                               context
                                   .read<PostdetailBloc>()
@@ -179,11 +181,13 @@ class SlidableContainer extends StatelessWidget {
   final Widget child;
   final Function onPressedDelete;
   final Function onPressedDetail;
+  final bool isDelete;
   const SlidableContainer({
     Key key,
     this.child,
     this.onPressedDelete,
     this.onPressedDetail,
+    this.isDelete = false,
   }) : super(key: key);
 
   @override
@@ -191,26 +195,38 @@ class SlidableContainer extends StatelessWidget {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
-      secondaryActions: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(top: kDefaultPadding / 4),
-          child: IconSlideAction(
-            caption: 'Chi tiết',
-            color: Colors.blue,
-            icon: Icons.more_vert,
-            onTap: onPressedDetail,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: kDefaultPadding / 4),
-          child: IconSlideAction(
-            caption: 'Xóa',
-            color: Colors.red,
-            icon: Icons.delete,
-            onTap: onPressedDelete,
-          ),
-        ),
-      ],
+      secondaryActions: isDelete
+          ? <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: kDefaultPadding / 4),
+                child: IconSlideAction(
+                  caption: 'Chi tiết',
+                  color: Colors.blue,
+                  icon: Icons.more_vert,
+                  onTap: onPressedDetail,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: kDefaultPadding / 4),
+                child: IconSlideAction(
+                  caption: 'Xóa',
+                  color: Colors.red,
+                  icon: Icons.delete,
+                  onTap: onPressedDelete,
+                ),
+              ),
+            ]
+          : <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: kDefaultPadding / 4),
+                child: IconSlideAction(
+                  caption: 'Chi tiết',
+                  color: Colors.blue,
+                  icon: Icons.more_vert,
+                  onTap: onPressedDetail,
+                ),
+              ),
+            ],
       child: child,
     );
   }

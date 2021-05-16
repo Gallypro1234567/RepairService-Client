@@ -7,10 +7,8 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post_get_list/bloc/postgetlist_bloc.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
-import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
-import '../post_get_list_page.dart';
 
 class SelectDistrictPage extends StatelessWidget {
   @override
@@ -32,11 +30,11 @@ class SelectDistrictPage extends StatelessWidget {
       ),
       body: BlocBuilder<PostgetlistBloc, PostgetlistState>(
         builder: (context, state) {
-          switch (state.pageStatus) {
-            case PostGetStatus.loading:
+          switch (state.postGetPositionStatus) {
+            case PostGetPositionStatus.loading:
               return SplashPage();
               break;
-            case PostGetStatus.failure:
+            case PostGetPositionStatus.failure:
               return SplashPage();
 
               break;
@@ -48,7 +46,18 @@ class SelectDistrictPage extends StatelessWidget {
                       title: "Tất cả",
                       value: 0,
                       groupValue: int,
-                    ).ripple(() {}),
+                    ).ripple(() {
+                      context.read<PostgetlistBloc>().add(
+                          PostgetlistDistrictSelectChanged(
+                              districtId: -1, districtText: ""));
+                      context
+                          .read<PostgetlistBloc>()
+                          .add(PostgetlistFetched(state.serviceCode));
+                      int count = 0;
+                      Navigator.popUntil(context, (route) {
+                        return count++ == 2;
+                      });
+                    }),
                     ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -59,7 +68,11 @@ class SelectDistrictPage extends StatelessWidget {
                         ).ripple(() {
                           context.read<PostgetlistBloc>().add(
                               PostgetlistDistrictSelectChanged(
-                                  state.distrists[index].title));
+                                  districtText: state.distrists[index].title,
+                                  districtId: state.distrists[index].id));
+                          context
+                              .read<PostgetlistBloc>()
+                              .add(PostgetlistFetched(state.serviceCode));
                           int count = 0;
                           Navigator.popUntil(context, (route) {
                             return count++ == 2;
@@ -109,7 +122,7 @@ class SelectRadioContainer extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
           Expanded(child: Container()),
-          Radio(value: value, groupValue: groupValue, onChanged: onChanged)
+          Icon(Icons.arrow_right, size: 30)
         ],
       ),
     );

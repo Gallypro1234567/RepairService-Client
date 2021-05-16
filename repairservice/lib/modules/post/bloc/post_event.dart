@@ -9,8 +9,21 @@ class PostEvent extends Equatable {
 
 class PostInitial extends PostEvent {}
 
-class PostAddNewPage extends PostEvent {}
+class PostAddNewPage extends PostEvent {} 
 
+class PostCityFetched extends PostEvent {}
+
+class PostDistrictFetched extends PostEvent {
+  final int cityid;
+
+  PostDistrictFetched(this.cityid);
+}
+
+class PostWardFetched extends PostEvent {
+  final int districtId;
+
+  PostWardFetched(this.districtId);
+}
 class PostAddImageMutiChanged extends PostEvent {
   final ImageSource imageSource;
 
@@ -42,10 +55,25 @@ class PostService extends PostEvent {
   PostService(this.value);
 }
 
-class PostAddressChanged extends PostEvent {
-  final String value;
+class PostCityChanged extends PostEvent {
+  final String text;
+  final int id;
+  final bool invalid;
+  PostCityChanged({this.text, this.invalid, this.id});
+}
 
-  PostAddressChanged(this.value);
+class PostDistrictChanged extends PostEvent {
+  final String text;
+  final int id;
+  final bool invalid;
+  PostDistrictChanged({this.text, this.invalid, this.id});
+}
+
+class PostWardChanged extends PostEvent {
+  final String text;
+  final int id;
+  final bool invalid;
+  PostWardChanged({this.text, this.invalid, this.id});
 }
 
 class PostTitleChanged extends PostEvent {

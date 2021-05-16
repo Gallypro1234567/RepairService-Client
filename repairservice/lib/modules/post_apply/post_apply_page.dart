@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post_apply_detail/bloc/postapplydetail_bloc.dart';
 import 'package:repairservice/modules/post_apply_detail/post_apply_detail_page.dart';
 import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
@@ -24,7 +25,7 @@ class PostApplyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LightColor.lightGrey,
-      appBar: AppBar(
+      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Danh sách thợ muốn thực hiện",
           fontSize: 16,

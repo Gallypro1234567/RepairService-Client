@@ -5,6 +5,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
 
 import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/post_get_list/components/post_search_container.dart';
@@ -36,7 +37,7 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LightColor.lightGrey,
-      appBar: AppBar(
+      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
         backgroundColor: LightColor.lightteal,
         leadingWidth: 30,
         leading: IconButton(

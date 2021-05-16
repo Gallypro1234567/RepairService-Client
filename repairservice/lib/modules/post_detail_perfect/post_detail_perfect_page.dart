@@ -18,7 +18,7 @@ class PostDetailPerfectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Thông tin công việc",
           fontSize: 18,
