@@ -33,6 +33,8 @@ class DashboardRepository {
               name: json["Name"] as String,
               description: json["Description"] as String,
               createAt: json["CreateAt"] as String,
+              postAmount: json["PostAmount"] as int,
+              wofsAmiount: json["WofSAmount"] as int,
               imageUrl: json["ImageUrl"] != null
                   ? json["ImageUrl"].toString().length > 0
                       ? Uri.http(Host.Server_hosting, json["ImageUrl"])
@@ -100,6 +102,25 @@ class DashboardRepository {
             filename: file.path.split("/").last));
       }
 
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
+
+  Future<http.Response> deleteService({String code}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    Map<String, String> paramters = {
+      "code": code,
+    };
+    try {
+      var uri =
+          Uri.http(Host.Server_hosting, "/api/services/delete", paramters);
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
       return response;
@@ -289,10 +310,9 @@ class DashboardRepository {
             isApproval: json["isApproval"] as int,
             cmnd: json["CMND"] as String,
             imageUrlcmnd: json["ImageUrlcmnd"] as String,
-            imageUrl: json["ImageUrlcmnd"] != null
-                ? json["ImageUrlcmnd"].toString().length > 0
-                    ? Uri.http(Host.Server_hosting, json["ImageUrlcmnd"])
-                        .toString()
+            imageUrl: json["ImageUrl"] != null
+                ? json["ImageUrl"].toString().length > 0
+                    ? Uri.http(Host.Server_hosting, json["ImageUrl"]).toString()
                     : null
                 : null,
             serviceCode: json["ServiceCode"] as String,

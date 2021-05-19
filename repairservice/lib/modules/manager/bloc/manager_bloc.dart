@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/post_repository.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'manager_event.dart';
 part 'manager_state.dart';
@@ -17,13 +18,23 @@ class ManagerBloc extends Bloc<ManagerEvent, ManagerState> {
   Stream<ManagerState> mapEventToState(
     ManagerEvent event,
   ) async* {
-    if (event is ManagerFetched) {
+    if (event is ManagerInitial)
+      yield state.copyWith(pageStatus: PageStatus.none, posts: <Post>[]);
+    else if (event is ManagerFetched)
       yield* _mapManagerFetchedByPhone(event, state);
-    } else if (event is ManagerCustomerDeletePost) {
+    else if (event is ManagerCustomerDeletePost)
       yield* _mapManagerCustomerDeletePostToState(event, state);
-    } else if (event is ManagerWorkerDeleteApply) {
+    else if (event is ManagerWorkerDeleteApply)
       yield* _mapManagerWorkerDeleteApplyToState(event, state);
-    }
+    else if (event is ManagerOpenPhoneCall)
+      yield* _mapManagerOpenPhoneCallToState(event, state);
+  }
+
+  Stream<ManagerState> _mapManagerOpenPhoneCallToState(
+      ManagerOpenPhoneCall event, ManagerState state) async* {
+    try {
+      await launch("tel: ${event.phone}");
+    } on Exception catch (_) {}
   }
 
   Stream<ManagerState> _mapManagerFetchedByPhone(
@@ -79,6 +90,4 @@ class ManagerBloc extends Bloc<ManagerEvent, ManagerState> {
       yield state.copyWith(pageStatus: PageStatus.failure);
     }
   }
-
-   
 }

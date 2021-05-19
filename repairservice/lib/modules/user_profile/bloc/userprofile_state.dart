@@ -16,7 +16,7 @@ class UserProfileState extends Equatable {
       this.oldpassword = const OldPassword.pure(),
       this.newPassword = const NewPassword.pure(),
       this.verifyPassword = const VerifyPassword.pure(),
-      this.file,
+      this.file , this.fileInvalid = true,
       this.filestatus = FileStatus.success,
       this.imageUrl,
       this.checkPass = 0});
@@ -33,6 +33,7 @@ class UserProfileState extends Equatable {
   final NewPassword newPassword;
   final VerifyPassword verifyPassword;
   final File file;
+  final bool fileInvalid;
   final FileStatus filestatus;
   final String imageUrl;
   final int checkPass;
@@ -49,7 +50,7 @@ class UserProfileState extends Equatable {
         oldpassword,
         newPassword,
         verifyPassword,
-        file,
+        file,fileInvalid,
         filestatus,
         imageUrl,
         checkPass
@@ -67,7 +68,7 @@ class UserProfileState extends Equatable {
       OldPassword oldpassword,
       NewPassword newPassword,
       VerifyPassword verifyPassword,
-      File file,
+      File  file, bool fileInvalid,
       FileStatus fileStatus,
       String imageUrl,
       int checkPass}) {
@@ -83,7 +84,7 @@ class UserProfileState extends Equatable {
         oldpassword: oldpassword ?? this.oldpassword,
         newPassword: newPassword ?? this.newPassword,
         verifyPassword: verifyPassword ?? this.verifyPassword,
-        file: file ?? this.file,
+        file: file ?? this.file, fileInvalid:fileInvalid ?? this.fileInvalid,
         filestatus: filestatus ?? this.filestatus,
         imageUrl: imageUrl ?? this.imageUrl,
         checkPass: checkPass ?? this.checkPass);

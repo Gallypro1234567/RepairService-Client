@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:repairservice/modules/worker_history_work/models/cmnd.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
 import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:repairservice/repository/user_repository/user_repository.dart';
@@ -21,25 +21,77 @@ class WorkerregisterworkBloc
   Stream<WorkerregisterworkState> mapEventToState(
     WorkerregisterworkEvent event,
   ) async* {
-    if (event is WorkerregisterworkInitial) {
+    if (event is WorkerregisterworkInitial)
       yield state.copyWith();
-    } else if (event is WorkerregisterworkCMNDChanged) {
-      yield state.copyWith(cmnd: event.value);
-    } else if (event is WorkerregisterworkServiceChanged) {
+    else if (event is WorkerregisterworkNew)
+      yield state.copyWith(
+        serviceCode: "",
+        serviceText: "",
+      );
+    else if (event is WorkerregisterworkImageAfterChanged)
+      yield* _mapWorkerregisterworkImageAfterChangedToState(event, state);
+    else if (event is WorkerregisterworkImageBeforeChanged)
+      yield* _mapWorkerregisterworkImageBeforeChangedToState(event, state);
+    else if (event is WorkerregisterworkAfterDeleteImage)
+      yield state.copyWith(imageAfterInvalid: true);
+    else if (event is WorkerregisterworkBeforeDeleteImage)
+      yield state.copyWith(imageBeforeInvalid: true);
+    else if (event is WorkerregisterworkServiceChanged)
       yield state.copyWith(serviceCode: event.value, serviceText: event.text);
-    } else if (event is WorkerregisterworkSubmitted) {
+    else if (event is WorkerregisterworkSubmitted)
       yield* _mapWorkerregisterworkSubmittedToState(event, state);
-    } else if (event is WorkerregisterworkServiceRegisterLoad) {
+    else if (event is WorkerregisterworkServiceRegisterLoad)
       yield* _mapWorkerregisterworkServiceRegisterLoadToState(event, state);
-    }
+  }
+
+  Stream<WorkerregisterworkState>
+      _mapWorkerregisterworkImageAfterChangedToState(
+          WorkerregisterworkImageAfterChanged event,
+          WorkerregisterworkState state) async* {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.getImage(source: event.imageSource);
+      if (pickedFile != null) {
+        yield state.copyWith(
+            imageCMNDAfter: new File(pickedFile.path),
+            imageAfterInvalid: false);
+      } else {
+        yield state.copyWith(
+            imageCMNDAfter: state.imageCMNDAfter, imageAfterInvalid: true);
+      }
+    } on Exception catch (_) {}
+  }
+
+  Stream<WorkerregisterworkState>
+      _mapWorkerregisterworkImageBeforeChangedToState(
+          WorkerregisterworkImageBeforeChanged event,
+          WorkerregisterworkState state) async* {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.getImage(source: event.imageSource);
+      if (pickedFile != null) {
+        yield state.copyWith(
+            imageCMNDBefore: new File(pickedFile.path),
+            imageBeforeInvalid: false);
+      } else {
+        yield state.copyWith(
+            imageCMNDBefore: state.imageCMNDAfter, imageBeforeInvalid: true);
+      }
+    } on Exception catch (_) {}
   }
 
   Stream<WorkerregisterworkState> _mapWorkerregisterworkSubmittedToState(
       WorkerregisterworkSubmitted event, WorkerregisterworkState state) async* {
     yield state.copyWith(status: WorkerRegisterStatus.loading);
     try {
+      List<File> list = [];
+      if (!state.imageAfterInvalid && !state.imageBeforeInvalid) {
+        list.add(state.imageCMNDAfter);
+        list.add(state.imageCMNDBefore);
+      }
+
       var response = await _userRepository.workerRegisterService(
-        file: state.imageCMND,
+        files: list,
         serviceCode: state.serviceCode,
       );
       if (response.statusCode == 200) {
@@ -60,7 +112,8 @@ class WorkerregisterworkBloc
     try {
       var serviceList = await _userRepository.fetchWorkerRegisterByUser();
       yield state.copyWith(
-          status: WorkerRegisterStatus.loadSuccessed, serviceRegisters: serviceList);
+          status: WorkerRegisterStatus.loadSuccessed,
+          serviceRegisters: serviceList);
     } on Exception catch (_) {
       yield state.copyWith(status: WorkerRegisterStatus.failure);
     }

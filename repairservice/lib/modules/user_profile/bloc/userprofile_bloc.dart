@@ -30,13 +30,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileEvent event,
   ) async* {
     if (event is UserProfileInitial) {
-      // yield state.copyWith(
-      //   fullname: Fullname.dirty(event.fullname),
-      //   sex: event.sex,
-      //   email: Email.dirty(event.email),
-      //   address: Address.dirty(event.address),
-      //   imageUrl: event.imageUrl,
-      // );
       yield* _mapUserProfileFetchedToState(event, state);
     }
     // fullname
@@ -102,7 +95,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           email: Email.dirty(user.email),
           address: Address.dirty(user.address),
           phone: Phone.dirty(user.phone),
-          imageUrl: user.imageUrl);
+          imageUrl: user.imageUrl,
+          fileInvalid: true);
     } on Exception catch (_) {
       yield state.copyWith(
         status: UserProfileStatus.failure,
@@ -172,7 +166,9 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       final pickedFile = await picker.getImage(source: event.imageSource);
       if (pickedFile != null) {
         yield state.copyWith(
-            file: File(pickedFile.path), fileStatus: FileStatus.success);
+            file: new File(pickedFile.path),
+            fileInvalid: false,
+            fileStatus: FileStatus.success);
       } else {
         yield state.copyWith(
           file: null,

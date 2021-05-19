@@ -36,6 +36,7 @@ class UserProfileBackground extends StatelessWidget {
               children: [
                 Center(
                   child: Stack(
+                    clipBehavior: Clip.none,
                     children: [
                       SizedBox(
                         height: 120,
@@ -47,7 +48,7 @@ class UserProfileBackground extends StatelessWidget {
                                 return const CircularProgressIndicator();
                               case FileStatus.success:
                                 return CircleAvatar(
-                                  backgroundImage: state.file != null
+                                  backgroundImage: !state.fileInvalid
                                       ? FileImage(state.file)
                                       : imageUrl.isNotEmpty
                                           ? NetworkImage(imageUrl)
@@ -70,19 +71,24 @@ class UserProfileBackground extends StatelessWidget {
                       ),
                       Positioned(
                         bottom: 0,
-                        right: 0,
-                        child: IconButton(
-                            icon: Icon(
-                              Icons.camera_alt,
-                              color: LightColor.lightteal,
-                            ),
-                            onPressed: () {
-                              Scaffold.of(context).showBottomSheet<void>(
-                                (BuildContext context) {
-                                  return _BottomSheet();
-                                },
-                              );
-                            }),
+                        right: -10,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white, shape: BoxShape.circle),
+                          child: IconButton(
+                              icon: Icon(
+                                Icons.camera_alt,
+                                color: Colors.grey[700],
+                                size: 30,
+                              ),
+                              onPressed: () {
+                                showCupertinoModalPopup(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      MyActionSheet(),
+                                );
+                              }),
+                        ),
                       )
                     ],
                   ),
@@ -103,7 +109,7 @@ class UserProfileBackground extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(
                 vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 2),
-            decoration: BoxDecoration(color: Colors.white),
+            color: Colors.white,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: children,
@@ -115,143 +121,37 @@ class UserProfileBackground extends StatelessWidget {
   }
 }
 
-class _BottomSheet extends StatelessWidget {
-  final Function camera;
-  final Function gallery;
-  const _BottomSheet({
+class MyActionSheet extends StatelessWidget {
+  const MyActionSheet({
     Key key,
-    this.camera,
-    this.gallery,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      width: AppTheme.fullWidth(context),
-      color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: LightColor.orange,
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: TitleText(
-                          text: "Chọn ảnh",
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                      flex: 1,
-                      child: Container(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(
-                              Icons.close,
-                              color: Colors.white,
-                            )),
-                      ))
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: BlocBuilder<UserProfileBloc, UserProfileState>(
-              builder: (context, state) {
-                return Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.camera,
-                        color: Colors.black,
-                      ),
-                      SizedBox(
-                        width: kDefaultPadding / 2,
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: TitleText(
-                            text: "Chụp từ Camera",
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ).ripple(() {
-                  context
-                      .read<UserProfileBloc>()
-                      .add(UserProfileImageChanged(ImageSource.camera));
-                });
-              },
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: BlocBuilder<UserProfileBloc, UserProfileState>(
-              builder: (context, state) {
-                return Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.photo_library,
-                        color: Colors.black,
-                      ),
-                      SizedBox(
-                        width: kDefaultPadding / 2,
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: TitleText(
-                            text: "Ảnh từ thư viện",
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ).ripple(() {
-                  context
-                      .read<UserProfileBloc>()
-                      .add(UserProfileImageChanged(ImageSource.gallery));
-                });
-              },
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Container(),
-          ),
-        ],
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+          child: const Text('Chọn ảnh từ thư viện'),
+          onPressed: () {
+            context
+                .read<UserProfileBloc>()
+                .add(UserProfileImageChanged(ImageSource.gallery));
+          },
+        ),
+        CupertinoActionSheetAction(
+          child: const Text('Chụp hình'),
+          onPressed: () {
+            context
+                .read<UserProfileBloc>()
+                .add(UserProfileImageChanged(ImageSource.camera));
+          },
+        )
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        child: const Text('Hủy'),
+        onPressed: () {
+          Navigator.pop(context);
+        },
       ),
     );
   }

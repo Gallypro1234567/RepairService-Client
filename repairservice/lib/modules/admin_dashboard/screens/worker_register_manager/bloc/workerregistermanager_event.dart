@@ -9,6 +9,12 @@ abstract class WorkerregistermanagerEvent extends Equatable {
 
 class WorkerregistermanagerFetched extends WorkerregistermanagerEvent {}
 
+class WorkerregistermanagerOpenPhoneCall extends WorkerregistermanagerEvent {
+  final String phone;
+
+  WorkerregistermanagerOpenPhoneCall(this.phone);
+}
+
 class WorkerregistermanagerFetchedDetail extends WorkerregistermanagerEvent {
   final int isApproval;
   final String code;

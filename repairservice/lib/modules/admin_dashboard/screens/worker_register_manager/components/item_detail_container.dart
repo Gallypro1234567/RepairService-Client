@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
@@ -8,10 +9,13 @@ import 'package:repairservice/widgets/title_text.dart';
 class ItemDetailContainer extends StatelessWidget {
   final String value;
   final String title;
+
+  final Icon icon;
   const ItemDetailContainer({
     Key key,
     this.value,
     this.title,
+    this.icon,
   }) : super(key: key);
 
   @override
@@ -36,6 +40,16 @@ class ItemDetailContainer extends StatelessWidget {
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
+          icon == null
+              ? Container()
+              : Row(
+                  children: [
+                    SizedBox(
+                      width: kDefaultPadding / 2,
+                    ),
+                    icon,
+                  ],
+                )
         ],
       ),
     );
@@ -64,20 +78,26 @@ class ItemDetailSelectContainer extends StatelessWidget {
               bottom: BorderSide(color: LightColor.lightGrey, width: 1))),
       child: Stack(
         children: [
-          Row(
-            children: [
-              TitleText(
-                text: title,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-              Expanded(child: Container()),
-              TitleText(
-                text: value,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ],
+          Container(
+            child: Row(
+              children: [
+                TitleText(
+                  text: title,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                Expanded(child: Container()),
+                TitleText(
+                  text: value,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                SizedBox(
+                  width: kDefaultPadding / 2,
+                ),
+                Icon(FontAwesome.edit, color: LightColor.lightGreen)
+              ],
+            ),
           ),
           Positioned(
             top: 0,

@@ -9,7 +9,10 @@ abstract class WorkerregisterworkEvent extends Equatable {
 
 class WorkerregisterworkInitial extends WorkerregisterworkEvent {}
 
+class WorkerregisterworkNew extends WorkerregisterworkEvent {}
+
 class WorkerregisterworkServiceRegisterLoad extends WorkerregisterworkEvent {}
+
 class WorkerregisterworkServiceChanged extends WorkerregisterworkEvent {
   final String value;
   final String text;
@@ -22,16 +25,20 @@ class WorkerregisterworkCMNDChanged extends WorkerregisterworkEvent {
   WorkerregisterworkCMNDChanged(this.value);
 }
 
-class WorkerregisterworkFileChanged extends WorkerregisterworkEvent {
-  final String value;
-
-  WorkerregisterworkFileChanged(this.value);
+class WorkerregisterworkImageAfterChanged extends WorkerregisterworkEvent {
+  final ImageSource imageSource;
+  WorkerregisterworkImageAfterChanged(this.imageSource);
 }
 
-class WorkerregisterworkImageUrlChanged extends WorkerregisterworkEvent {
-  final File file;
-
-  WorkerregisterworkImageUrlChanged(this.file);
+class WorkerregisterworkAfterDeleteImage extends WorkerregisterworkEvent {
+ 
 }
-
+class WorkerregisterworkBeforeDeleteImage extends WorkerregisterworkEvent {
+ 
+}
+class WorkerregisterworkImageBeforeChanged extends WorkerregisterworkEvent {
+  final ImageSource imageSource;
+  WorkerregisterworkImageBeforeChanged(this.imageSource);
+}
+ 
 class WorkerregisterworkSubmitted extends WorkerregisterworkEvent {}

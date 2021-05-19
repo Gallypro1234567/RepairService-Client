@@ -10,7 +10,8 @@ import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/notification/notification_screen.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
-import 'package:repairservice/modules/user/user_manager_page.dart';
+
+import 'package:repairservice/modules/user/user_profile_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:shimmer/shimmer.dart';
@@ -94,12 +95,18 @@ class _HomeAdminState extends State<HomeAdminPage> {
                 builder: (context, state) {
                   switch (state.status) {
                     case UserStatus.loading:
-                      return CircularProgressIndicator();
+                      return SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: CircleAvatar(
+                            backgroundImage: null,
+                          ));
                       break;
                     case UserStatus.failure:
-                      return CircleAvatar(
-                        backgroundImage: AssetImage(
-                            "assets/images/user_profile_background.jpg"),
+                      return SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: CircleAvatar(backgroundImage: null),
                       );
                       break;
                     default:
@@ -114,10 +121,10 @@ class _HomeAdminState extends State<HomeAdminPage> {
                                       "assets/images/user_profile_background.jpg")
                               : AssetImage(
                                   "assets/images/user_profile_background.jpg"),
-                        )..ripple(() {
-                            Navigator.push(context,
-                                SlideFadeRoute(page: UserManagerPage()));
-                          }),
+                        ).ripple(() {
+                          Navigator.push(
+                              context, SlideFadeRoute(page: UserProfilePage()));
+                        }),
                       );
                   }
                 },

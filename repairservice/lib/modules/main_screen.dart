@@ -9,12 +9,13 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/auth/bloc/authentication_bloc.dart';
 import 'package:repairservice/modules/home/home_page.dart';
 import 'package:repairservice/modules/post/post_form_page.dart';
-import 'package:repairservice/modules/user/user_manager_page.dart';
+
+import 'package:repairservice/modules/user/user_profile_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
 
-import 'manager/manager_screen.dart';
+import 'manager/manager_page.dart';
 import 'notification/notification_screen.dart';
 import 'post/bloc/post_bloc.dart';
 
@@ -46,9 +47,9 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _children = [
     HomePage(),
-    ManagerScreen(),
+    ManagerPage(),
     NotificationScreen(),
-    UserManagerPage(),
+    UserProfilePage(),
   ];
 
   Widget _main(List<Widget> children) {

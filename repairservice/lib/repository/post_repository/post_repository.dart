@@ -292,7 +292,7 @@ class PostRepository {
           return WorkerRate(
               fullname: json["Fullname"] as String,
               phone: json["Phone"] as String,
-              services: json["WorkerOfServiceText"] as String,
+              services: json["WorkerOfServiceName"] as String,
               avgPoint: json["AVGPoint"] == null
                   ? 0.0
                   : double.parse(json["AVGPoint"].toString()),
@@ -591,6 +591,7 @@ class PostRepository {
               districtId: json["DistrictId"] as int,
               desciption: json["Description"] as String,
               status: json["status"] as int,
+              feedbackAmount: json["FeedbackAmount"] as int,
               phone: json["Phone"] as String,
               email: json["Email"] as String,
               imageUrls: imageUrls,
@@ -632,6 +633,7 @@ class PostRepository {
             createAt: json["CreateAt"] as String,
             wofsCode: json["WorkerOfServiceCode"] as String,
             status: int.parse(json["PostStatus"].toString()),
+            feedbackAmount: json["FeedbackAmount"] as int,
             applystatus: int.parse(json["ApplyStatus"].toString()),
           );
         }).toList();

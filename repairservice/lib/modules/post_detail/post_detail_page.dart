@@ -25,7 +25,8 @@ class PostDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
+      appBar: AppBar(
+        toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Trang tin chi tiết",
           fontSize: 16,
@@ -141,7 +142,7 @@ class PostDetailBottomSheet extends StatelessWidget {
           if (authstate.user.isCustomer == UserType.worker &&
               authstate.user.role == 1) {
             return Container(
-              height: AppTheme.fullHeight(context) * 0.1,
+              height: AppTheme.fullHeight(context) * 0.06,
               color: Colors.grey,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -480,7 +481,7 @@ class _PostDetailImageShowBlocState extends State<PostDetailImageShowBloc> {
                   items: list,
                   options: CarouselOptions(
                     aspectRatio: 16 / 9,
-                    viewportFraction: 0.8,
+                    viewportFraction: 1,
                     initialPage: 0,
                     enableInfiniteScroll: true,
                     reverse: false,

@@ -22,7 +22,8 @@ class PostRatingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
+        appBar: AppBar(
+          toolbarHeight: AppTheme.fullHeight(context) * .06,
           backgroundColor: Colors.white,
           leadingWidth: 30,
           leading: IconButton(
@@ -117,16 +118,18 @@ class Body extends StatelessWidget {
                     : AssetImage("assets/images/user_profile_background.jpg"),
                 wofsText: model.workerRating.services,
               ),
+              SizedBox(
+                height: kDefaultPadding,
+              ),
               ReviewFeedBack(
                 feedbackAmount: model.workerRating.feedbackAmount,
                 avgPointRating: model.workerRating.avgPoint,
                 amount: model.workerRating.postAmount,
                 finishAmount: model.workerRating.finishAmount,
                 cancelAmount: model.workerRating.cancelAmount,
-                
               ),
               SizedBox(
-                height: kDefaultPadding,
+                height: kDefaultPadding / 2,
               ),
               Container(
                   width: AppTheme.fullWidth(context),
@@ -142,7 +145,7 @@ class Body extends StatelessWidget {
                         BlocBuilder<PostrateBloc, PostrateState>(
                           builder: (context, state) {
                             return ReviewChart(
-                              pointRating:  state.workerRating.avgPoint,
+                              pointRating: state.workerRating.avgPoint,
                               feedbackAmount: state.workerRating.feedbackAmount,
                               fivePercent: state.workerRating.fivePercent * 100,
                               fourPercent: state.workerRating.fourPercent * 100,

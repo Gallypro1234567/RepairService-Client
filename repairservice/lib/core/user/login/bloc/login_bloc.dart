@@ -1,5 +1,4 @@
 import 'dart:async';
- 
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +6,6 @@ import 'package:formz/formz.dart';
 import 'package:repairservice/core/user/login/models/login_pasword.dart';
 import 'package:repairservice/core/user/login/models/login_phone.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
- 
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -58,7 +56,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
 
         if (response.statusCode == 200) {
-          
           yield state.copyWith(
               status: FormzStatus.submissionSuccess,
               statusCode: response.statusCode);
@@ -77,13 +74,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       }
     }
   }
- 
+
   Stream<LoginState> _mapLogOutSubmitToState(
       LogOuttSubmitted event, LoginState state) async* {
     yield state.copyWith(status: FormzStatus.submissionInProgress);
     try {
       await _authenticationRepository.logOut();
-      yield state.copyWith(status: FormzStatus.submissionSuccess);
+      yield state.copyWith(
+        status: FormzStatus.submissionSuccess,
+        password: Password.pure(),
+        phone: Phone.pure(),
+      );
     } on Exception catch (_) {
       yield state.copyWith(status: FormzStatus.submissionFailure);
     }

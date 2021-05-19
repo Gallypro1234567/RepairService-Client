@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/modules/post/screens/post_detail_page.dart';
-import 'package:repairservice/modules/post_detail/post_detail_page.dart';
+
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
-import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
-import '../../../utils/ui/extensions.dart';
 
 class CustomerManagerPostContainer extends StatelessWidget {
   final Post post;
@@ -20,7 +18,7 @@ class CustomerManagerPostContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        top: kDefaultPadding / 4,
+        top: kDefaultPadding / 6,
       ),
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -35,7 +33,9 @@ class CustomerManagerPostContainer extends StatelessWidget {
                       ? post.status != 3
                           ? Colors.blue
                           : Colors.red
-                      : Colors.green
+                      : post.feedbackAmount == 0
+                          ? Colors.pink
+                          : Colors.green
                   : Colors.green,
           geometry: BadgeGeometry(width: 124, height: 64),
           textSpan: TextSpan(
@@ -46,7 +46,9 @@ class CustomerManagerPostContainer extends StatelessWidget {
                         ? post.status != 3
                             ? "Đã hoàn thành"
                             : "Đã hủy"
-                        : "Đã hoàn thành"
+                        : post.feedbackAmount == 0
+                            ? "Chưa đánh giá"
+                            : "Đã hoàn thành"
                     : "Bạn đã chấp nhận",
             style: TextStyle(
               fontSize: 14,
@@ -155,7 +157,9 @@ class CustomerManagerPostContainer extends StatelessWidget {
                                                     ? post.status != 3
                                                         ? Colors.blue
                                                         : Colors.red
-                                                    : Colors.green
+                                                    : post.feedbackAmount == 0
+                                                        ? Colors.pink
+                                                        : Colors.green
                                                 : Colors.green,
                                         borderRadius:
                                             BorderRadius.circular(10)),
@@ -167,7 +171,9 @@ class CustomerManagerPostContainer extends StatelessWidget {
                                                   ? post.status != 3
                                                       ? "Đã hoàn thành"
                                                       : "Đã hủy"
-                                                  : "Đã hoàn thành"
+                                                  : post.feedbackAmount == 0
+                                                      ? "Chưa đánh giá"
+                                                      : "Đã hoàn thành"
                                               : "Bạn đã chấp nhận",
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
@@ -178,7 +184,9 @@ class CustomerManagerPostContainer extends StatelessWidget {
                                                   ? post.status != 3
                                                       ? Colors.white
                                                       : Colors.white
-                                                  : Colors.white
+                                                  : post.feedbackAmount == 0
+                                                      ? Colors.white
+                                                      : Colors.white
                                               : Colors.white,
                                     ),
                                   ),
@@ -229,7 +237,7 @@ class WorkerManagerPostContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        top: kDefaultPadding / 4,
+        top: kDefaultPadding / 6,
       ),
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -242,7 +250,9 @@ class WorkerManagerPostContainer extends StatelessWidget {
               : post.applystatus == 2
                   ? Colors.green
                   : post.applystatus == 3
-                      ? Colors.blue
+                      ? post.feedbackAmount == 1
+                          ? Colors.green
+                          : Colors.blue
                       : Colors.red,
           geometry: BadgeGeometry(width: 124, height: 64),
           textSpan: TextSpan(
@@ -251,7 +261,9 @@ class WorkerManagerPostContainer extends StatelessWidget {
                 : post.applystatus == 2
                     ? "Đã chấp nhận"
                     : post.applystatus == 3
-                        ? "Đã Check In"
+                        ? post.feedbackAmount == 1
+                            ? "Đã hoàn thành"
+                            : "Đã Check In"
                         : "đã hủy",
             style: TextStyle(
                 fontSize: 14,
@@ -385,7 +397,9 @@ class WorkerManagerPostContainer extends StatelessWidget {
                                             : post.applystatus == 2
                                                 ? Colors.green
                                                 : post.applystatus == 3
-                                                    ? Colors.blue
+                                                    ? post.feedbackAmount == 1
+                                                        ? Colors.green
+                                                        : Colors.blue
                                                     : Colors.red,
                                         borderRadius:
                                             BorderRadius.circular(10)),
@@ -395,7 +409,9 @@ class WorkerManagerPostContainer extends StatelessWidget {
                                           : post.applystatus == 2
                                               ? "Khách hàng chấp nhận"
                                               : post.applystatus == 3
-                                                  ? "Đã Check In"
+                                                  ? post.feedbackAmount == 1
+                                                      ? "Đã hoàn thành"
+                                                      : "Đã Check In"
                                                   : "đã hủy",
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
@@ -456,7 +472,7 @@ class WorkerManagerPostDisableContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        top: kDefaultPadding / 4,
+        top: kDefaultPadding / 6,
       ),
       child: Container(
         padding: EdgeInsets.symmetric(

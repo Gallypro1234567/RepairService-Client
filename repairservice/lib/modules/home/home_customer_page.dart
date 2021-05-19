@@ -7,12 +7,15 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/notification/notification_page.dart';
 import 'package:repairservice/modules/notification/notification_screen.dart';
 import 'package:repairservice/modules/post/bloc/post_bloc.dart';
 import 'package:repairservice/modules/post_get_list/components/post_search_container.dart';
 import 'package:repairservice/modules/post/post_form_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
-import 'package:repairservice/modules/user/user_manager_page.dart';
+
+import 'package:repairservice/modules/user/user_profile_page.dart';
+import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
@@ -53,7 +56,7 @@ class _HomeCustomerState extends State<HomeCustomerPage> {
                 builder: (context, state) {
                   switch (state.status) {
                     case UserStatus.loading:
-                      return CircularProgressIndicator();
+                      return Text("");
                       break;
                     case UserStatus.failure:
                       return Text("");
@@ -98,7 +101,7 @@ class _HomeCustomerState extends State<HomeCustomerPage> {
                 ],
               ).ripple(() {
                 Navigator.push(
-                    context, SlideFadeRoute(page: NotificationScreen()));
+                    context, SlideFadeRoute(page: NotificationPage()));
               }),
               SizedBox(
                 width: kDefaultPadding,
@@ -107,12 +110,18 @@ class _HomeCustomerState extends State<HomeCustomerPage> {
                 builder: (context, state) {
                   switch (state.status) {
                     case UserStatus.loading:
-                      return CircularProgressIndicator();
+                      return SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: CircleAvatar(
+                            backgroundImage: null,
+                          ));
                       break;
                     case UserStatus.failure:
-                      return CircleAvatar(
-                        backgroundImage: AssetImage(
-                            "assets/images/user_profile_background.jpg"),
+                      return SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: CircleAvatar(backgroundImage: null),
                       );
                       break;
                     default:
@@ -129,7 +138,7 @@ class _HomeCustomerState extends State<HomeCustomerPage> {
                                   "assets/images/user_profile_background.jpg"),
                         )..ripple(() {
                             Navigator.push(context,
-                                SlideFadeRoute(page: UserManagerPage()));
+                                SlideFadeRoute(page: UserProfilePage()));
                           }),
                       );
                   }

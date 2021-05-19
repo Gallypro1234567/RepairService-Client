@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
@@ -45,8 +46,6 @@ class VerificationFormPage extends StatelessWidget {
             width: AppTheme.fullWidth(context),
             padding: EdgeInsets.symmetric(
                 vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 2),
-            margin: EdgeInsets.symmetric(
-                vertical: kDefaultPadding, horizontal: kDefaultPadding),
             decoration: BoxDecoration(
                 color: Colors.white70,
                 borderRadius: BorderRadius.circular(5),
@@ -67,6 +66,28 @@ class VerificationFormPage extends StatelessWidget {
               children: [WorkerProfile(model: model), Content(model: model)],
             ),
           ),
+        ),
+      ),
+      bottomSheet: Container(
+        height: AppTheme.fullHeight(context) * .1,
+        color: Colors.transparent,
+        alignment: Alignment.center,
+        child:
+            BlocBuilder<WorkerregistermanagerBloc, WorkerregistermanagerState>(
+          builder: (context, state) {
+            return WorkerRegisterButton(
+              title: state.changed == false ? "Đã Duyệt" : "Duyệt",
+              color: LightColor.red,
+              colorActive: LightColor.lightteal,
+              onPressed: state.changed == false
+                  ? null
+                  : () {
+                      context
+                          .read<WorkerregistermanagerBloc>()
+                          .add(WorkerregistermanagerSubmit());
+                    },
+            );
+          },
         ),
       ),
     );
@@ -105,8 +126,21 @@ class Content extends StatelessWidget {
           value: model.serviceCode,
         ),
         ItemDetailContainer(
+          title: "Số điện thoại:",
+          value: model.phone,
+          icon: Icon(Icons.call, color: LightColor.lightGreen),
+        ).ripple(() {
+          context
+              .read<WorkerregistermanagerBloc>()
+              .add(WorkerregistermanagerOpenPhoneCall(model.phone));
+        }),
+        ItemDetailContainer(
           title: "CMND:",
           value: model.cmnd == null ? "" : model.cmnd,
+        ),
+        ItemDetailContainer(
+          title: "Địa chỉ:",
+          value: model.address == null ? "" : model.address,
         ),
         ItemDetailContainer(
           title: "Thời gian đăng ký:",
@@ -131,22 +165,6 @@ class Content extends StatelessWidget {
         ),
         SizedBox(
           height: kDefaultPadding,
-        ),
-        BlocBuilder<WorkerregistermanagerBloc, WorkerregistermanagerState>(
-          builder: (context, state) {
-            return WorkerRegisterButton(
-              title: state.changed == false ? "Đã Duyệt" : "Duyệt",
-              color: LightColor.red,
-              colorActive: LightColor.lightteal,
-              onPressed: state.changed == false
-                  ? null
-                  : () {
-                      context
-                          .read<WorkerregistermanagerBloc>()
-                          .add(WorkerregistermanagerSubmit());
-                    },
-            );
-          },
         ),
       ],
     );
@@ -244,20 +262,20 @@ class WorkerProfile extends StatelessWidget {
                   SizedBox(
                     height: kDefaultPadding / 2,
                   ),
-                  RichText(
-                    text: TextSpan(
-                      text: 'Địa chỉ: ',
-                      style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 16,
-                          color: Colors.black),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: model.address != null ? model.address : null,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ),
+                  // RichText(
+                  //   text: TextSpan(
+                  //     text: 'Địa chỉ: ',
+                  //     style: TextStyle(
+                  //         fontWeight: FontWeight.normal,
+                  //         fontSize: 16,
+                  //         color: Colors.black),
+                  //     children: <TextSpan>[
+                  //       TextSpan(
+                  //           text: model.address != null ? model.address : null,
+                  //           style: TextStyle(fontWeight: FontWeight.bold)),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),

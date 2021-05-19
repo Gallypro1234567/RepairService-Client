@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/notification/notification_page.dart';
 import 'package:repairservice/modules/notification/notification_screen.dart';
 import 'package:repairservice/modules/post_get_list/components/post_search_container.dart';
-import 'package:repairservice/modules/user/user_manager_page.dart';
+import 'package:repairservice/modules/user/bloc/user_bloc.dart';
+import 'package:repairservice/modules/user/user_profile_page.dart';
+import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:shimmer/shimmer.dart';
@@ -75,22 +78,49 @@ class _HomeWorkerState extends State<HomeWorkerPage> {
                 ],
               ).ripple(() {
                 Navigator.push(
-                    context, SlideFadeRoute(page: NotificationScreen()));
+                    context, SlideFadeRoute(page: NotificationPage()));
               }),
               SizedBox(
                 width: kDefaultPadding,
               ),
-              Container(
-                height: 30,
-                width: 30,
-                child: CircleAvatar(
-                  backgroundImage:
-                      AssetImage("assets/images/user_profile_background.jpg"),
-                ).ripple(() {
-                  Navigator.push(
-                      context, SlideFadeRoute(page: UserManagerPage()));
-                }),
-              ),
+              BlocBuilder<UserBloc, UserState>(
+                builder: (context, state) {
+                  switch (state.status) {
+                    case UserStatus.loading:
+                      return SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: CircleAvatar(
+                            backgroundImage: null,
+                          ));
+                      break;
+                    case UserStatus.failure:
+                      return SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: CircleAvatar(backgroundImage: null),
+                      );
+                      break;
+                    default:
+                      return SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: CircleAvatar(
+                          backgroundImage: state.user.imageUrl != null
+                              ? state.user.imageUrl.isNotEmpty
+                                  ? NetworkImage(state.user.imageUrl)
+                                  : AssetImage(
+                                      "assets/images/user_profile_background.jpg")
+                              : AssetImage(
+                                  "assets/images/user_profile_background.jpg"),
+                        ).ripple(() {
+                          Navigator.push(
+                              context, SlideFadeRoute(page: UserProfilePage()));
+                        }),
+                      );
+                  }
+                },
+              )
             ],
           ),
         ),

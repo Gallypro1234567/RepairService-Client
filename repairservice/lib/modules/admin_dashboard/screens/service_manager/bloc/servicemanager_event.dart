@@ -9,6 +9,9 @@ abstract class ServicemanagerEvent extends Equatable {
 
 class ServicemanagerInitial extends ServicemanagerEvent {}
 
+class ServicemanagerFetched extends ServicemanagerEvent {}
+class ServicemanagerNew extends ServicemanagerEvent {}
+
 class ServicemanagerEventSubmited extends ServicemanagerEvent {}
 
 class ServicemanagerNameChanged extends ServicemanagerEvent {
@@ -23,8 +26,14 @@ class ServicemanagerDesciptionChanged extends ServicemanagerEvent {
   ServicemanagerDesciptionChanged(this.description);
 }
 
-class ServicemanagerImageChanged extends ServicemanagerEvent {
-  final File file;
+class ServiceManagerDeleteSubmited extends ServicemanagerEvent {
+  final String code;
 
-  ServicemanagerImageChanged(this.file);
+  ServiceManagerDeleteSubmited(this.code);
+}
+
+class ServicemanagerImageChanged extends ServicemanagerEvent {
+  final ImageSource imageSource;
+
+  ServicemanagerImageChanged(this.imageSource);
 }

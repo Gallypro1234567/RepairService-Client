@@ -6,8 +6,8 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
+import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 
- 
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 
 import 'package:repairservice/widgets/title_text.dart';
@@ -19,7 +19,7 @@ import 'components/user_profile_input.dart';
 import 'components/user_profile_image.dart';
 import 'package:formz/formz.dart';
 
-class UserProfilePage extends StatelessWidget {
+class UserProfileUpdatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UserProfileView();
@@ -59,11 +59,13 @@ class UserProfileView extends StatelessWidget {
           }
         }
         if (state.status == UserProfileStatus.modified) {
+           context.read<UserBloc>().add(UserFetch());
           context.read<UserProfileBloc>().add(UserProfileInitial());
         }
       },
       child: Scaffold(
-          appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
+          appBar: AppBar(
+            toolbarHeight: AppTheme.fullHeight(context) * .06,
             backgroundColor: Colors.white,
             title: Text("Tài khoản"),
             centerTitle: true,

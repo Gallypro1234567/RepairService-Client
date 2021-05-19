@@ -1,9 +1,9 @@
 part of 'manager_bloc.dart';
 
-enum PageStatus { loading, success, deleteSuccess, failure }
+enum PageStatus { none, loading, success, deleteSuccess, failure }
 
 class ManagerState extends Equatable {
-  const ManagerState({this.pageStatus, this.posts});
+  const ManagerState({this.pageStatus = PageStatus.none, this.posts});
   final PageStatus pageStatus;
   final List<Post> posts;
   @override

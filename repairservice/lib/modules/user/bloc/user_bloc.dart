@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:repairservice/repository/user_repository/user_repository.dart';
 
@@ -45,8 +46,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     yield state.copyWith(status: UserStatus.loading);
     try {
       var user = await _userRepository.fetchUser();
-
-      yield state.copyWith(status: UserStatus.success, user: user);
+      if (user.isCustomer == UserType.worker) {
+        var serviceList = await _userRepository.fetchWorkerRegisterByUser();
+        yield state.copyWith(status: UserStatus.success, user: user,  workeRegister: serviceList);
+      } else {
+        yield state.copyWith(status: UserStatus.success, user: user);
+      }
     } on Exception catch (e) {
       yield state.copyWith(status: UserStatus.failure, message: e.toString());
     }

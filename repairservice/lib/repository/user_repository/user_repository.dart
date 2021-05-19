@@ -87,7 +87,6 @@ class UserRepository {
               email: json["Email"] as String,
               createAt: json["CreateAt"] as String,
               serviceName: json["ServiceName"] as String,
-              
               imageUrl: json["ImageUrl"] != null
                   ? json["ImageUrl"].toString().length > 0
                       ? Uri.http(Host.Server_hosting, json["ImageUrl"])
@@ -198,7 +197,7 @@ class UserRepository {
 
 // Worker
   Future<http.Response> workerRegisterService(
-      {String serviceCode, File file}) async {
+      {String serviceCode, List<File> files}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
 
@@ -212,10 +211,12 @@ class UserRepository {
       request.fields['ServiceCode'] = serviceCode;
       request.fields['isApproval'] = "0";
 
-      if (file != null) {
-        request.files.add(http.MultipartFile(
-            'File', file.readAsBytes().asStream(), file.lengthSync(),
-            filename: file.path.split("/").last));
+      if (files != null) {
+        for (var file in files) {
+          request.files.add(http.MultipartFile(
+              'File', file.readAsBytes().asStream(), file.lengthSync(),
+              filename: file.path.split("/").last));
+        }
       }
 
       var streamedResponse = await request.send();

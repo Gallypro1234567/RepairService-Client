@@ -9,11 +9,13 @@ class PostButton extends StatelessWidget {
   final title;
   final Function onPressed;
   final Color color;
+  final Color textColor;
   const PostButton({
     Key key,
     this.title,
     this.onPressed,
     this.color,
+    this.textColor = Colors.white,
   }) : super(key: key);
 
   @override
@@ -33,11 +35,10 @@ class PostButton extends StatelessWidget {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
             child: Center(
                 child: TitleText(
-              text: title,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ))),
+                    text: title,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: textColor))),
       ),
       onPressed: onPressed,
     );

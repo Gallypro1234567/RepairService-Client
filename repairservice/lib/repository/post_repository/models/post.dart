@@ -23,6 +23,7 @@ class Post extends Equatable {
   final String serviceCode;
   final String serviceText;
   final String wofsCode;
+  final int feedbackAmount;
   Post(
       {this.code,
       this.title,
@@ -44,7 +45,7 @@ class Post extends Equatable {
       this.imageUrls,
       this.serviceCode,
       this.wofsCode,
-      this.serviceText});
+      this.serviceText, this.feedbackAmount});
   @override
   List<Object> get props => [
         code,
@@ -67,7 +68,7 @@ class Post extends Equatable {
         imageUrls,
         serviceCode,
         serviceText,
-        wofsCode
+        wofsCode, feedbackAmount
       ];
 }
 
@@ -90,7 +91,7 @@ class PostApplyOfWorker extends Equatable {
   final String serviceText;
   final String wofsCode;
   final int postStatus;
-  final int applyStatus;
+  final int applyStatus; 
   PostApplyOfWorker(
       {this.code,
       this.title,

@@ -101,6 +101,7 @@ class PostDetailPerfectPage extends StatelessWidget {
               break;
             default:
               switch (state.isCustomer) {
+                // Worker
                 case false:
                   if (state.post.applyStatus == 2 && state.post.postStatus == 1)
                     return Container(
@@ -218,6 +219,7 @@ class PostDetailPerfectPage extends StatelessWidget {
                       ),
                     );
                   break;
+                // Customer
                 default:
                   if (state.post.feedbackStatus == 1)
                     return Container(

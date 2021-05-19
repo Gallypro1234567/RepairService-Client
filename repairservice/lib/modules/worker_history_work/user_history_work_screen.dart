@@ -80,6 +80,7 @@ class WorkerHistoryWorkView extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: LightColor.lightteal,
         onPressed: () {
+          context.read<WorkerregisterworkBloc>().add(WorkerregisterworkNew());
           Navigator.push(context, SlideFadeRoute(page: FormRegisterPage()));
         },
         child: Icon(Entypo.plus),
