@@ -8,6 +8,7 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/worker_register_manager/bloc/workerregistermanager_bloc.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/worker_register_manager/components/item_detail_container.dart';
 import 'package:repairservice/modules/post/screens/post_find_worker_page.dart';
+import 'package:repairservice/repository/post_repository/models/time_ago.dart';
 import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../../../utils/ui/extensions.dart';
@@ -144,7 +145,7 @@ class Content extends StatelessWidget {
         ),
         ItemDetailContainer(
           title: "Thời gian đăng ký:",
-          value: model.createAt,
+          value: TimeAgo.timeAgoSinceDate(model.createAt),
         ),
         BlocBuilder<WorkerregistermanagerBloc, WorkerregistermanagerState>(
           builder: (context, state) {

@@ -5,14 +5,14 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
-import 'package:repairservice/modules/post_detail/post_detail_page.dart';
-import 'package:repairservice/modules/post_get_list/components/post_item_container.dart';
+import 'package:repairservice/modules/post_detail/post_detail_page.dart'; 
 import 'package:repairservice/modules/splash/splash_page.dart'; 
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart'; 
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
+import 'post_recently_container.dart';
 class PostRecently extends StatelessWidget {
   const PostRecently({
     Key key,
@@ -47,7 +47,7 @@ class PostRecently extends StatelessWidget {
                       )
                     : BlocBuilder<AuthenticationBloc, AuthenticationState>(
                         builder: (context, authstate) {
-                          return ItemPostContainer(
+                          return PostRecentlyContainer(
                             post: state.postRecently[index],
                           ).ripple(() {
                             if (authstate.user.isCustomer == UserType.worker)

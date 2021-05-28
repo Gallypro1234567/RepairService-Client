@@ -1,19 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:intl/intl.dart';
 import 'package:repairservice/config/themes/constants.dart';
-import 'package:repairservice/config/themes/light_theme.dart';
+
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
 import 'package:repairservice/widgets/title_text.dart';
-import '../../../utils/ui/extensions.dart';
 
-class ItemPostContainer extends StatelessWidget {
+class PostRecentlyContainer extends StatelessWidget {
   final Post post;
 
-  const ItemPostContainer({Key key, this.post}) : super(key: key);
+  const PostRecentlyContainer({Key key, this.post}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -70,6 +67,26 @@ class ItemPostContainer extends StatelessWidget {
                       Expanded(
                         flex: 3,
                         child: Container(),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: kDefaultPadding / 4),
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Danh mục: ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 12,
+                                color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text:
+                                      '${post.serviceText == null ? "" : post.serviceText}',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.normal)),
+                            ],
+                          ),
+                        ),
                       ),
                       Expanded(
                         child: Container(),

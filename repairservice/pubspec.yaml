@@ -57,6 +57,7 @@ dependencies:
   intl: ^0.17.0
   rxdart: ^0.26.0
   signalr_client: ^0.1.6
+  flutter_neumorphic: ^3.0.3
   # pull_to_refresh: ^1.6.4
 integration_test: ^1.0.0
 dev_dependencies:

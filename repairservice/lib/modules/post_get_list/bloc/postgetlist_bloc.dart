@@ -83,7 +83,7 @@ class PostgetlistBloc extends Bloc<PostgetlistEvent, PostgetlistState> {
     yield state.copyWith(postGetPositionStatus: PostGetPositionStatus.loading);
     try {
       var listData = await _postRepository.fetchDistrictbyCityId(
-          id: event.cityId.toString());
+          provinceId: event.cityId.toString());
 
       yield state.copyWith(
           postGetPositionStatus: PostGetPositionStatus.success, distrists: listData);
@@ -97,7 +97,9 @@ class PostgetlistBloc extends Bloc<PostgetlistEvent, PostgetlistState> {
     yield state.copyWith(postGetPositionStatus: PostGetPositionStatus.loading);
     try {
       var listData = await _postRepository.fetchWardbyDisctrictId(
-          id: event.districtId.toString());
+          districtId: event.districtId.toString(),
+          provinceId: event.provinceId.toString()
+          );
 
       yield state.copyWith(
           postGetPositionStatus: PostGetPositionStatus.success, wards: listData);

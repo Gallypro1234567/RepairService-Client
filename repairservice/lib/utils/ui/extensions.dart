@@ -58,26 +58,30 @@ extension OnPressed on Widget {
           )
         ],
       );
-  
-}
-
-extension OnPresseds on Widget {
-  Widget ripples(Function onPressed, String id,
+  Widget ripples(Function onPressed, Function onLongPress,
           {BorderRadiusGeometry borderRadius =
               const BorderRadius.all(Radius.circular(5))}) =>
       Stack(
         children: <Widget>[
-          Hero(tag: id, child: Material(child: this)),
+          this,
           Positioned(
             left: 0,
             right: 0,
             top: 0,
             bottom: 0,
-            child: FlatButton(
-                shape: RoundedRectangleBorder(borderRadius: borderRadius),
+            child: TextButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(borderRadius: borderRadius),
+                  primary: Colors.black,
+                ),
                 onPressed: () {
                   if (onPressed != null) {
                     onPressed();
+                  }
+                },
+                onLongPress: (){
+                   if (onLongPress != null) {
+                    onLongPress();
                   }
                 },
                 child: Container()),

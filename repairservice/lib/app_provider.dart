@@ -13,6 +13,7 @@ import 'core/user/register/bloc/register_bloc.dart';
 import 'core/user/verifyphone/bloc/verifyphone_bloc.dart';
 
 import 'modules/admin_dashboard/screens/customer_manager/bloc/customermanager_bloc.dart';
+import 'modules/admin_dashboard/screens/post_manager/bloc/postmanager_bloc.dart';
 import 'modules/admin_dashboard/screens/service_manager/bloc/servicemanager_bloc.dart';
 import 'modules/admin_dashboard/screens/service_manager/screens/bloc/updateservice_bloc.dart';
 import 'modules/admin_dashboard/screens/worker_manager.dart/bloc/workermanager_bloc.dart';
@@ -139,6 +140,11 @@ class AppProvider extends StatelessWidget {
             create: (_) => WorkerregistermanagerBloc(
                   dashboardRepository: DashboardRepository(),
                 )..add(WorkerregistermanagerFetched())),
+        BlocProvider(
+            create: (_) => PostmanagerBloc(
+                  dashboardRepository: DashboardRepository(),
+                  postRepository: PostRepository(),
+                )..add(PostmanagerInitial())),
         // Worker
         //WorkerregisterworkBloc
         BlocProvider(

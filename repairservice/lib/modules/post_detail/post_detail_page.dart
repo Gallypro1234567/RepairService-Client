@@ -7,6 +7,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/auth/authentication.dart';
+import 'package:repairservice/modules/admin_dashboard/screens/post_manager/bloc/postmanager_bloc.dart';
 import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/post_apply/bloc/postapply_bloc.dart';
 import 'package:repairservice/modules/post_apply/post_apply_page.dart';
@@ -49,57 +50,49 @@ class PostDetailPage extends StatelessWidget {
             context
                 .read<PostdetailBloc>()
                 .add(PostdetailFetched(state.postCode));
+            context.read<PostmanagerBloc>().add(PostmanagerFetched());
           }
         },
-        child: BlocBuilder<PostdetailBloc, PostdetailState>(
-          builder: (context, state) {
-            switch (state.status) {
-              case PostDetailStatus.loading:
-                return SplashPage();
-                break;
-              case PostDetailStatus.success:
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    PostDetailImageShowBloc(),
-                    SizedBox(
-                      height: kDefaultPadding,
-                    ),
-                    PostDetailTitleBloc(),
-                    SizedBox(
-                      height: kDefaultPadding,
-                    ),
-                    PostDescriptionBloc(),
-                  ],
-                );
-                break;
-              case PostDetailStatus.submitted:
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    PostDetailImageShowBloc(),
-                    SizedBox(
-                      height: kDefaultPadding,
-                    ),
-                    PostDetailTitleBloc(),
-                    SizedBox(
-                      height: kDefaultPadding,
-                    ),
-                    PostDescriptionBloc(),
-                  ],
-                );
-                break;
-              case PostDetailStatus.failure:
-                return Center(
-                  child: Text("Error"),
-                );
-                break;
-              default:
-                return SplashPage();
-            }
+        child: BlocListener<PostdetailBloc, PostdetailState>(
+          listener: (context, state) {
+            if (state.status == PostDetailStatus.submitted)
+              context
+                  .read<PostdetailBloc>()
+                  .add(PostdetailFetched(state.postCode));
           },
+          child: BlocBuilder<PostdetailBloc, PostdetailState>(
+            builder: (context, state) {
+              switch (state.status) {
+                case PostDetailStatus.loading:
+                  return SplashPage();
+                  break;
+                case PostDetailStatus.failure:
+                  return Center(
+                    child: Text("Error"),
+                  );
+                  break;
+                default:
+                  return Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        PostDetailImageShowBloc(),
+                        SizedBox(
+                          height: kDefaultPadding,
+                        ),
+                        PostDetailTitleBloc(),
+                        SizedBox(
+                          height: kDefaultPadding,
+                        ),
+                        PostDescriptionBloc(),
+                      ],
+                    ),
+                  );
+                  break;
+              }
+            },
+          ),
         ),
       ),
       bottomSheet: BlocBuilder<PostdetailBloc, PostdetailState>(
@@ -139,11 +132,148 @@ class PostDetailBottomSheet extends StatelessWidget {
       listener: (context, state) {},
       child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, authstate) {
+          if (authstate.user.role == 0)
+            return BlocBuilder<PostdetailBloc, PostdetailState>(
+              builder: (context, state) {
+                switch (state.post.approval) {
+                  case -1:
+                    return Container(
+                      height: AppTheme.fullHeight(context) * 0.1,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                FontAwesome.edit,
+                                size: 30,
+                              ),
+                              title: "Bài đăng đã khóa",
+                              primaryColor: Colors.red,
+                              shadowColor: LightColor.lightGrey,
+                              textColor: Colors.white,
+                              onPressed: () {},
+                            ),
+                          ),
+                          Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                Icons.cancel_rounded,
+                                size: 30,
+                                color: Colors.white,
+                              ),
+                              title: "Hủy bỏ",
+                              textColor: Colors.white,
+                              primaryColor: LightColor.grey,
+                              shadowColor: LightColor.lightGrey,
+                              onPressed: () {
+                                context
+                                    .read<PostdetailBloc>()
+                                    .add(PostApprovalByAdminSubmitted(0));
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    break;
+                  case 1:
+                    return Container(
+                      height: AppTheme.fullHeight(context) * 0.1,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                FontAwesome.edit,
+                                size: 30,
+                              ),
+                              title: "Đã kích hoạt",
+                              primaryColor: Colors.green,
+                              shadowColor: LightColor.lightGrey,
+                              textColor: Colors.white,
+                              onPressed: () {},
+                            ),
+                          ),
+                          Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                Icons.cancel_rounded,
+                                size: 30,
+                                color: Colors.white,
+                              ),
+                              title: "Hủy bỏ",
+                              textColor: Colors.white,
+                              primaryColor: LightColor.grey,
+                              shadowColor: LightColor.lightGrey,
+                              onPressed: () {
+                                context
+                                    .read<PostdetailBloc>()
+                                    .add(PostApprovalByAdminSubmitted(0));
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    break;
+                  default:
+                    return Container(
+                      height: AppTheme.fullHeight(context) * 0.1,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                FontAwesome.check,
+                                size: 30,
+                              ),
+                              title: "Cho phép",
+                              primaryColor: Colors.green,
+                              shadowColor: LightColor.lightGrey,
+                              textColor: Colors.white,
+                              onPressed: () {
+                                context
+                                    .read<PostdetailBloc>()
+                                    .add(PostApprovalByAdminSubmitted(1));
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                Icons.cancel_rounded,
+                                size: 30,
+                                color: Colors.white,
+                              ),
+                              title: "Không cho phép",
+                              textColor: Colors.white,
+                              primaryColor: LightColor.red,
+                              shadowColor: LightColor.lightGrey,
+                              onPressed: () {
+                                context
+                                    .read<PostdetailBloc>()
+                                    .add(PostApprovalByAdminSubmitted(-1));
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                }
+              },
+            );
           if (authstate.user.isCustomer == UserType.worker &&
               authstate.user.role == 1) {
             return Container(
               height: AppTheme.fullHeight(context) * 0.06,
-              color: Colors.grey,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -152,82 +282,96 @@ class PostDetailBottomSheet extends StatelessWidget {
                     child: BlocBuilder<PostdetailBloc, PostdetailState>(
                       builder: (context, postDtstate) {
                         if (postDtstate.statusApply == 0)
-                          return PostDetailButton(
-                            icon: Icon(
-                              FontAwesome.edit,
-                              size: 30,
+                          return Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                FontAwesome.edit,
+                                size: 30,
+                              ),
+                              title: "Apply",
+                              primaryColor: Colors.green,
+                              shadowColor: LightColor.lightGrey,
+                              textColor: Colors.white,
+                              onPressed: () {
+                                context
+                                    .read<PostdetailBloc>()
+                                    .add(PostdetailWorkerApplySubmitted());
+                                context
+                                    .read<ManagerBloc>()
+                                    .add(ManagerFetched());
+                              },
                             ),
-                            title: "Apply",
-                            primaryColor: Colors.green,
-                            shadowColor: LightColor.lightGrey,
-                            textColor: Colors.white,
-                            onPressed: () {
-                              context
-                                  .read<PostdetailBloc>()
-                                  .add(PostdetailWorkerApplySubmitted());
-                              context.read<ManagerBloc>().add(ManagerFetched());
-                            },
                           );
                         if (postDtstate.statusApply == 1)
-                          return PostDetailButton(
-                            icon: Icon(
-                              FontAwesome.edit,
-                              size: 30,
+                          return Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                FontAwesome.edit,
+                                size: 30,
+                              ),
+                              title: "Đang chờ",
+                              primaryColor: Colors.amber,
+                              shadowColor: LightColor.lightGrey,
+                              textColor: Colors.white,
+                              onPressed: () {},
                             ),
-                            title: "Đang chờ",
-                            primaryColor: Colors.amber,
-                            shadowColor: LightColor.lightGrey,
-                            textColor: Colors.white,
-                            onPressed: () {},
                           );
                         else if (postDtstate.statusApply == 2)
-                          return PostDetailButton(
-                            icon: Icon(
-                              FontAwesome.edit,
-                              size: 30,
+                          return Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                FontAwesome.edit,
+                                size: 30,
+                              ),
+                              title: "Đã chấp nhận",
+                              primaryColor: Colors.blue,
+                              shadowColor: LightColor.lightGrey,
+                              textColor: Colors.white,
+                              onPressed: () {},
                             ),
-                            title: "Đã chấp nhận",
-                            primaryColor: Colors.blue,
-                            shadowColor: LightColor.lightGrey,
-                            textColor: Colors.white,
-                            onPressed: () {},
                           );
                         else if (postDtstate.statusApply == 3)
-                          return PostDetailButton(
-                            icon: Icon(
-                              FontAwesome.edit,
-                              size: 30,
+                          return Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                FontAwesome.edit,
+                                size: 30,
+                              ),
+                              title: "Đã hoàn thành",
+                              primaryColor: Colors.blue,
+                              shadowColor: LightColor.lightGrey,
+                              textColor: Colors.white,
+                              onPressed: () {},
                             ),
-                            title: "Đã hoàn thành",
-                            primaryColor: Colors.blue,
-                            shadowColor: LightColor.lightGrey,
-                            textColor: Colors.white,
-                            onPressed: () {},
                           );
                         else if (postDtstate.statusApply == 1)
-                          return PostDetailButton(
-                            icon: Icon(
-                              FontAwesome.edit,
-                              size: 30,
+                          return Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                FontAwesome.edit,
+                                size: 30,
+                              ),
+                              title:
+                                  "Không thể apply khi bạn đã hủy việc này trước đó",
+                              primaryColor: Colors.red,
+                              shadowColor: LightColor.lightGrey,
+                              textColor: Colors.white,
+                              onPressed: () {},
                             ),
-                            title:
-                                "Không thể apply khi bạn đã hủy việc này trước đó",
-                            primaryColor: Colors.red,
-                            shadowColor: LightColor.lightGrey,
-                            textColor: Colors.white,
-                            onPressed: () {},
                           );
                         else
-                          return PostDetailButton(
-                            icon: Icon(
-                              FontAwesome.edit,
-                              size: 30,
+                          return Expanded(
+                            child: PostDetailButton(
+                              icon: Icon(
+                                FontAwesome.edit,
+                                size: 30,
+                              ),
+                              title: "Bạn Chưa đủ điều kiện apply",
+                              primaryColor: Colors.red,
+                              shadowColor: LightColor.lightGrey,
+                              textColor: Colors.white,
+                              onPressed: () {},
                             ),
-                            title: "Bạn Chưa đủ điều kiện apply",
-                            primaryColor: Colors.red,
-                            shadowColor: LightColor.lightGrey,
-                            textColor: Colors.white,
-                            onPressed: () {},
                           );
                       },
                     ),
@@ -241,30 +385,43 @@ class PostDetailBottomSheet extends StatelessWidget {
               if (poststate.post.phone == authstate.user.phone)
                 return Container(
                   height: AppTheme.fullHeight(context) * 0.1,
-                  color: Colors.grey,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: PostDetailButton(
-                          icon: Icon(
-                            FontAwesome.edit,
-                            size: 30,
-                          ),
-                          title: "Cập nhật thông tin",
-                          primaryColor: Colors.blue,
-                          shadowColor: LightColor.lightGrey,
-                          textColor: Colors.white,
-                          onPressed: () {
-                            context
-                                .read<PostUpdateBloc>()
-                                .add(PostUpdateFetched(postCode));
-                            Navigator.push(context,
-                                SlideFadeRoute(page: PostUpdatePage()));
-                          },
-                        ),
-                      ),
+                      poststate.post.status == 2
+                          ? Expanded(
+                              child: PostDetailButton(
+                                icon: Icon(
+                                  FontAwesome.edit,
+                                  size: 30,
+                                ),
+                                title: "Màn hình chính",
+                                primaryColor: Colors.green,
+                                shadowColor: LightColor.lightGrey,
+                                textColor: Colors.white,
+                                onPressed: () {},
+                              ),
+                            )
+                          : Expanded(
+                              child: PostDetailButton(
+                                icon: Icon(
+                                  FontAwesome.edit,
+                                  size: 30,
+                                ),
+                                title: "Cập nhật thông tin",
+                                primaryColor: Colors.blue,
+                                shadowColor: LightColor.lightGrey,
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  context
+                                      .read<PostUpdateBloc>()
+                                      .add(PostUpdateFetched(postCode));
+                                  Navigator.push(context,
+                                      SlideFadeRoute(page: PostUpdatePage()));
+                                },
+                              ),
+                            ),
                       Expanded(
                         child: PostDetailButton(
                           icon: Icon(

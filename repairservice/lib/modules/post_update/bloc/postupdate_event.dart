@@ -29,8 +29,8 @@ class PostUpdateDistrictFetched extends PostUpdateEvent {
 
 class PostUpdateWardFetched extends PostUpdateEvent {
   final int districtId;
-
-  PostUpdateWardFetched(this.districtId);
+  final int provinceId;
+  PostUpdateWardFetched({this.districtId, this.provinceId});
 }
 
 class PostUpdateCityChanged extends PostUpdateEvent {
@@ -106,3 +106,4 @@ class PostUpdateWorkerApplySubmitted extends PostUpdateEvent {
 }
 
 class PostUpdateCustomerSubmitted extends PostUpdateEvent {}
+

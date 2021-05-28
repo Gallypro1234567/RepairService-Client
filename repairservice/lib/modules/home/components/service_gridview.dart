@@ -61,9 +61,9 @@ class ServiceGridview extends StatelessWidget {
                           title: obj.name,
                           imageUrl: obj.imageUrl,
                         ).ripple(() {
-                          context
-                              .read<PostgetlistBloc>()
-                              .add(PostgetlistFetched(obj.code));
+                          context.read<PostgetlistBloc>().add(
+                              PostgetlistFetched(
+                                  code: obj.code, cityId: -1, districtId: -1));
                           Navigator.push(
                               context,
                               SlideFadeRoute(

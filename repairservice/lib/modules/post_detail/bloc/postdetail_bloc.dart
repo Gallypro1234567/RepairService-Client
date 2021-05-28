@@ -28,6 +28,8 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
       yield* _mapPostdetailWorkerApplySubmittedToState(event, state);
     } else if (event is PostdetailCheckWorker)
       yield* _mapPostdetailCheckWorkerToState(event, state);
+    else if (event is PostApprovalByAdminSubmitted)
+      yield* _mapPostApprovalByAdminSubmittedToState(event, state);
   }
 
   Stream<PostdetailState> _mapPostdetailFetchedToState(
@@ -46,7 +48,6 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
     }
   }
 
-  
   Stream<PostdetailState> _mapPostdetailCheckWorkerToState(
       PostdetailCheckWorker event, PostdetailState state) async* {
     yield state.copyWith(status: PostDetailStatus.loading);
@@ -62,6 +63,7 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
       yield state.copyWith(status: PostDetailStatus.failure);
     }
   }
+
   Stream<PostdetailState> _mapPostdetailWorkerApplySubmittedToState(
       PostdetailWorkerApplySubmitted event, PostdetailState state) async* {
     yield state.copyWith(status: PostDetailStatus.loading);
@@ -81,4 +83,18 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
     }
   }
 
+  Stream<PostdetailState> _mapPostApprovalByAdminSubmittedToState(
+      PostApprovalByAdminSubmitted event, PostdetailState state) async* {
+    yield state.copyWith(status: PostDetailStatus.loading);
+    try {
+      var response = await _postRepository.adminApprovalPost(
+          code: state.postCode, approved: event.approved);
+      if (response.statusCode == 200)
+        yield state.copyWith(status: PostDetailStatus.submitted);
+      else
+        yield state.copyWith(status: PostDetailStatus.failure);
+    } on Exception catch (_) {
+      yield state.copyWith(status: PostDetailStatus.failure);
+    }
+  }
 }

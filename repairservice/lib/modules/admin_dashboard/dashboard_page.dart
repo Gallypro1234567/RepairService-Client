@@ -10,6 +10,8 @@ import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'screens/customer_manager/customer_manager.dart';
+import 'screens/post_manager/bloc/postmanager_bloc.dart';
+import 'screens/post_manager/post_manager_page.dart';
 import 'screens/service_manager/bloc/servicemanager_bloc.dart';
 import 'screens/worker_manager.dart/worker_manager.dart';
 import 'screens/worker_register_manager/worker_register_manager.dart';
@@ -81,6 +83,19 @@ class DashboardPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(context,
                       SlideFadeRoute(page: WorkerRegisterManagerPage()));
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.app_registration),
+                title: TitleText(
+                  text: 'Danh sách tin',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                onTap: () {
+                  context.read<PostmanagerBloc>().add(PostmanagerFetched());
+                  Navigator.push(
+                      context, SlideFadeRoute(page: PostmanagerPage()));
                 },
               ),
             ],

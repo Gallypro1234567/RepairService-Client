@@ -11,7 +11,9 @@ class PostgetlistInitial extends PostgetlistEvent {}
 
 class PostgetlistFetched extends PostgetlistEvent {
   final String code;
-  PostgetlistFetched(this.code);
+  final int cityId;
+  final int districtId;
+  PostgetlistFetched({this.code, this.cityId, this.districtId});
 }
 
 class PostgetlistCityFetched extends PostgetlistEvent {}
@@ -35,5 +37,6 @@ class PostgetlistDistrictSelectChanged extends PostgetlistEvent {
 
 class PostgetlistWardFetched extends PostgetlistEvent {
   final int districtId;
-  PostgetlistWardFetched(this.districtId);
+  final int provinceId;
+  PostgetlistWardFetched({this.districtId, this.provinceId});
 }

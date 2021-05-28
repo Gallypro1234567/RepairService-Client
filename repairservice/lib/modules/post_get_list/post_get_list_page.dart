@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
@@ -37,7 +38,8 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LightColor.lightGrey,
-      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
+      appBar: AppBar(
+        toolbarHeight: AppTheme.fullHeight(context) * .06,
         backgroundColor: LightColor.lightteal,
         leadingWidth: 30,
         leading: IconButton(
@@ -54,14 +56,30 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
           switch (state.pageStatus) {
             case PostGetStatus.loading:
               return SplashPage();
-            case PostGetStatus.loadSuccess:
+            case PostGetStatus.failure:
+              return Center(
+                child: Text("Error"),
+              );
+            // case PostGetStatus.sbumitSuccess:
+            //   return RefreshIndicator(
+            //       onRefresh: () async {
+            //         context
+            //             .read<PostgetlistBloc>()
+            //             .add(PostgetlistFetched(code: widget.serviceCode));
+            //       },
+            //       child: ListPostView(
+
+            //         state: state,
+            //       ));
+            default:
               return RefreshIndicator(
                   onRefresh: () async {
                     context
                         .read<PostgetlistBloc>()
-                        .add(PostgetlistFetched(widget.serviceCode));
+                        .add(PostgetlistFetched(code: widget.serviceCode));
                   },
                   child: ListPostView(
+                    titleCategory: widget.title,
                     state: state,
                     onNavigator: () {
                       context
@@ -71,21 +89,6 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
                           context, SlideFadeRoute(page: SelectCityPage()));
                     },
                   ));
-            case PostGetStatus.sbumitSuccess:
-              return RefreshIndicator(
-                  onRefresh: () async {
-                    context
-                        .read<PostgetlistBloc>()
-                        .add(PostgetlistFetched(widget.serviceCode));
-                  },
-                  child: ListPostView(
-                    state: state,
-                  ));
-
-            default:
-              return Center(
-                child: Text("Error"),
-              );
           }
         },
       ),
@@ -96,10 +99,12 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
 class ListPostView extends StatelessWidget {
   final PostgetlistState state;
   final Function onNavigator;
+  final String titleCategory;
   const ListPostView({
     Key key,
     this.state,
     this.onNavigator,
+    this.titleCategory,
   }) : super(key: key);
 
   @override
@@ -135,6 +140,24 @@ class ListPostView extends StatelessWidget {
                   },
                 ),
                 Icon(FontAwesome.caret_down, size: 20, color: Colors.black),
+                Expanded(
+                  child: Container(),
+                ),
+                RichText(
+                    text: TextSpan(
+                        text: "Danh mục: ",
+                        style: GoogleFonts.muli(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black),
+                        children: [
+                      TextSpan(
+                          text: titleCategory,
+                          style: GoogleFonts.muli(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black))
+                    ])),
               ],
             ),
           ).ripple(onNavigator),

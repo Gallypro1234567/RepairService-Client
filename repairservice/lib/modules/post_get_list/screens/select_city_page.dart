@@ -56,7 +56,7 @@ class SelectCityPage extends StatelessWidget {
                               districtId: -1, districtText: ""));
                       context
                           .read<PostgetlistBloc>()
-                          .add(PostgetlistFetched(state.serviceCode));
+                          .add(PostgetlistFetched(code: state.serviceCode));
                       Navigator.pop(context);
                     }),
                     ListView.builder(

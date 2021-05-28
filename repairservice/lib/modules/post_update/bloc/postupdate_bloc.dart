@@ -56,6 +56,7 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
       yield _mapPostUpdateDescriptionChangedToState(event, state);
     else if (event is PostUpdateCustomerSubmitted)
       yield* _mapPostUpdateSubmittedToState(event, state);
+    
   }
 
   Stream<PostUpdateState> _mapPostCityFetchedToState(
@@ -82,7 +83,7 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
     yield state.copyWith(positionUpdateStatus: PositionUpdateStatus.loading);
     try {
       var listData = await _postRepository.fetchDistrictbyCityId(
-          id: event.cityid.toString());
+          provinceId: event.cityid.toString());
 
       yield state.copyWith(
           positionUpdateStatus: PositionUpdateStatus.success,
@@ -97,7 +98,8 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
     yield state.copyWith(positionUpdateStatus: PositionUpdateStatus.loading);
     try {
       var listData = await _postRepository.fetchWardbyDisctrictId(
-          id: event.districtId.toString());
+          districtId: event.districtId.toString(),
+          provinceId: event.provinceId.toString());
 
       yield state.copyWith(
           positionUpdateStatus: PositionUpdateStatus.success, wards: listData);
@@ -123,7 +125,16 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
   _mapPostCityChangedToState(
       PostUpdateCityChanged event, PostUpdateState state) {
     return state.copyWith(
-        cityId: event.id, cityText: event.text, cityInvalid: event.invalid);
+      cityId: event.id,
+      cityText: event.text,
+      cityInvalid: event.invalid,
+      districtId: -1,
+      districtText: "",
+      districtInvalid: false,
+      wardId: -1,
+      wardText: "",
+      wardInvalid: false,
+    );
   }
 
   _mapPostUpdateServiceChangedToState(
@@ -241,4 +252,6 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
       yield state.copyWith(pageStatus: PostUpdateStatus.failure);
     }
   }
+
+ 
 }

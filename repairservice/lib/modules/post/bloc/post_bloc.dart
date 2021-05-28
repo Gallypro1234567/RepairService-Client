@@ -30,19 +30,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       yield state.copyWith();
     } else if (event is PostAddNewPage)
       yield state.copyWith(
-        pageStatus: PostStatus.none,
-        message: "",
-        images: <File>[],
-        serviceCode: "",
-        serviceText: "",
-        districtText: "",
-        cityText: "",
-        wardText: "",
-        serviceInvalid: false,
-        cityInvalid: false,
-        districtInvalid: false,
-        wardInvalid: false,
-      );
+          pageStatus: PostStatus.none,
+          message: "",
+          images: <File>[],
+          serviceCode: "",
+          serviceText: "",
+          districtText: "",
+          cityText: "",
+          wardText: "",
+          serviceInvalid: false,
+          cityInvalid: false,
+          districtInvalid: false,
+          wardInvalid: false,
+          title: Title.pure(),
+          description: Description.pure());
     else if (event is PostAddImageMutiChanged)
       yield* _mapPostAddImageMutiChangedToState(event, state);
     else if (event is PostDeleteImageMutiChanged)
@@ -85,7 +86,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   _mapPostCityChangedToState(PostCityChanged event, PostState state) {
     return state.copyWith(
-        cityId: event.id, cityText: event.text, cityInvalid: event.invalid);
+      cityId: event.id,
+      cityText: event.text,
+      cityInvalid: event.invalid,
+      districtId: -1,
+      districtText: "",
+      districtInvalid: false,
+      wardId: -1,
+      wardText: "",
+      wardInvalid: false,
+    );
   }
 
   _mapPostServiceChangedToState(PostServiceChanged event, PostState state) {
@@ -205,7 +215,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     yield state.copyWith(positionStatus: PositionStatus.loading);
     try {
       var listData = await _postRepository.fetchDistrictbyCityId(
-          id: event.cityid.toString());
+          provinceId: event.cityid.toString());
 
       yield state.copyWith(
           positionStatus: PositionStatus.success, districts: listData);
@@ -219,7 +229,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     yield state.copyWith(positionStatus: PositionStatus.loading);
     try {
       var listData = await _postRepository.fetchWardbyDisctrictId(
-          id: event.districtId.toString());
+          districtId: event.districtId.toString(),
+          provinceId: event.provinceId.toString());
 
       yield state.copyWith(
           positionStatus: PositionStatus.success, wards: listData);

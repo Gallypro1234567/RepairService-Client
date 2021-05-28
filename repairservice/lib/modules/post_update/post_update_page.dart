@@ -35,7 +35,8 @@ class PostUpdatePage extends StatelessWidget {
           }
         },
         child: Scaffold(
-          appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
+          appBar: AppBar(
+            toolbarHeight: AppTheme.fullHeight(context) * .06,
             backgroundColor: Colors.white,
             titleSpacing: 0,
             bottomOpacity: 0,
@@ -60,18 +61,12 @@ class PostUpdatePage extends StatelessWidget {
               switch (state.pageStatus) {
                 case PostUpdateStatus.loading:
                   return SplashPage();
-                  break;
-                case PostUpdateStatus.none:
-                  return FormBodyUpdate();
-                  break;
-                case PostUpdateStatus.loadSuccess:
-                  return FormBodyUpdate();
-                  break;
-                case PostUpdateStatus.sbumitSuccess:
-                  return FormBodyUpdate();
-                  break;
+                  break; 
+                case PostUpdateStatus.failure:
+                  return Center(child: Text("Error")); 
                 default:
-                  return Center(child: Text("Error"));
+                  return FormBodyUpdate();
+                  break;
               }
             },
           ),
@@ -237,9 +232,10 @@ class FormBodyUpdate extends StatelessWidget {
                 ).ripple(state.districtText.length == 0
                     ? null
                     : () {
-                        context
-                            .read<PostUpdateBloc>()
-                            .add(PostUpdateWardFetched(state.districtId));
+                        context.read<PostUpdateBloc>().add(
+                            PostUpdateWardFetched(
+                                districtId: state.districtId,
+                                provinceId: state.cityId));
                         Navigator.push(context,
                             SlideFadeRoute(page: PostUpdateSelectWardPage()));
                       });

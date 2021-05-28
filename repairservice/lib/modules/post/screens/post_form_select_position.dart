@@ -53,7 +53,7 @@ class PostSelectCityPage extends StatelessWidget {
               break;
             default:
               return ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
+                //physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: state.cities.length,
                 itemBuilder: (context, index) {
@@ -120,7 +120,7 @@ class PostSelectDistrictPage extends StatelessWidget {
               break;
             default:
               return ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
+                //physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: state.districts.length,
                 itemBuilder: (context, index) {
@@ -187,7 +187,7 @@ class PostSelectWardPage extends StatelessWidget {
               break;
             default:
               return ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
+                //physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: state.wards.length,
                 itemBuilder: (context, index) {

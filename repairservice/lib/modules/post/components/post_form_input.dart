@@ -29,7 +29,8 @@ class PostFormInput extends StatelessWidget {
       width: double.infinity,
       child: TextFormField(
         onChanged: onChanged,
-        controller: controler,
+        controller: controler != null ? controler : null,
+        initialValue: controler != null ? initialValue : null,
         readOnly: readOnly,
         scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
         decoration: InputDecoration(

@@ -34,7 +34,8 @@ class PostPage extends StatelessWidget {
           }
         },
         child: Scaffold(
-          appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
+          appBar: AppBar(
+            toolbarHeight: AppTheme.fullHeight(context) * .06,
             backgroundColor: Colors.white,
             titleSpacing: 0,
             bottomOpacity: 0,
@@ -242,9 +243,9 @@ class FormBody extends StatelessWidget {
                 ).ripple(state.districtText.length == 0
                     ? null
                     : () {
-                        context
-                            .read<PostBloc>()
-                            .add(PostWardFetched(state.districtId));
+                        context.read<PostBloc>().add(PostWardFetched(
+                            districtId: state.districtId,
+                            provinceId: state.cityId));
                         Navigator.push(context,
                             SlideFadeRoute(page: PostSelectWardPage()));
                       });
@@ -261,6 +262,7 @@ class FormBody extends StatelessWidget {
                   hintText: "Chưa có thông tin",
                   invalid: state.title.invalid,
                   errorText: state.title.invalid ? 'không được trống' : null,
+                  initialValue: "",
                   onChanged: (value) {
                     context.read<PostBloc>().add(PostTitleChanged(value));
                   },
@@ -289,6 +291,7 @@ class FormBody extends StatelessWidget {
                   invalid: state.description.invalid,
                   errorText:
                       state.description.invalid ? 'không được trống' : null,
+                  initialValue: "",
                   onChanged: (value) {
                     context.read<PostBloc>().add(PostDescriptionChanged(value));
                   },

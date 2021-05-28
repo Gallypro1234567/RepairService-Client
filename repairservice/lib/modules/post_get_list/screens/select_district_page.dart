@@ -52,7 +52,7 @@ class SelectDistrictPage extends StatelessWidget {
                               districtId: -1, districtText: ""));
                       context
                           .read<PostgetlistBloc>()
-                          .add(PostgetlistFetched(state.serviceCode));
+                          .add(PostgetlistFetched(code: state.serviceCode));
                       int count = 0;
                       Navigator.popUntil(context, (route) {
                         return count++ == 2;
@@ -72,7 +72,7 @@ class SelectDistrictPage extends StatelessWidget {
                                   districtId: state.distrists[index].id));
                           context
                               .read<PostgetlistBloc>()
-                              .add(PostgetlistFetched(state.serviceCode));
+                              .add(PostgetlistFetched(code: state.serviceCode));
                           int count = 0;
                           Navigator.popUntil(context, (route) {
                             return count++ == 2;

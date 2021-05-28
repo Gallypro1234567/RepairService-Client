@@ -25,6 +25,12 @@ class PostdetailWorkerApplySubmitted extends PostdetailEvent {
   });
 }
 
+class PostApprovalByAdminSubmitted extends PostdetailEvent {
+  final int approved;
+
+  PostApprovalByAdminSubmitted(this.approved);
+}
+
 class PostdetailCheckWorker extends PostdetailEvent {
   final String postCode;
 

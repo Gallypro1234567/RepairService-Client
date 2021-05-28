@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class Post extends Equatable {
   final String code;
-
+  final int approval;
   final String title;
   final String address;
   final String createAt;
@@ -24,6 +24,7 @@ class Post extends Equatable {
   final String serviceText;
   final String wofsCode;
   final int feedbackAmount;
+  final int applyAmount;
   Post(
       {this.code,
       this.title,
@@ -37,6 +38,7 @@ class Post extends Equatable {
       this.cityId,
       this.wardId,
       this.status,
+      this.approval,
       this.applystatus,
       this.fullname,
       this.phone,
@@ -45,7 +47,9 @@ class Post extends Equatable {
       this.imageUrls,
       this.serviceCode,
       this.wofsCode,
-      this.serviceText, this.feedbackAmount});
+      this.serviceText,
+      this.feedbackAmount,
+      this.applyAmount});
   @override
   List<Object> get props => [
         code,
@@ -60,6 +64,7 @@ class Post extends Equatable {
         cityId,
         wardId,
         status,
+        approval,
         applystatus,
         fullname,
         phone,
@@ -68,7 +73,9 @@ class Post extends Equatable {
         imageUrls,
         serviceCode,
         serviceText,
-        wofsCode, feedbackAmount
+        wofsCode,
+        feedbackAmount,
+        applyAmount
       ];
 }
 
@@ -91,7 +98,7 @@ class PostApplyOfWorker extends Equatable {
   final String serviceText;
   final String wofsCode;
   final int postStatus;
-  final int applyStatus; 
+  final int applyStatus;
   PostApplyOfWorker(
       {this.code,
       this.title,

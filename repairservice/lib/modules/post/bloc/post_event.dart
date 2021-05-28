@@ -9,7 +9,7 @@ class PostEvent extends Equatable {
 
 class PostInitial extends PostEvent {}
 
-class PostAddNewPage extends PostEvent {} 
+class PostAddNewPage extends PostEvent {}
 
 class PostCityFetched extends PostEvent {}
 
@@ -21,9 +21,10 @@ class PostDistrictFetched extends PostEvent {
 
 class PostWardFetched extends PostEvent {
   final int districtId;
-
-  PostWardFetched(this.districtId);
+  final int provinceId;
+  PostWardFetched({this.districtId, this.provinceId});
 }
+
 class PostAddImageMutiChanged extends PostEvent {
   final ImageSource imageSource;
 

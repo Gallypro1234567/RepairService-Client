@@ -1,3 +1,4 @@
+ 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
@@ -9,6 +10,7 @@ import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/notification/notification_page.dart';
 import 'package:repairservice/modules/notification/notification_screen.dart';
 import 'package:repairservice/modules/post_get_list/components/post_search_container.dart';
+import 'package:repairservice/modules/search/search_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/modules/user/user_profile_page.dart';
 import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
@@ -47,7 +49,16 @@ class _HomeWorkerState extends State<HomeWorkerPage> {
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
           child: Row(
             children: [
-              Expanded(child: SearchContainer()),
+              Expanded(
+                child: Hero(
+                    tag: 'background',
+                    child: SearchContainer().ripple(
+                      () {
+                        Navigator.push(
+                            context, SlideFadeRoute(page: SearchPage()));
+                      },
+                    )),
+              ),
               SizedBox(
                 width: kDefaultPadding,
               ),

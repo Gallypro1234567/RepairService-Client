@@ -12,22 +12,21 @@ import 'models/post_detail_pefect.dart';
 
 class PostRepository {
   Future<List<City>> fetchCities() async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+
+    Map<String, String> headers = {"Authorization": "bearer $token"};
     try {
       var response = await http.get(
-        Uri.http('thongtindoanhnghiep.co', "/api/city"),
-      );
+          Uri.http(Host.Server_hosting, "/api/location/provinces"),
+          headers: headers);
       var jsons = json.decode(response.body);
       if (response.statusCode == 200) {
-        var body = jsons['LtsItem'] as List;
-
+        var body = jsons['data'] as List;
         return body.map((dynamic json) {
           return City(
-            id: json["ID"] as int,
-            title: json["Title"] as String,
-            solrId: json["SolrId"] as String,
-            stt: json["Stt"] as int,
-            totalDoanhNghiep: json["TotalDoanhNghiep"] as int,
-            type: json["Type"] as int,
+            id: int.parse(json["Id"]),
+            title: json["Name"] as String,
           );
         }).toList();
       }
@@ -38,24 +37,26 @@ class PostRepository {
     }
   }
 
-  Future<List<District>> fetchDistrictbyCityId({String id}) async {
+  Future<List<District>> fetchDistrictbyCityId({String provinceId}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+
+    Map<String, String> headers = {"Authorization": "bearer $token"};
     try {
+      Map<String, String> paramters = {
+        "cityid": provinceId,
+      };
       var response = await http.get(
-        Uri.http('thongtindoanhnghiep.co', "/api/city/$id/district"),
-      );
+          Uri.http(Host.Server_hosting, "/api/location/districts", paramters),
+          headers: headers);
+      var jsons = json.decode(response.body);
       if (response.statusCode == 200) {
-        var body = json.decode(response.body) as List;
+        var body = jsons['data'] as List;
+
         return body.map((dynamic json) {
           return District(
-            id: json["ID"] as int,
-            title: json["Title"] as String,
-            solrId: json["SolrId"] as String,
-            stt: json["Stt"] as int,
-            tinhThanhId: json["TinhThanhId"] as int,
-            tinhThanhTitle: json["TinhThanhTitle"] as String,
-            tinhThanhTitleAscii: json["TinhThanhTitleAscii"] as String,
-            type: json["Type"] as int,
-            isActived: 0,
+            id: int.parse(json["Id"]),
+            title: json["Name"] as String,
           );
         }).toList();
       }
@@ -66,26 +67,28 @@ class PostRepository {
     }
   }
 
-  Future<List<Ward>> fetchWardbyDisctrictId({String id}) async {
+  Future<List<Ward>> fetchWardbyDisctrictId(
+      {String provinceId, String districtId}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+
+    Map<String, String> headers = {"Authorization": "bearer $token"};
     try {
+      Map<String, String> paramters = {
+        "cityid": provinceId,
+        "districtid": districtId
+      };
       var response = await http.get(
-        Uri.http('thongtindoanhnghiep.co', "/api/district/$id/ward"),
-      );
+          Uri.http(Host.Server_hosting, "/api/location/wards", paramters),
+          headers: headers);
+      var jsons = json.decode(response.body);
       if (response.statusCode == 200) {
-        var body = json.decode(response.body) as List;
+        var body = jsons['data'] as List;
+
         return body.map((dynamic json) {
           return Ward(
-            id: json["ID"] as int,
-            title: json["Title"] as String,
-            solrId: json["SolrId"] as String,
-            stt: json["Stt"] as int,
-            tinhThanhId: json["TinhThanhId"] as int,
-            tinhThanhTitle: json["TinhThanhTitle"] as String,
-            tinhThanhTitleAscii: json["TinhThanhTitleAscii"] as String,
-            quanHuyenId: json["QQuanHuyenId"] as int,
-            quanHuyenTitle: json["QuanHuyenTitle"] as String,
-            quanHuyenTitleAscii: json["QuanHuyenTitleAscii"] as String,
-            type: json["Type"] as int,
+            id: int.parse(json["Id"]),
+            title: json["Name"] as String,
           );
         }).toList();
       }
@@ -97,19 +100,26 @@ class PostRepository {
   }
 
   Future<List<Post>> fetchPost(
-      {String serviceCode, String cityId, String districtId}) async {
+      {String serviceCode,
+      String cityId,
+      String districtId,
+      int start = 0,
+      int lenght = 10,
+      int status = -2,
+      int approval = -2}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
 
     Map<String, String> headers = {"Authorization": "bearer $token"};
     Map<String, String> paramters = {
-      "start": "0",
-      "length": "1000",
+      "start": start.toString(),
+      "length": lenght.toString(),
       "order": "1",
-      "status": "0",
+      "status": status.toString(),
       "servicecode": serviceCode,
       "cityid": cityId,
-      "districtId": districtId
+      "districtId": districtId,
+      "approval": approval.toString()
     };
     try {
       var response = await http.get(
@@ -151,6 +161,7 @@ class PostRepository {
               districtId: json["DistrictId"] as int,
               desciption: json["Description"] as String,
               status: json["status"] as int,
+              approval: json["approval"] as int,
               phone: json["Phone"] as String,
               email: json["Email"] as String,
               imageUrl: imageUrls.length > 0 ? imageUrls.first : null,
@@ -205,6 +216,7 @@ class PostRepository {
               wardId: json["WardId"] as int,
               desciption: json["Description"] as String,
               status: json["status"] as int,
+              approval: json["approval"] as int,
               phone: json["Phone"] as String,
               email: json["Email"] as String,
               imageUrls: imageUrls,
@@ -421,7 +433,6 @@ class PostRepository {
       "start": start.toString(),
       "length": length.toString(),
       "order": "1",
-      "status": "0"
     };
     try {
       var response = await http.get(
@@ -463,6 +474,7 @@ class PostRepository {
               districtId: json["DistrictId"] as int,
               desciption: json["Description"] as String,
               status: json["status"] as int,
+              approval: json["approval"] as int,
               phone: json["Phone"] as String,
               email: json["Email"] as String,
               serviceText: json["ServiceName"] as String,
@@ -537,7 +549,6 @@ class PostRepository {
       "start": "0",
       "length": "1000",
       "order": "1",
-      "servicecode": "02",
       "status": null,
     };
 
@@ -591,6 +602,8 @@ class PostRepository {
               districtId: json["DistrictId"] as int,
               desciption: json["Description"] as String,
               status: json["status"] as int,
+              approval: json["approval"] as int,
+              applyAmount: json["ApplyAmount"] as int,
               feedbackAmount: json["FeedbackAmount"] as int,
               phone: json["Phone"] as String,
               email: json["Email"] as String,
@@ -730,6 +743,24 @@ class PostRepository {
                 filename: file.path.split("/").last));
         }
       }
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
+
+  Future<http.Response> adminApprovalPost({String code, int approved}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    try {
+      var uri = Uri.http(Host.Server_hosting, "/api/posts/approvalbyadmin");
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      request.fields['approval'] = approved.toString();
+      request.fields['code'] = code;
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
       return response;
