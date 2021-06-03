@@ -56,8 +56,14 @@ dependencies:
   dotted_border: ^1.0.7
   intl: ^0.17.0
   rxdart: ^0.26.0
-  signalr_client: ^0.1.6
+  signalr_client: ^0.1.6 
   flutter_neumorphic: ^3.0.3
+  flutter_local_notifications: ^6.0.0
+  device_info: ^2.0.0
+  flutter_native_timezone: ^1.0.10
+  path_provider: ^2.0.0 
+  workmanager: ^0.4.0
+  vertical_tabs: ^0.2.0
   # pull_to_refresh: ^1.6.4
 integration_test: ^1.0.0
 dev_dependencies:

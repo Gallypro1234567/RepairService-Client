@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:repairservice/repository/hub_repository/notification_model.dart';
 import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/service/server_hosting.dart' as Host;
@@ -638,17 +639,37 @@ class PostRepository {
       if (response.statusCode == 200) {
         var body = jsons['data'] as List;
         return body.map((dynamic json) {
+          List<String> imageUrls = [];
+          String addressShort;
+          if (json["ImageUrl"] != null) {
+            if (json["ImageUrl"].toString().isNotEmpty) {
+              List<String> list = json["ImageUrl"].split(',');
+              for (var item in list) {
+                imageUrls..add(Uri.http(Host.Server_hosting, item).toString());
+              }
+            }
+          }
+          if (json["Address"] != null) {
+            if (json["Address"].toString().isNotEmpty) {
+              List<String> list = json["Address"].split(',');
+              if (list.length == 3) {
+                addressShort = list[1].toString() + "," + list[2];
+              } else
+                addressShort = json["Address"].toString();
+            }
+          }
           return Post(
-            fullname: json["CustomerFullname"] as String,
-            phone: json["CustomerPhone"] as String,
-            code: json["PostCode"] as String,
-            title: json["Title"] as String,
-            createAt: json["CreateAt"] as String,
-            wofsCode: json["WorkerOfServiceCode"] as String,
-            status: int.parse(json["PostStatus"].toString()),
-            feedbackAmount: json["FeedbackAmount"] as int,
-            applystatus: int.parse(json["ApplyStatus"].toString()),
-          );
+              fullname: json["CustomerFullname"] as String,
+              phone: json["CustomerPhone"] as String,
+              code: json["PostCode"] as String,
+              title: json["Title"] as String,
+              createAt: json["CreateAt"] as String,
+              wofsCode: json["WorkerOfServiceCode"] as String,
+              status: int.parse(json["PostStatus"].toString()),
+              feedbackAmount: json["FeedbackAmount"] as int,
+              applystatus: int.parse(json["ApplyStatus"].toString()),
+              address: addressShort,
+              imageUrl: imageUrls.length == 0 ? null : imageUrls.first);
         }).toList();
       }
       return null;
@@ -694,6 +715,7 @@ class PostRepository {
               filename: file.path.split("/").last));
         }
       }
+      // var length = request.contentLength;
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
       return response;
@@ -914,6 +936,109 @@ class PostRepository {
       var response = await http.Response.fromStream(streamedResponse);
       return response;
     } on Exception catch (_) {
+      return null;
+    }
+  }
+
+  Future<http.Response> sendNotification(
+      {String tilte, String content, String receiveBy}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    try {
+      var uri = Uri.http(
+          Host.Server_hosting, "/api/notifications/SendToSpecificUser");
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      request.fields['Title'] = tilte;
+      request.fields['Content'] = content.toString();
+      request.fields['ReceiveBy'] = receiveBy.toString();
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
+
+  Future<http.Response> deleteNotification({String code}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    Map<String, String> paramters = {
+      "code": code.toString(),
+    };
+    try {
+      var uri =
+          Uri.http(Host.Server_hosting, "/api/notifications/delete", paramters);
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
+
+  Future<http.Response> seenNotification({
+    String code,
+  }) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    Map<String, String> paramters = {
+      "code": code.toString(),
+    };
+    try {
+      var uri =
+          Uri.http(Host.Server_hosting, "/api/notifications/update", paramters);
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      var streamedResponse = await request.send().timeout(Duration(seconds: 10));
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on TimeoutException catch (_) {
+      return null;
+    } on SocketException catch (_) {
+      // Other exception
+    }
+  }
+
+  Future<List<NotificationModel>> fetchNotifications(
+      {int status, int start, int length, int type}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    var phone = pref.getString("phone");
+
+    Map<String, String> headers = {"Authorization": "bearer $token"};
+    Map<String, String> paramters = {
+      "phone": phone.toString(),
+      "status": status.toString(),
+      "start": start.toString(),
+      "length": length.toString(),
+      "type": type.toString()
+    };
+    try {
+      var response = await http.get(
+        Uri.http(Host.Server_hosting, "/api/notifications", paramters),
+        headers: headers,
+      );
+      var jsons = json.decode(response.body);
+      if (response.statusCode == 200) {
+        var body = jsons['data'] as List;
+        return body.map((dynamic json) {
+          return NotificationModel(
+            code: json["Code"] as String,
+            title: json["Title"] as String,
+            content: json["Content"] as String,
+            sendBy: json["SendBy"] as String,
+            isReaded: json["isReaded"] as int,
+            createAt: json["CreateAt"] as String,
+            type: json["type"] as int,
+          );
+        }).toList();
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e);
       return null;
     }
   }

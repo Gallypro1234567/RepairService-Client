@@ -61,7 +61,7 @@ class _ManagerPageState extends State<ManagerPage>
         builder: (context, state) {
           switch (state.user.isCustomer) {
             case UserType.worker:
-              return PostOfCustomer();
+              return PostOfWorker();
               break;
             default:
               return PostOfCustomer();
@@ -169,7 +169,7 @@ class PostOfWorker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: TabBar(
             indicatorColor: LightColor.lightBlue,
@@ -181,26 +181,6 @@ class PostOfWorker extends StatelessWidget {
                 child: RichText(
                   text: TextSpan(
                       text: 'Ứng tuyển ',
-                      style: GoogleFonts.muli(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      children: [
-                        TextSpan(
-                            text: "(*)",
-                            style: GoogleFonts.muli(
-                              color: Colors.red,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ))
-                      ]),
-                ),
-              ),
-              Tab(
-                child: RichText(
-                  text: TextSpan(
-                      text: 'Giao dịch ',
                       style: GoogleFonts.muli(
                         color: Colors.black,
                         fontSize: 12,
@@ -239,11 +219,7 @@ class PostOfWorker extends StatelessWidget {
               ),
             ]),
         body: TabBarView(
-          children: [
-            WorkerApplyPage(),
-            WorkerProcessPage(),
-            WorkerFinishPage()
-          ],
+          children: [WorkerApplyPage(), WorkerFinishPage()],
         ),
       ),
     );

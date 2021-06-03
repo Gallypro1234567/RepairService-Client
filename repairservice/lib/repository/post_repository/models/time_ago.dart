@@ -5,6 +5,7 @@ class TimeAgo {
       {bool numericDates = true}) {
     DateTime notificationDate =
         DateFormat("yyyy-MM-dd'T'HH:mm:ss.SS").parse(dateString);
+    notificationDate = notificationDate.add(Duration(hours: 14));
     final date2 = DateTime.now();
 
     final difference = date2.difference(notificationDate);

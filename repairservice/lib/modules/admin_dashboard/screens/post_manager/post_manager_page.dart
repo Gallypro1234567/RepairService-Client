@@ -80,10 +80,6 @@ class _PostmanagerPageState extends State<PostmanagerPage> {
                                       : null,
                                 ),
                               )),
-                              DataCell(Text(e.code)),
-                              DataCell(Text(e.title)),
-                              DataCell(Text(e.fullname)),
-                              DataCell(Text(e.phone)),
                               DataCell(Container(
                                 margin: EdgeInsets.symmetric(
                                     vertical: kDefaultPadding / 2),
@@ -103,28 +99,46 @@ class _PostmanagerPageState extends State<PostmanagerPage> {
                                       : Colors.white,
                                 ),
                               )),
-                              DataCell(Container(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: kDefaultPadding / 2),
-                                child: e.approval == 0
-                                    ? Button(
-                                        title: "Cần duyệt",
-                                        color: Colors.red,
-                                        textColor: Colors.white,
-                                        onPressed: e.status == 0 ? () {} : null,
-                                      )
-                                    : e.approval == 1
-                                        ? StatusContainer(
-                                            color: Colors.green,
-                                            title: "Đã Duyệt",
-                                            textColor: Colors.white,
-                                          )
-                                        : StatusContainer(
-                                            color: Colors.grey,
-                                            title: "Duyệt thất bại",
-                                            textColor: Colors.black,
-                                          ),
-                              )),
+                              DataCell(
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      vertical: kDefaultPadding / 2),
+                                  child: e.approval == 0
+                                      ? Button(
+                                          title: "Cần duyệt",
+                                          color: Colors.red,
+                                          textColor: Colors.white,
+                                          onPressed: e.status == 0
+                                              ? () {
+                                                  context
+                                                      .read<PostdetailBloc>()
+                                                      .add(PostdetailFetched(
+                                                          e.code));
+                                                  Navigator.push(
+                                                      context,
+                                                      SlideFadeRoute(
+                                                          page: PostDetailPage(
+                                                        postCode: e.code,
+                                                      )));
+                                                }
+                                              : null,
+                                        )
+                                      : e.approval == 1
+                                          ? StatusContainer(
+                                              color: Colors.green,
+                                              title: "Đã Duyệt",
+                                              textColor: Colors.white,
+                                            )
+                                          : StatusContainer(
+                                              color: Colors.grey,
+                                              title: "Duyệt thất bại",
+                                              textColor: Colors.black,
+                                            ),
+                                ),
+                              ),
+                              DataCell(Text(e.title)),
+                              DataCell(Text(e.fullname)),
+                              DataCell(Text(e.phone)),
                             ]))
                     .toList();
                 return RefreshIndicator(
@@ -172,7 +186,14 @@ class DataTableBloc extends StatelessWidget {
             ),
             DataColumn(
               label: TitleText(
-                text: 'Mã',
+                text: 'Trạng thái',
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            DataColumn(
+              label: TitleText(
+                text: 'Phê duyệt',
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
@@ -194,20 +215,6 @@ class DataTableBloc extends StatelessWidget {
             DataColumn(
               label: TitleText(
                 text: 'Điện thoại',
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            DataColumn(
-              label: TitleText(
-                text: 'Trạng thái',
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            DataColumn(
-              label: TitleText(
-                text: '',
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),

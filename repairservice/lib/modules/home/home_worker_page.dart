@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
-import 'package:repairservice/modules/notification/notification_page.dart';
+import 'package:repairservice/modules/notification/notification_pages.dart';
 import 'package:repairservice/modules/notification/notification_screen.dart';
 import 'package:repairservice/modules/post_get_list/components/post_search_container.dart';
 import 'package:repairservice/modules/search/search_page.dart';

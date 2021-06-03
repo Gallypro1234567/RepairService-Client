@@ -187,7 +187,7 @@ class ApprovalPostContainer extends StatelessWidget {
                                         ? "Duyệt thất bại"
                                         : "Đang đợi duyệt",
                                 fontSize: 12,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                                 color: post.approval == 1
                                     ? Colors.green
                                     : post.approval == -1

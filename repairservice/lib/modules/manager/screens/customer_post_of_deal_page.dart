@@ -168,12 +168,18 @@ class DealPostContainer extends StatelessWidget {
                             children: [
                               Expanded(child: Container()),
                               TitleText(
-                                text: post.applyAmount > 0
-                                    ? "Có ${post.applyAmount} ứng tuyển"
-                                    : "Chưa có thợ ứng tuyển",
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
+                                  text: post.applyAmount > 0
+                                      ? post.status == 1
+                                          ? "Bạn đã chấp nhận thợ"
+                                          : "Có ${post.applyAmount} ứng tuyển"
+                                      : "Chưa có thợ ứng tuyển",
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: post.applyAmount > 0
+                                      ? post.status == 1
+                                          ? Colors.green
+                                          : Colors.blue
+                                      : Colors.amber),
                             ],
                           ),
                           SizedBox(
@@ -220,12 +226,16 @@ class DealPostContainer extends StatelessWidget {
                       depth: 5,
                       lightSource: LightSource.top,
                       color: post.applyAmount > 0
-                          ? Colors.green[300]
+                          ? post.status == 1
+                              ? Colors.green[300]
+                              : Colors.blue[300]
                           : Colors.amber[300]),
                   child: Center(
                     child: Icon(
                       post.applyAmount > 0
-                          ? Icons.check
+                          ? post.status == 1
+                              ? Icons.check
+                              : Icons.note_add
                           : Icons.warning_amber_rounded,
                       color: Colors.white,
                     ),

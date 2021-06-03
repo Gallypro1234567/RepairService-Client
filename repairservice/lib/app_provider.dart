@@ -20,7 +20,8 @@ import 'modules/admin_dashboard/screens/worker_manager.dart/bloc/workermanager_b
 import 'modules/admin_dashboard/screens/worker_register_manager/bloc/workerregistermanager_bloc.dart';
 import 'modules/home/bloc/home_bloc.dart';
 import 'modules/manager/bloc/manager_bloc.dart';
-import 'modules/notification/notification_page.dart';
+import 'modules/notification/bloc/notification_bloc.dart';
+import 'modules/notification/notification_pages.dart';
 import 'modules/post/bloc/post_bloc.dart';
 import 'modules/post_apply/bloc/postapply_bloc.dart';
 import 'modules/post_apply_detail/bloc/postapplydetail_bloc.dart';
@@ -151,6 +152,10 @@ class AppProvider extends StatelessWidget {
             create: (_) => WorkerregisterworkBloc(
                   userRepository: UserRepository(),
                 )..add(WorkerregisterworkInitial())),
+        BlocProvider(
+            create: (_) => NotificationBloc(
+                  postRepository: PostRepository(),
+                )..add(NotificationInitial())),
       ], child: AppView()),
     );
   }

@@ -71,10 +71,14 @@ class PostapplydetailBloc
           workerofservicecode: event.workerofservicecode,
           status: 2,
           poststatus: 1);
-      if (response.statusCode == 200)
-        yield state.copyWith(
-          status: ApplyDetailStatus.acceptSubmitted,
-        );
+      if (response.statusCode == 200) {
+        await _postRepository.sendNotification(
+            tilte: "Hello",
+            content: "Tui chấp nhận",
+            receiveBy: state.postApply.phone);
+        yield state.copyWith(status: ApplyDetailStatus.success);
+      } else
+        yield state.copyWith(status: ApplyDetailStatus.failure);
     } on Exception catch (_) {
       yield state.copyWith(status: ApplyDetailStatus.failure);
     }

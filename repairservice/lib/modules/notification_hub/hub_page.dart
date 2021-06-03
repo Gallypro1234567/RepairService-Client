@@ -1,19 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/repository/hub_repository/notification_model.dart';
 import 'package:signalr_client/signalr_client.dart';
 import '../../../utils/service/server_hosting.dart' as Host;
 
-class NotificationPage extends StatefulWidget {
+class HubPage extends StatefulWidget {
   @override
-  _NotificationPageState createState() => _NotificationPageState();
+  _HubPageState createState() => _HubPageState();
 }
 
-class _NotificationPageState extends State<NotificationPage> {
+class _HubPageState extends State<HubPage> {
   final serverUrl =
       Uri.http(Host.Server_hosting, "/notificationhub").toString();
-  final serverUrls = "http://repairservice.somee.com/notificationhub";
+  final serverUrls =
+      "http://repairservice.somee.com/notificationhub?userId=0123456797";
   HubConnection hubConnection;
+  NotificationModel data;
   double width = 100, height = 100;
   Offset positon;
 
@@ -79,6 +82,7 @@ class _NotificationPageState extends State<NotificationPage> {
               )),
         ],
       ),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           try {
@@ -100,14 +104,17 @@ class _NotificationPageState extends State<NotificationPage> {
   void initialSignalR() {
     hubConnection = HubConnectionBuilder().withUrl(serverUrls).build();
     hubConnection.onclose((error) => print("Connection Error"));
-    hubConnection.on("ReceiveNewPosition", _handNewPosition);
+    hubConnection.on("sendToUser", _handNewData);
     hubConnection.start();
     print(hubConnection.state);
   }
 
-  _handNewPosition(List<Object> args) {
+  _handNewData(List<Object> args) {
     setState(() {
-      positon = Offset(args[0], args[1]);
+      data = data.copyWith(
+          code: args[0], title: args[0], content: args[0], createAt: args[0]);
     });
   }
+
+   
 }

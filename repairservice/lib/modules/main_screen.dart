@@ -13,6 +13,7 @@ import 'package:repairservice/modules/post/post_form_page.dart';
 import 'package:repairservice/modules/user/user_profile_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
 
 import 'manager/manager_page.dart';
@@ -55,78 +56,92 @@ class _MainPageState extends State<MainPage> {
   Widget _main(List<Widget> children) {
     return Scaffold(
       backgroundColor: LightColor.lightteal,
-      body: SafeArea(
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                height: MediaQuery.of(context).size.height - 50,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: AnimatedSwitcher(
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            alwaysIncludeSemantics: true,
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                        duration: Duration(milliseconds: 200),
-                        switchInCurve: Curves.easeInToLinear,
-                        switchOutCurve: Curves.easeOutBack,
-                        child: children[_selectedIndex],
+      body: Responsive(
+        mobile: SafeArea(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              SingleChildScrollView(
+                child: Container(
+                  height: MediaQuery.of(context).size.height - 50,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: AnimatedSwitcher(
+                          transitionBuilder: (child, animation) {
+                            return FadeTransition(
+                              alwaysIncludeSemantics: true,
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                          duration: Duration(milliseconds: 200),
+                          switchInCurve: Curves.easeInToLinear,
+                          switchOutCurve: Curves.easeOutBack,
+                          child: children[_selectedIndex],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+              Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: CustomBottomNavigationBar(
+                      onIconPresedCallback: onBottomIconPressed)),
+            ],
+          ),
+        ),
+        desktop: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height - 50,
+            child: Column(
+              children: [
+                Expanded(
+                  child: AnimatedSwitcher(
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        alwaysIncludeSemantics: true,
+                        opacity: animation,
+                        child: HomePage(),
+                      );
+                    },
+                    duration: Duration(milliseconds: 200),
+                    switchInCurve: Curves.easeInToLinear,
+                    switchOutCurve: Curves.easeOutBack,
+                    child: children[_selectedIndex],
+                  ),
+                ),
+              ],
             ),
-            Positioned(
-                bottom: 0,
-                right: 0,
-                child: CustomBottomNavigationBar(
-                    onIconPresedCallback: onBottomIconPressed)),
-          ],
+          ),
+        ),
+        tablet: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height - 50,
+            child: Column(
+              children: [
+                Expanded(
+                  child: AnimatedSwitcher(
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        alwaysIncludeSemantics: true,
+                        opacity: animation,
+                        child: HomePage(),
+                      );
+                    },
+                    duration: Duration(milliseconds: 200),
+                    switchInCurve: Curves.easeInToLinear,
+                    switchOutCurve: Curves.easeOutBack,
+                    child: children[_selectedIndex],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
-      // bottomNavigationBar: BottomAppBar(
-      //   shape: CircularNotchedRectangle(),
-      //   clipBehavior: Clip.hardEdge,
-      //   child: BottomNavigationBar(type: BottomNavigationBarType.fixed, items: [
-      //     BottomNavigationBarItem(
-      //       label: "heleo",
-      //       icon: Icon(Icons.cancel),
-      //     ),
-      //     BottomNavigationBarItem(label: "heleo", icon: Icon(Icons.cancel)),
-      //     BottomNavigationBarItem(
-      //       icon: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      //         builder: (context, state) {
-      //           switch (state.user.isCustomer) {
-      //             case UserType.customer:
-      //               return FloatingActionButton(
-      //                 backgroundColor: LightColor.lightteal,
-      //                 onPressed: () {
-      //                   context.read<PostBloc>().add(PostAddNewPage());
-      //                   Navigator.push(
-      //                       context, SlideFadeRoute(page: PostPage()));
-      //                 },
-      //                 child: Center(child: Icon(Entypo.plus)),
-      //               );
-      //               break;
-      //             default:
-      //               return Container();
-      //           }
-      //         },
-      //       ),
-      //       label: "",
-      //     ),
-      //     BottomNavigationBarItem(label: "heleo", icon: Icon(Icons.cancel)),
-      //     BottomNavigationBarItem(label: "heleo", icon: Icon(Icons.cancel)),
-      //   ]),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.,
     );
   }
 

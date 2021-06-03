@@ -104,7 +104,44 @@ class PostDetailPerfectPage extends StatelessWidget {
               switch (state.isCustomer) {
                 // Worker
                 case false:
-                  if (state.post.applyStatus == 2 && state.post.postStatus == 1)
+                  if (state.post.feedbackStatus == 1)
+                    return Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.symmetric(
+                          vertical: kDefaultPadding / 2,
+                          horizontal: kDefaultPadding / 2),
+                      height: AppTheme.fullHeight(context) * 0.1,
+                      width: AppTheme.fullWidth(context),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: WorkerRegisterButton(
+                              title: "Màn hình chính",
+                              color: Colors.green,
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    SlideFadeRoute(page: MainPage()),
+                                    (route) => false);
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: kDefaultPadding / 2,
+                          ),
+                          Expanded(
+                            child: WorkerRegisterButton(
+                              title: "Đã đánh giá",
+                              color: LightColor.lightteal,
+                              colorText: Colors.black,
+                              onPressed: null,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  else if (state.post.applyStatus == 2 &&
+                      state.post.postStatus == 1)
                     return Container(
                       color: Colors.white,
                       padding: EdgeInsets.symmetric(
