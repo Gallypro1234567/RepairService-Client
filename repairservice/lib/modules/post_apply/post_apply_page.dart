@@ -25,7 +25,8 @@ class PostApplyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LightColor.lightGrey,
-      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
+      appBar: AppBar(
+        toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Danh sách thợ muốn thực hiện",
           fontSize: 16,

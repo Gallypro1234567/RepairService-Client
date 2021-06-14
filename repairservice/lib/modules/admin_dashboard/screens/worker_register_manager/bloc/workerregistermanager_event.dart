@@ -29,7 +29,11 @@ class WorkerregistermanagerStatusChanged extends WorkerregistermanagerEvent {
   WorkerregistermanagerStatusChanged(this.value, this.text);
 }
 
-class WorkerregistermanagerSubmit extends WorkerregistermanagerEvent {}
+class WorkerregistermanagerSubmit extends WorkerregistermanagerEvent {
+  final String workerPhone;
+  final String serviceCode;
+  WorkerregistermanagerSubmit({this.workerPhone, this.serviceCode});
+}
 
 class WorkerregistermanagerApprovalChanged extends WorkerregistermanagerEvent {
   final int value;

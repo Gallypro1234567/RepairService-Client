@@ -73,10 +73,13 @@ class PostapplydetailBloc
           poststatus: 1);
       if (response.statusCode == 200) {
         await _postRepository.sendNotification(
-            tilte: "Hello",
-            content: "Tui chấp nhận",
-            receiveBy: state.postApply.phone);
-        yield state.copyWith(status: ApplyDetailStatus.success);
+            tilte: "Thông báo giao dịch",
+            content: "đã chấp nhận",
+            receiveBy: state.postApply.phone,
+            postCode: event.postCode,
+            status: 1,
+            type: 1);
+        yield state.copyWith(status: ApplyDetailStatus.acceptSubmitted);
       } else
         yield state.copyWith(status: ApplyDetailStatus.failure);
     } on Exception catch (_) {
@@ -92,9 +95,20 @@ class PostapplydetailBloc
         postcode: event.postCode,
         workerofservicecode: event.workerofservicecode,
       );
-      if (response.statusCode == 200)
+      if (response.statusCode == 200) {
+        await _postRepository.sendNotification(
+            tilte: "Thông báo giao dịch",
+            content: "đã hủy chọn",
+            receiveBy: state.postApply.phone,
+            postCode: state.postCode,
+            status: 0,
+            type: 1);
         yield state.copyWith(
           status: ApplyDetailStatus.cancelSubmitted,
+        );
+      } else
+        yield state.copyWith(
+          status: ApplyDetailStatus.failure,
         );
     } on Exception catch (_) {
       yield state.copyWith(status: ApplyDetailStatus.failure);

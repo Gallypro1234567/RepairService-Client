@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post/components/post_form_input.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 import 'bloc/servicemanager_bloc.dart';
@@ -90,7 +92,9 @@ class _ServiceManagerPageState extends State<ServiceManagerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: TitleText(
             text: "Quản lý Service", fontSize: 16, fontWeight: FontWeight.w500),
         centerTitle: true,
@@ -137,6 +141,25 @@ class _ServiceManagerPageState extends State<ServiceManagerPage> {
                                   backgroundImage: e.imageUrl != null
                                       ? NetworkImage(e.imageUrl)
                                       : null,
+                                  child: e.imageUrl == null
+                                      ? Image.asset(
+                                          "assets/images/user_profile_background.jpg")
+                                      : CachedNetworkImage(
+                                          imageUrl: e.imageUrl,
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        ),
                                 ),
                               )),
                               DataCell(Text(e.code)),
@@ -370,6 +393,7 @@ class _BottomSheet extends StatelessWidget {
             context
                 .read<ServicemanagerBloc>()
                 .add(ServicemanagerImageChanged(ImageSource.gallery));
+            Navigator.pop(context);
           },
         ),
       ],

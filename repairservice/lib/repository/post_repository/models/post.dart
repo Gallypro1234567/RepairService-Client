@@ -7,7 +7,7 @@ class Post extends Equatable {
   final String address;
   final String createAt;
   final String timePassed;
-  final DateTime finishAt;
+  final String finishAt;
   final String imageUrl;
   final String customerImageUrl;
   final int districtId;
@@ -86,7 +86,7 @@ class PostApplyOfWorker extends Equatable {
   final String address;
   final String createAt;
   final String timePassed;
-  final DateTime finishAt;
+  final String finishAt;
   final String imageUrl;
   final String customerImageUrl;
   final String fullname;

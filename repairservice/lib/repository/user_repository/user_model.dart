@@ -95,20 +95,25 @@ class WorkerRegister extends Equatable {
   final String serviceCode;
   final String serviceName;
   final String serviceImageurl;
-  WorkerRegister(
-      {this.fullname,
-      this.email,
-      this.address,
-      this.phone,
-      this.code,
-      this.createAt,
-      this.cmnd,
-      this.imageUrlcmnd,
-      this.imageUrl,
-      this.isApproval,
-      this.serviceCode,
-      this.serviceName,
-      this.serviceImageurl});
+  final double feedbackPoint;
+  final int reviewAmount;
+  WorkerRegister({
+    this.email,
+    this.address,
+    this.phone,
+    this.code,
+    this.createAt,
+    this.cmnd,
+    this.imageUrlcmnd,
+    this.imageUrl,
+    this.isApproval,
+    this.serviceCode,
+    this.serviceName,
+    this.serviceImageurl,
+    this.feedbackPoint,
+    this.reviewAmount,
+    this.fullname,
+  });
 
   @override
   List<Object> get props => [
@@ -124,7 +129,9 @@ class WorkerRegister extends Equatable {
         isApproval,
         serviceCode,
         serviceName,
-        serviceImageurl
+        serviceImageurl,
+        reviewAmount,
+        fullname,
       ];
 }
 

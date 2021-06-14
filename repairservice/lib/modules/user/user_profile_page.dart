@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,8 @@ import 'package:repairservice/config/themes/theme_config.dart';
 
 import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
+import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
+import 'package:repairservice/modules/post_rating/post_rating.dart';
 import 'package:repairservice/modules/user_profile/bloc/userprofile_bloc.dart';
 import 'package:repairservice/modules/user_profile/user_profile_update_page.dart';
 import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
@@ -19,8 +22,6 @@ import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../utils/ui/extensions.dart';
 import 'bloc/user_bloc.dart';
-import 'components/user_action_container.dart';
-import 'components/user_avartar_container.dart';
 
 class UserProfilePage extends StatefulWidget {
   @override
@@ -36,6 +37,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
@@ -91,54 +93,52 @@ class UserWidget extends StatelessWidget {
   const UserWidget({Key key, this.state}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        decoration: BoxDecoration(color: LightColor.lightGrey),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Avt(
-              state: state,
-            ),
-            SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            Trailer(state: state),
-            SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            Address(state: state),
-            SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            Container(
-              child: state.user.isCustomer == UserType.worker
-                  ? state.user.role == 1
-                      ? Work(
-                          state: state,
-                          onPressed: () {
-                            context
-                                .read<WorkerregisterworkBloc>()
-                                .add(WorkerregisterworkServiceRegisterLoad());
-                            Navigator.push(context,
-                                SlideFadeRoute(page: WorkerHistoryWorkPage()));
-                          })
-                      : null
-                  : null,
-            ),
-            SizedBox(
-              height: kDefaultPadding / 4,
-            ),
-            Feedback(
-              state: state,
-            ),
-            Container(
-              height: kDefaultPadding / 4,
-              color: Colors.white,
-            ),
-            _LogOutSubmitted()
-          ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<UserBloc>().add(UserFetch());
+      },
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Container(
+          decoration: BoxDecoration(color: LightColor.lightGrey),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Avt(
+                state: state,
+              ),
+              SizedBox(
+                height: kDefaultPadding / 4,
+              ),
+              Trailer(state: state),
+              SizedBox(
+                height: kDefaultPadding / 4,
+              ),
+              Address(state: state),
+              SizedBox(
+                height: kDefaultPadding / 4,
+              ),
+              Container(
+                child: state.user.isCustomer == UserType.worker
+                    ? state.user.role == 1
+                        ? Work(
+                            state: state,
+                            onPressed: () {
+                              context
+                                  .read<WorkerregisterworkBloc>()
+                                  .add(WorkerregisterworkServiceRegisterLoad());
+                              Navigator.push(
+                                  context,
+                                  SlideFadeRoute(
+                                      page: WorkerHistoryWorkPage()));
+                            })
+                        : null
+                    : null,
+              ),
+              _LogOutSubmitted(),
+            ],
+          ),
         ),
       ),
     );
@@ -157,10 +157,12 @@ class _LogOutSubmitted extends StatelessWidget {
         return Container(
           width: AppTheme.fullWidth(context),
           color: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          padding: const EdgeInsets.symmetric(
+              horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
           child: Button(
               title: "Đăng xuất",
               onPressed: () {
+                context.read<UserBloc>().add(UserInitial());
                 context.read<ManagerBloc>().add(ManagerInitial());
                 context.read<LoginBloc>().add(LogOuttSubmitted());
               },
@@ -202,9 +204,9 @@ class Trailer extends StatelessWidget {
           ),
           Item(
             icon: Icon(Icons.person),
-            title: state.user.role != 1
+            title: state.user.role == 1
                 ? state.user.isCustomer == UserType.worker
-                    ? "Thợ"
+                    ? "Thợ "
                     : "Khách hàng "
                 : "Quản trị viên ",
             text: state.user.fullname,
@@ -283,6 +285,52 @@ class Item extends StatelessWidget {
   }
 }
 
+class ItemSub extends StatelessWidget {
+  final Icon icon;
+  final String title;
+  final String text;
+  final double fontsize;
+  final FontWeight fontWeight;
+  final Color fontColor;
+  const ItemSub({
+    Key key,
+    this.icon,
+    this.title,
+    this.text,
+    this.fontsize = 14,
+    this.fontWeight = FontWeight.bold,
+    this.fontColor = Colors.black,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        icon,
+        SizedBox(
+          width: kDefaultPadding / 2,
+        ),
+        RichText(
+          text: TextSpan(
+            text: title,
+            style: GoogleFonts.muli(
+                fontSize: fontsize, fontWeight: fontWeight, color: fontColor),
+            children: [
+              TextSpan(
+                text: text,
+                style: TextStyle(
+                  fontSize: fontsize,
+                  fontWeight: fontWeight,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class Work extends StatelessWidget {
   final Function onPressed;
   const Work({
@@ -311,9 +359,9 @@ class Work extends StatelessWidget {
                 TextButton(
                   onPressed: onPressed,
                   child: TitleText(
-                    text: "Chi tiết",
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    text: "Đăng ký thêm ngành nghề mới",
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
                     color: Colors.blue,
                   ),
                 ),
@@ -325,17 +373,58 @@ class Work extends StatelessWidget {
             shrinkWrap: true,
             itemCount: state.workeRegister.length,
             itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  Item(
-                    icon: Icon(Icons.work),
-                    title: "Thợ ${state.workeRegister[index].serviceName}",
+              if (state.workeRegister[index].isApproval == 1)
+                return Container(
+                  height: AppTheme.fullHeight(context) * .04,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Item(
+                          icon: Icon(Icons.work),
+                          title: "${state.workeRegister[index].serviceName}",
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(),
+                      ),
+                      Expanded(
+                        child: ItemSub(
+                          title: "",
+                          text:
+                              "${state.workeRegister[index].feedbackPoint.toStringAsFixed(2)}",
+                          fontsize: 12,
+                          fontWeight: FontWeight.w400,
+                          fontColor: Colors.black,
+                          icon:
+                              Icon(FontAwesome.thumbs_o_up, color: Colors.blue),
+                        ),
+                      ),
+                      SizedBox(
+                        width: kDefaultPadding / 2,
+                      ),
+                      Expanded(
+                        child: ItemSub(
+                          title: "",
+                          text: "${state.workeRegister[index].reviewAmount}",
+                          fontsize: 12,
+                          fontWeight: FontWeight.w400,
+                          fontColor: Colors.black,
+                          icon: Icon(
+                            FontAwesome.comments_o,
+                            color: Colors.green,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                  SizedBox(
-                    height: kDefaultPadding / 2,
-                  )
-                ],
-              );
+                ).ripple(() {
+                  context.read<PostrateBloc>().add(PostrateFetched(
+                      postCode: "", wofscode: state.workeRegister[index].code));
+                  Navigator.push(
+                      context, SlideFadeRoute(page: PostRatingPage()));
+                });
+              return Container();
             },
           ),
         ],
@@ -462,7 +551,7 @@ class Avt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
+      padding: EdgeInsets.symmetric(vertical: kDefaultPadding / 4),
       width: AppTheme.fullWidth(context),
       color: Colors.white,
       child: Column(
@@ -471,12 +560,21 @@ class Avt extends StatelessWidget {
             height: 120,
             width: 120,
             child: CircleAvatar(
-              backgroundImage: state.user.imageUrl != null
-                  ? state.user.imageUrl.length > 0
-                      ? NetworkImage(state.user.imageUrl)
-                      : AssetImage("assets/images/user_profile_background.jpg")
-                  : AssetImage("assets/images/user_profile_background.jpg"),
-            ),
+                child: state.user.imageUrl == null
+                    ? Image.asset("assets/images/user_profile_background.jpg")
+                    : CachedNetworkImage(
+                        imageUrl: state.user.imageUrl,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      )),
           ),
           SizedBox(
             height: kDefaultPadding / 2,

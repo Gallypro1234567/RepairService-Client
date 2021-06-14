@@ -43,7 +43,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
       body: BlocListener<UpdateserviceBloc, UpdateserviceState>(
         listener: (context, state) {
           if (state.status == UpdateServiceStatus.submitted) {
-            context.read<ServicemanagerBloc>().add(ServicemanagerInitial());
+            context.read<ServicemanagerBloc>().add(ServicemanagerFetched());
             Navigator.pop(context);
           }
         },

@@ -237,7 +237,7 @@ class _VerifyPhoneBlocButton extends StatelessWidget {
             : MyElevatedButton(
                 key: const Key('Verifyform_phone_to_continue_textField'),
                 title: title,
-                color: LightColor.orange,
+                color: LightColor.lightteal,
                 isValidated: state.status.isValidated,
                 onPressed: state.status.isValidated
                     ? () {

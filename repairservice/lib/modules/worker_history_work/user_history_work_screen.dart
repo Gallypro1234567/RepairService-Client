@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -210,8 +211,26 @@ class _PostSelectServiceContainer extends StatelessWidget {
                     height: 60,
                     width: 60,
                     child: CircleAvatar(
-                      backgroundImage:
-                          imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
+                      // backgroundImage:
+                      //     imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
+                      child: imageUrl == null
+                          ? Image.asset(
+                              "assets/images/user_profile_background.jpg")
+                          : CachedNetworkImage(
+                              imageUrl: imageUrl,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
                     ),
                   ),
                 ],

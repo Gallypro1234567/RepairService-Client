@@ -56,7 +56,6 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
       yield _mapPostUpdateDescriptionChangedToState(event, state);
     else if (event is PostUpdateCustomerSubmitted)
       yield* _mapPostUpdateSubmittedToState(event, state);
-    
   }
 
   Stream<PostUpdateState> _mapPostCityFetchedToState(
@@ -117,9 +116,13 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
   _mapPostDistrictChangedToState(
       PostUpdateDistrictChanged event, PostUpdateState state) {
     return state.copyWith(
-        districtId: event.id,
-        districtText: event.text,
-        districtInvalid: event.invalid);
+      districtId: event.id,
+      districtText: event.text,
+      districtInvalid: event.invalid,
+      wardId: -1,
+      wardText: "",
+      wardInvalid: false,
+    );
   }
 
   _mapPostCityChangedToState(
@@ -252,6 +255,4 @@ class PostUpdateBloc extends Bloc<PostUpdateEvent, PostUpdateState> {
       yield state.copyWith(pageStatus: PostUpdateStatus.failure);
     }
   }
-
- 
 }

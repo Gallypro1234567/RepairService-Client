@@ -6,11 +6,12 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post_get_list/bloc/postgetlist_bloc.dart';
+import 'package:repairservice/modules/search/bloc/search_bloc.dart';
+import 'package:repairservice/modules/search/screens/select_district_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
-import '../../../utils/ui/extensions.dart'; 
-import 'select_district_page.dart';
+import '../../../utils/ui/extensions.dart';
 
 class SelectCityPage extends StatelessWidget {
   @override
@@ -30,13 +31,13 @@ class SelectCityPage extends StatelessWidget {
             },
             icon: Icon(Icons.arrow_back)),
       ),
-      body: BlocBuilder<PostgetlistBloc, PostgetlistState>(
+      body: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
           switch (state.postGetPositionStatus) {
-            case PostGetPositionStatus.loading:
+            case SearchPositionStatus.loading:
               return SplashPage();
               break;
-            case PostGetPositionStatus.failure:
+            case SearchPositionStatus.failure:
               return SplashPage();
 
               break;
@@ -47,15 +48,14 @@ class SelectCityPage extends StatelessWidget {
                     SelectContainer(
                       title: "Toàn quốc",
                     ).ripple(() {
-                      context.read<PostgetlistBloc>().add(
-                          PostgetlistCitySelectChanged(
-                              cityId: -1, cityTitle: "Toàn quốc"));
-                      context.read<PostgetlistBloc>().add(
-                          PostgetlistDistrictSelectChanged(
+                      context.read<SearchBloc>().add(SearchCitySelectChanged(
+                          cityId: -1, cityTitle: "Toàn quốc"));
+                      context.read<SearchBloc>().add(
+                          SearchDistrictSelectChanged(
                               districtId: -1, districtText: ""));
                       context
-                          .read<PostgetlistBloc>()
-                          .add(PostgetlistFetched(code: state.serviceCode));
+                          .read<SearchBloc>()
+                          .add(SearchFetched(code: state.serviceCode));
                       Navigator.pop(context);
                     }),
                     ListView.builder(
@@ -66,13 +66,12 @@ class SelectCityPage extends StatelessWidget {
                         return SelectContainer(
                           title: state.cities[index].title,
                         ).ripple(() {
-                          context.read<PostgetlistBloc>().add(
-                              PostgetlistCitySelectChanged(
+                          context.read<SearchBloc>().add(
+                              SearchCitySelectChanged(
                                   cityTitle: state.cities[index].title,
                                   cityId: state.cities[index].id));
-                          context.read<PostgetlistBloc>().add(
-                              PostgetlistDistrictFetched(
-                                  state.cities[index].id));
+                          context.read<SearchBloc>().add(
+                              SearchDistrictFetched(state.cities[index].id));
                           Navigator.push(context,
                               SlideFadeRoute(page: SelectDistrictPage()));
                         });

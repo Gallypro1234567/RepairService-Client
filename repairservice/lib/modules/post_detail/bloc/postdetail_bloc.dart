@@ -75,6 +75,13 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
         yield state.copyWith(
           status: PostDetailStatus.submitted,
         );
+        await _postRepository.sendNotification(
+            tilte: "Thông báo ứng tuyển",
+            content: "đã ứng tuyển vào bảng tin",
+            receiveBy: state.post.phone,
+            postCode: state.postCode,
+            status: 1,
+            type: 2); 
       } else {
         yield state.copyWith(status: PostDetailStatus.failure);
       }
@@ -89,9 +96,19 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
     try {
       var response = await _postRepository.adminApprovalPost(
           code: state.postCode, approved: event.approved);
-      if (response.statusCode == 200)
+      if (response.statusCode == 200) {
         yield state.copyWith(status: PostDetailStatus.submitted);
-      else
+        if (event.approved > 0)
+          await _postRepository.sendNotification(
+              tilte: "Thông báo hệ thống",
+              content: event.approved == 1
+                  ? "đã được phê duyệt cho phép bạn đăng tin"
+                  : "đã bị chặn vì lý do vi phạm nguyên tắc cộng đồng",
+              receiveBy: state.post.phone,
+              postCode: state.postCode,
+              status: event.approved,
+              type: 0);
+      } else
         yield state.copyWith(status: PostDetailStatus.failure);
     } on Exception catch (_) {
       yield state.copyWith(status: PostDetailStatus.failure);

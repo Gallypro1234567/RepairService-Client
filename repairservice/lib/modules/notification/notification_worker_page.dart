@@ -1,0 +1,1076 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:repairservice/config/themes/constants.dart';
+import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/core/auth/bloc/authentication_bloc.dart';
+import 'package:repairservice/modules/home/home_page.dart';
+import 'package:repairservice/modules/post_apply/bloc/postapply_bloc.dart';
+import 'package:repairservice/modules/post_apply/post_apply_page.dart';
+import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
+import 'package:repairservice/modules/post_detail/post_detail_page.dart';
+import 'package:repairservice/modules/post_detail_perfect/bloc/postdetailperfect_bloc.dart';
+import 'package:repairservice/modules/post_detail_perfect/post_detail_perfect_page.dart';
+import 'package:repairservice/modules/splash/splash_page.dart';
+import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
+import 'package:repairservice/modules/worker_history_work/user_history_work_screen.dart';
+import 'package:repairservice/repository/post_repository/models/time_ago.dart';
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/widgets/title_text.dart';
+import 'package:vertical_tabs/vertical_tabs.dart';
+
+import 'bloc/notification_bloc.dart';
+
+class NotificationWorkerPage extends StatefulWidget {
+  @override
+  _NotificationWorkerPageState createState() => _NotificationWorkerPageState();
+}
+
+class _NotificationWorkerPageState extends State<NotificationWorkerPage> {
+  bool a = false;
+  @override
+  void initState() {
+    super.initState();
+    a = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        title: TitleText(
+          text: "Thông báo",
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+        centerTitle: false,
+        backgroundColor: LightColor.lightteal,
+      ),
+      body: BlocBuilder<NotificationBloc, NotificationState>(
+        builder: (context, state) {
+          return VerticalTabs(
+            tabsWidth: AppTheme.fullWidth(context) * .12,
+            backgroundColor: LightColor.lightGrey,
+            selectedTabBackgroundColor: Colors.white,
+            tabBackgroundColor: LightColor.lightGrey,
+            indicatorColor: LightColor.lightteal,
+            onSelect: (val) {
+              if (state.checkall != 1)
+                context
+                    .read<NotificationBloc>()
+                    .add(NotificationFetched(val - 1));
+              if (state.checkAdmin != 1)
+                context
+                    .read<NotificationBloc>()
+                    .add(NotificationFetched(val - 1));
+              if (state.checkperson != 1)
+                context
+                    .read<NotificationBloc>()
+                    .add(NotificationFetched(val - 1));
+              if (state.checkApply != 1)
+                context
+                    .read<NotificationBloc>()
+                    .add(NotificationFetched(val - 1));
+            },
+            tabs: <Tab>[
+              Tab(
+                  child: Center(
+                child: Stack(
+                  children: [
+                    Icon(
+                      Icons.home,
+                      size: 40,
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: state.notifiAll
+                                  .where((element) => element.isReaded == 0)
+                                  .toList()
+                                  .length >
+                              0
+                          ? Container(
+                              height: 10,
+                              width: 10,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle, color: Colors.red),
+                            )
+                          : Container(),
+                    )
+                  ],
+                ),
+              )),
+              Tab(
+                  child: Center(
+                child: Stack(
+                  children: [
+                    Icon(
+                      Icons.sync_sharp,
+                      size: 40,
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: state.notifiAll
+                                  .where((e) => e.isReaded == 0 && e.type == 0)
+                                  .toList()
+                                  .length >
+                              0
+                          ? Container(
+                              height: 10,
+                              width: 10,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle, color: Colors.red),
+                            )
+                          : Container(),
+                    )
+                  ],
+                ),
+              )),
+              Tab(
+                  child: Center(
+                child: Stack(
+                  children: [
+                    Icon(
+                      Icons.person,
+                      size: 40,
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: state.notifiAll
+                                  .where((e) => e.isReaded == 0 && e.type == 1)
+                                  .toList()
+                                  .length >
+                              0
+                          ? Container(
+                              height: 10,
+                              width: 10,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle, color: Colors.red),
+                            )
+                          : Container(),
+                    )
+                  ],
+                ),
+              )),
+              Tab(
+                  child: Center(
+                child: Stack(
+                  children: [
+                    Icon(
+                      FontAwesome.hand_peace_o,
+                      size: 40,
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: state.notifiAll
+                                  .where((e) => e.isReaded == 0 && e.type == 2)
+                                  .toList()
+                                  .length >
+                              0
+                          ? Container(
+                              height: 10,
+                              width: 10,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle, color: Colors.red),
+                            )
+                          : Container(),
+                    )
+                  ],
+                ),
+              )),
+            ],
+            contents: <Widget>[
+              TabContent(
+                type: -1,
+              ),
+              TabContent(
+                type: 0,
+              ),
+              TabContent(
+                type: 1,
+              ),
+              TabContent(
+                type: 2,
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class TabContent extends StatelessWidget {
+  final int type;
+
+  const TabContent({
+    Key key,
+    this.type,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<NotificationBloc, NotificationState>(
+      listener: (context, state) {
+        if (state.status == NotificationStatus.none)
+          context.read<NotificationBloc>().add(NotificationFetched(type));
+        if (state.status == NotificationStatus.submittedSuccess)
+          context.read<NotificationBloc>().add(NotificationRefeshed(type));
+      },
+      child: BlocBuilder<NotificationBloc, NotificationState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case NotificationStatus.loading:
+              return SplashPage();
+              break;
+            case NotificationStatus.failure:
+              return Center(
+                child: Text("Lỗi"),
+              );
+            default:
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context
+                      .read<NotificationBloc>()
+                      .add(NotificationFetched(type));
+                },
+                child: type == -1 // tất cả
+                    ? ListView.builder(
+                        itemCount: state.notifiAll.length,
+                        itemBuilder: (context, index) => Padding(
+                          padding:
+                              const EdgeInsets.only(top: kDefaultPadding / 8),
+                          child: NotifiContainer(
+                            title: state.notifiAll[index].title,
+                            content: CheckContent(
+                              type: state.notifiAll[index].type,
+                              status: state.notifiAll[index].statusAccept,
+                              content: state.notifiAll[index].content,
+                              postCode: state.notifiAll[index].postCode,
+                              sendBy: state.notifiAll[index].sendBy,
+                              receiveBy: state.notifiAll[index].receiveBy,
+                              sendPhone: state.notifiAll[index].sendPhone,
+                              receivePhone: state.notifiAll[index].receivephone,
+                              routeToPostDetail: () {
+                                context
+                                    .read<PostdetailBloc>()
+                                    .add(PostdetailCheckWorker(
+                                      state.notifiAll[index].postCode,
+                                    ));
+                                context.read<PostdetailBloc>().add(
+                                    PostdetailFetched(
+                                        state.notifiAll[index].postCode));
+                                Navigator.push(
+                                    context,
+                                    SlideFadeRoute(
+                                        page: PostDetailPage(
+                                      postCode: state.notifiAll[index].postCode,
+                                    )));
+                              },
+                              routeToApply: () {
+                                context.read<PostdetailperfectBloc>().add(
+                                    PostdetailperfectFetched(
+                                        postCode:
+                                            state.notifiAll[index].postCode,
+                                        isCustomer: false));
+                                Navigator.push(
+                                    context,
+                                    SlideFadeRoute(
+                                        page: PostDetailPerfectPage()));
+                              },
+                            ),
+                            time: state.notifiAll[index].createAt,
+                            backgroundColor:
+                                state.notifiAll[index].isReaded != 0
+                                    ? Colors.white
+                                    : state.notifiAll[index].statusAccept != 0
+                                        ? Colors.green[50]
+                                        : Colors.red[50],
+                            iconBorederColor: state.notifiAll[index].type != 0
+                                ? state.notifiAll[index].type == 1
+                                    ? state.notifiAll[index].statusAccept ==
+                                                3 ||
+                                            state.notifiAll[index]
+                                                    .statusAccept ==
+                                                2
+                                        ? Colors.green
+                                        : Colors.blue
+                                    : Colors.amber
+                                : Colors.red,
+                            icon: state.notifiAll[index].type == 0
+                                ? Icon(
+                                    Icons.list_alt,
+                                    color: Colors.white,
+                                  )
+                                : state.notifiAll[index].type == 1
+                                    ? Icon(
+                                        Icons.history,
+                                        color: Colors.white,
+                                      )
+                                    : Icon(
+                                        Icons.history,
+                                        color: Colors.white,
+                                      ),
+                            isReaded: state.notifiAll[index].isReaded == 0
+                                ? false
+                                : true,
+                            onSelected: (val) {
+                              context.read<NotificationBloc>().add(
+                                  NotificationSubmitted(
+                                      code: state.notifiAll[index].code,
+                                      type: val));
+                            },
+                          ),
+                        ),
+                      )
+                    : type == 0 // tin hệ thống
+                        ? ListView.builder(
+                            itemCount: state.notifiadmin.length,
+                            itemBuilder: (context, index) => Padding(
+                              padding: const EdgeInsets.only(
+                                  top: kDefaultPadding / 8),
+                              child: NotifiContainer(
+                                title: state.notifiadmin[index].title,
+                                content: CheckContent(
+                                  type: state.notifiadmin[index].type,
+                                  status: state.notifiadmin[index].statusAccept,
+                                  content: state.notifiadmin[index].content,
+                                  postCode: state.notifiadmin[index].postCode,
+                                  sendBy: state.notifiadmin[index].sendBy,
+                                  receiveBy: state.notifiadmin[index].receiveBy,
+                                  sendPhone: state.notifiadmin[index].sendPhone,
+                                  receivePhone:
+                                      state.notifiadmin[index].receivephone,
+                                  routeToPostDetail: () {
+                                    context
+                                        .read<PostdetailBloc>()
+                                        .add(PostdetailCheckWorker(
+                                          state.notifiadmin[index].postCode,
+                                        ));
+                                    context.read<PostdetailBloc>().add(
+                                        PostdetailFetched(
+                                            state.notifiadmin[index].postCode));
+                                    Navigator.push(
+                                        context,
+                                        SlideFadeRoute(
+                                            page: PostDetailPage(
+                                          postCode:
+                                              state.notifiadmin[index].postCode,
+                                        )));
+                                  },
+                                  routeToApply: () {
+                                    context.read<PostdetailperfectBloc>().add(
+                                        PostdetailperfectFetched(
+                                            postCode: state
+                                                .notifiadmin[index].postCode,
+                                            isCustomer: false));
+                                    Navigator.push(
+                                        context,
+                                        SlideFadeRoute(
+                                            page: PostDetailPerfectPage()));
+                                  },
+                                ),
+                                time: state.notifiadmin[index].createAt,
+                                backgroundColor: state
+                                            .notifiadmin[index].isReaded !=
+                                        0
+                                    ? Colors.white
+                                    : state.notifiadmin[index].statusAccept != 0
+                                        ? Colors.green[50]
+                                        : Colors.red[50],
+                                iconBorederColor:
+                                    state.notifiadmin[index].type != 0
+                                        ? state.notifiadmin[index].type == 1
+                                            ? state.notifiadmin[index]
+                                                            .statusAccept ==
+                                                        3 ||
+                                                    state.notifiadmin[index]
+                                                            .statusAccept ==
+                                                        2
+                                                ? Colors.green
+                                                : Colors.blue
+                                            : Colors.amber
+                                        : Colors.red,
+                                icon: state.notifiadmin[index].type == 0
+                                    ? Icon(
+                                        Icons.list_alt,
+                                        color: Colors.white,
+                                      )
+                                    : state.notifiadmin[index].type == 1
+                                        ? Icon(
+                                            Icons.history,
+                                            color: Colors.white,
+                                          )
+                                        : Icon(
+                                            Icons.history,
+                                            color: Colors.white,
+                                          ),
+                                isReaded: state.notifiadmin[index].isReaded == 0
+                                    ? false
+                                    : true,
+                                onSelected: (val) {
+                                  context.read<NotificationBloc>().add(
+                                      NotificationSubmitted(
+                                          code: state.notifiadmin[index].code,
+                                          type: val));
+                                },
+                              ),
+                            ),
+                          )
+                        : type == 2 // tin ứng tuyển
+                            ? ListView.builder(
+                                itemCount: state.notifiApply.length,
+                                itemBuilder: (context, index) => Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: kDefaultPadding / 8),
+                                  child: NotifiContainer(
+                                    title: state.notifiApply[index].title,
+                                    content: CheckContent(
+                                      type: state.notifiApply[index].type,
+                                      status:
+                                          state.notifiApply[index].statusAccept,
+                                      content: state.notifiApply[index].content,
+                                      postCode:
+                                          state.notifiApply[index].postCode,
+                                      sendBy: state.notifiperson[index].sendBy,
+                                      receiveBy:
+                                          state.notifiApply[index].receiveBy,
+                                      sendPhone:
+                                          state.notifiApply[index].sendPhone,
+                                      receivePhone:
+                                          state.notifiApply[index].receivephone,
+                                      routeToPostDetail: () {
+                                        context
+                                            .read<PostdetailBloc>()
+                                            .add(PostdetailCheckWorker(
+                                              state.notifiApply[index].postCode,
+                                            ));
+                                        context.read<PostdetailBloc>().add(
+                                            PostdetailFetched(state
+                                                .notifiApply[index].postCode));
+                                        Navigator.push(
+                                            context,
+                                            SlideFadeRoute(
+                                                page: PostDetailPage(
+                                              postCode: state
+                                                  .notifiApply[index].postCode,
+                                            )));
+                                      },
+                                      routeToApply: () {
+                                        context
+                                            .read<PostdetailperfectBloc>()
+                                            .add(PostdetailperfectFetched(
+                                                postCode: state
+                                                    .notifiApply[index]
+                                                    .postCode,
+                                                isCustomer: false));
+                                        Navigator.push(
+                                            context,
+                                            SlideFadeRoute(
+                                                page: PostDetailPerfectPage()));
+                                      },
+                                    ),
+                                    time: state.notifiApply[index].createAt,
+                                    backgroundColor:
+                                        state.notifiApply[index].isReaded != 0
+                                            ? Colors.white
+                                            : state.notifiApply[index]
+                                                        .statusAccept !=
+                                                    0
+                                                ? Colors.green[50]
+                                                : Colors.red[50],
+                                    iconBorederColor:
+                                        state.notifiApply[index].type != 0
+                                            ? state.notifiperson[index].type ==
+                                                    1
+                                                ? state.notifiApply[index]
+                                                                .statusAccept ==
+                                                            3 ||
+                                                        state.notifiApply[index]
+                                                                .statusAccept ==
+                                                            2
+                                                    ? Colors.green
+                                                    : Colors.blue
+                                                : Colors.amber
+                                            : Colors.red,
+                                    icon: state.notifiApply[index].type == 0
+                                        ? Icon(
+                                            Icons.list_alt,
+                                            color: Colors.white,
+                                          )
+                                        : state.notifiApply[index].type == 1
+                                            ? Icon(
+                                                Icons.history,
+                                                color: Colors.white,
+                                              )
+                                            : Icon(
+                                                Icons.history,
+                                                color: Colors.white,
+                                              ),
+                                    isReaded:
+                                        state.notifiApply[index].isReaded == 0
+                                            ? false
+                                            : true,
+                                    onSelected: (val) {
+                                      context.read<NotificationBloc>().add(
+                                          NotificationSubmitted(
+                                              code:
+                                                  state.notifiApply[index].code,
+                                              type: val));
+                                    },
+                                  ),
+                                ),
+                              )
+                            : // tin giao dịch
+                            ListView.builder(
+                                itemCount: state.notifiperson.length,
+                                itemBuilder: (context, index) => Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: kDefaultPadding / 8),
+                                  child: NotifiContainer(
+                                    title: state.notifiperson[index].title,
+                                    content: CheckContent(
+                                      type: state.notifiperson[index].type,
+                                      status: state
+                                          .notifiperson[index].statusAccept,
+                                      content:
+                                          state.notifiperson[index].content,
+                                      postCode:
+                                          state.notifiperson[index].postCode,
+                                      sendBy: state.notifiperson[index].sendBy,
+                                      receiveBy:
+                                          state.notifiperson[index].receiveBy,
+                                      sendPhone:
+                                          state.notifiperson[index].sendPhone,
+                                      receivePhone: state
+                                          .notifiperson[index].receivephone,
+                                      routeToPostDetail: () {
+                                        context
+                                            .read<PostdetailBloc>()
+                                            .add(PostdetailCheckWorker(
+                                              state
+                                                  .notifiperson[index].postCode,
+                                            ));
+                                        context.read<PostdetailBloc>().add(
+                                            PostdetailFetched(state
+                                                .notifiperson[index].postCode));
+                                        Navigator.push(
+                                            context,
+                                            SlideFadeRoute(
+                                                page: PostDetailPage(
+                                              postCode: state
+                                                  .notifiperson[index].postCode,
+                                            )));
+                                      },
+                                      routeToApply: () {
+                                        context.read<PostapplyBloc>().add(
+                                            PostapplyFetched(state
+                                                .notifiperson[index].postCode));
+                                        Navigator.push(
+                                            context,
+                                            SlideFadeRoute(
+                                                page: PostApplyPage(
+                                              postCode: state
+                                                  .notifiperson[index].postCode,
+                                            )));
+                                      },
+                                    ),
+                                    time: state.notifiperson[index].createAt,
+                                    backgroundColor:
+                                        state.notifiperson[index].isReaded != 0
+                                            ? Colors.white
+                                            : state.notifiperson[index]
+                                                        .statusAccept !=
+                                                    0
+                                                ? Colors.green[50]
+                                                : Colors.red[50],
+                                    iconBorederColor: state
+                                                .notifiperson[index].type !=
+                                            0
+                                        ? state.notifiperson[index].type == 1
+                                            ? state.notifiperson[index]
+                                                            .statusAccept ==
+                                                        3 ||
+                                                    state.notifiperson[index]
+                                                            .statusAccept ==
+                                                        2
+                                                ? Colors.green
+                                                : Colors.blue
+                                            : Colors.amber
+                                        : Colors.red,
+                                    icon: state.notifiperson[index].type == 0
+                                        ? Icon(
+                                            Icons.list_alt,
+                                            color: Colors.white,
+                                          )
+                                        : state.notifiperson[index].type == 1
+                                            ? Icon(
+                                                Icons.history,
+                                                color: Colors.white,
+                                              )
+                                            : Icon(
+                                                Icons.history,
+                                                color: Colors.white,
+                                              ),
+                                    isReaded:
+                                        state.notifiperson[index].isReaded == 0
+                                            ? false
+                                            : true,
+                                    onSelected: (val) {
+                                      context.read<NotificationBloc>().add(
+                                          NotificationSubmitted(
+                                              code: state
+                                                  .notifiperson[index].code,
+                                              type: val));
+                                    },
+                                  ),
+                                ),
+                              ),
+              );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class CheckContent extends StatelessWidget {
+  final int type;
+  final int status;
+  final String content;
+  final String postCode;
+  final String sendBy;
+  final String receiveBy;
+  final String sendPhone;
+  final String receivePhone;
+  final Function routeToPostDetail;
+  final Function routeToApply;
+  const CheckContent({
+    Key key,
+    this.type,
+    this.content,
+    this.postCode,
+    this.sendBy,
+    this.status,
+    this.receiveBy,
+    this.sendPhone,
+    this.receivePhone,
+    this.routeToPostDetail,
+    this.routeToApply,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    switch (type) {
+      case 1:
+        return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+          builder: (context, state) {
+            if (state.user.phone == sendPhone) {
+              if (status == 1)
+                return RichText(
+                    text: TextSpan(
+                        text: "Mã giao dịch ",
+                        style: GoogleFonts.muli(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 14),
+                        children: [
+                      TextSpan(
+                          text: "$postCode\n\n",
+                          style: GoogleFonts.muli(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w300,
+                              decoration: TextDecoration.underline,
+                              fontSize: 14),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = routeToPostDetail),
+                      TextSpan(
+                          text: "Bạn $content ",
+                          style: GoogleFonts.muli(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 14)),
+                      TextSpan(
+                          text: "$receiveBy",
+                          style: GoogleFonts.muli(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w300,
+                              decoration: TextDecoration.underline,
+                              fontSize: 14),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = routeToApply),
+                      TextSpan(
+                          text: " thực hiện giao dịch",
+                          style: GoogleFonts.muli(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 14))
+                    ]));
+              if (status == 3)
+                return RichText(
+                    text: TextSpan(
+                        text: "Mã giao dịch ",
+                        style: GoogleFonts.muli(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 14),
+                        children: [
+                      TextSpan(
+                          text: "$postCode\n\n",
+                          style: GoogleFonts.muli(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w300,
+                              decoration: TextDecoration.underline,
+                              fontSize: 14),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = routeToPostDetail),
+                      TextSpan(
+                          text: "Bạn $content ",
+                          style: GoogleFonts.muli(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 14)),
+                      TextSpan(
+                          text: "$receiveBy",
+                          style: GoogleFonts.muli(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w300,
+                              decoration: TextDecoration.underline,
+                              fontSize: 14),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = routeToApply),
+                      TextSpan(
+                          text: " sau khi hoàn tất giao dịch",
+                          style: GoogleFonts.muli(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 14))
+                    ]));
+              return RichText(
+                  text: TextSpan(
+                      text: "Mã giao dịch ",
+                      style: GoogleFonts.muli(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 14),
+                      children: [
+                    TextSpan(
+                        text: "$postCode\n\n",
+                        style: GoogleFonts.muli(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w300,
+                            decoration: TextDecoration.underline,
+                            fontSize: 14),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = routeToPostDetail),
+                    TextSpan(
+                        text: "Bạn $content với ",
+                        style: GoogleFonts.muli(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 14)),
+                    TextSpan(
+                        text: "$receiveBy",
+                        style: GoogleFonts.muli(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w300,
+                            decoration: TextDecoration.underline,
+                            fontSize: 14),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = routeToApply),
+                    // TextSpan(
+                    //     text: " thực hiện giao dịch",
+                    //     style: GoogleFonts.muli(
+                    //         color: Colors.black,
+                    //         fontWeight: FontWeight.w300,
+                    //         fontSize: 14))
+                  ]));
+            }
+            return RichText(
+                text: TextSpan(
+                    text: "Mã giao dịch ",
+                    style: GoogleFonts.muli(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w300,
+                        fontSize: 14),
+                    children: [
+                  TextSpan(
+                      text: "$postCode\n\n",
+                      style: GoogleFonts.muli(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w300,
+                          decoration: TextDecoration.underline,
+                          fontSize: 14),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = routeToPostDetail),
+                  TextSpan(
+                      text: "$sendBy",
+                      style: GoogleFonts.muli(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w300,
+                          decoration: TextDecoration.underline,
+                          fontSize: 14),
+                      recognizer: TapGestureRecognizer()..onTap = routeToApply),
+                  TextSpan(
+                      text: " $content ",
+                      style: GoogleFonts.muli(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 14)),
+                  TextSpan(
+                      text: "bạn",
+                      style: GoogleFonts.muli(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 14))
+                ]));
+          },
+        );
+        break;
+      case 2:
+        return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+          builder: (context, state) {
+            if (state.user.phone == sendPhone)
+              return RichText(
+                text: TextSpan(
+                    text: "Mã bài đăng ",
+                    style: GoogleFonts.muli(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w300,
+                        fontSize: 14),
+                    children: [
+                      TextSpan(
+                          text: "$postCode\n\n",
+                          style: GoogleFonts.muli(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 14,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: new TapGestureRecognizer()
+                            ..onTap = routeToPostDetail),
+                      TextSpan(
+                          text: "Bạn $content của khách hàng ",
+                          style: GoogleFonts.muli(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 14)),
+                      TextSpan(
+                          text: "$receiveBy",
+                          style: GoogleFonts.muli(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 14,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: new TapGestureRecognizer()
+                            ..onTap = routeToApply),
+                    ]),
+              );
+            return RichText(
+              text: TextSpan(
+                  text: "Mã bài đăng ",
+                  style: GoogleFonts.muli(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w300,
+                      fontSize: 14),
+                  children: [
+                    TextSpan(
+                        text: "$postCode\n\n",
+                        style: GoogleFonts.muli(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 14,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: new TapGestureRecognizer()
+                          ..onTap = routeToPostDetail),
+                    TextSpan(
+                        text: "$sendBy",
+                        style: GoogleFonts.muli(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w300,
+                            decoration: TextDecoration.underline,
+                            fontSize: 14),
+                        recognizer: new TapGestureRecognizer()
+                          ..onTap = routeToApply),
+                    TextSpan(
+                        text: " $content",
+                        style: GoogleFonts.muli(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 14)),
+                  ]),
+            );
+          },
+        );
+        break;
+      default:
+        return RichText(
+            text: TextSpan(
+                style: GoogleFonts.muli(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 14),
+                text: "Mã ngành nghề ",
+                children: [
+              TextSpan(
+                  text: "$postCode\n\n",
+                  style: GoogleFonts.muli(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w300,
+                      decoration: TextDecoration.underline,
+                      fontSize: 14),
+                  recognizer: new TapGestureRecognizer()
+                    ..onTap = () {
+                      context
+                          .read<WorkerregisterworkBloc>()
+                          .add(WorkerregisterworkServiceRegisterLoad());
+                      Navigator.push(context,
+                          SlideFadeRoute(page: WorkerHistoryWorkPage()));
+                    }),
+              TextSpan(
+                  text: "Quản trị viên $content thông tin đăng tuyển của bạn",
+                  style: GoogleFonts.muli(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w300,
+                      fontSize: 14))
+            ]));
+    }
+  }
+}
+
+class NotifiContainer extends StatefulWidget {
+  final String title;
+  final String time;
+  final Widget content;
+  final Icon icon;
+  final bool isReaded;
+  final Color iconBorederColor;
+  final Color backgroundColor;
+  final Function(int) onSelected;
+  const NotifiContainer({
+    Key key,
+    this.title,
+    this.time,
+    this.content,
+    this.isReaded = false,
+    this.onSelected,
+    this.icon,
+    this.backgroundColor,
+    this.iconBorederColor,
+  }) : super(key: key);
+
+  @override
+  State<NotifiContainer> createState() => _NotifiContainerState();
+}
+
+class _NotifiContainerState extends State<NotifiContainer> {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        AnimatedContainer(
+            curve: Curves.bounceInOut,
+            duration: Duration(milliseconds: 300),
+            padding: EdgeInsets.symmetric(
+                vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 2),
+            decoration: BoxDecoration(
+              color: widget.backgroundColor,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                        padding: EdgeInsets.all(kDefaultPadding / 4),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: widget.iconBorederColor),
+                        alignment: Alignment.center,
+                        child: widget.icon),
+                    SizedBox(
+                      width: kDefaultPadding / 2,
+                    ),
+                    RichText(
+                        text: TextSpan(
+                            text: "${widget.title} \n",
+                            style: GoogleFonts.muli(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black),
+                            children: [
+                          TextSpan(
+                              text: TimeAgo.timeAgoSinceDate(widget.time),
+                              style: GoogleFonts.muli(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.black))
+                        ]))
+                  ],
+                ),
+                SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
+                widget.content,
+                // TitleText(
+                //   text: widget.content,
+                //   fontSize: 14,
+                //   fontWeight: FontWeight.w300,
+                //   color: Colors.black,
+                // ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(),
+                    ),
+                    TitleText(
+                      text: widget.isReaded ? "Đã xem" : "Chưa xem",
+                      fontSize: 10,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ],
+                ),
+              ],
+            )),
+        Positioned(
+          right: kDefaultPadding / 2,
+          top: kDefaultPadding / 2,
+          child: Stack(
+            children: [
+              Icon(Icons.more_vert),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: PopupMenuButton(
+                  onSelected: widget.onSelected,
+                  child: Visibility(visible: false, child: Text('')),
+                  itemBuilder: widget.isReaded
+                      ? (_) => <PopupMenuItem<int>>[
+                            new PopupMenuItem<int>(
+                                child: new Text('Xóa'), value: 1),
+                          ]
+                      : (_) => <PopupMenuItem<int>>[
+                            new PopupMenuItem<int>(
+                                child: new Text('Đã xem'), value: 0),
+                            new PopupMenuItem<int>(
+                                child: new Text('Xóa'), value: 1),
+                          ],
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}

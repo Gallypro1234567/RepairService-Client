@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:repairservice/repository/dashboard_repository/dashboard_repository.dart';
+import 'package:repairservice/repository/post_repository/post_repository.dart';
 import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -11,10 +12,13 @@ part 'workerregistermanager_state.dart';
 
 class WorkerregistermanagerBloc
     extends Bloc<WorkerregistermanagerEvent, WorkerregistermanagerState> {
-  WorkerregistermanagerBloc({DashboardRepository dashboardRepository})
+  WorkerregistermanagerBloc(
+      {DashboardRepository dashboardRepository, PostRepository postRepository})
       : _dashboardRepository = dashboardRepository,
+        _postRepository = postRepository,
         super(WorkerregistermanagerState());
   final DashboardRepository _dashboardRepository;
+  final PostRepository _postRepository;
   @override
   Stream<WorkerregistermanagerState> mapEventToState(
     WorkerregistermanagerEvent event,
@@ -62,12 +66,28 @@ class WorkerregistermanagerBloc
       WorkerregistermanagerState state) async* {
     yield state.copyWith(status: WorkerregistermanagerStatus.loading);
     try {
-      await _dashboardRepository.adminVetification(
+      var res = await _dashboardRepository.adminVetification(
           isApproval: state.formIsApproval,
           workerOfServicesCode: state.workerOfServicesCode);
-      yield state.copyWith(
-        status: WorkerregistermanagerStatus.submitted,
-      );
+      if (res.statusCode == 200) {
+        if (state.formIsApproval != 0)
+          await _postRepository.sendNotification(
+              tilte: "Thông báo hệ thống",
+              content: state.formIsApproval != 1
+                  ? "đã không được duyệt"
+                  : "đã phê duyệt thành công",
+              receiveBy: event.workerPhone,
+              postCode: state.workerOfServicesCode,
+              status: state.formIsApproval + 1,
+              type: 0);
+        yield state.copyWith(
+          status: WorkerregistermanagerStatus.submitted,
+        );
+      } else {
+        yield state.copyWith(
+          status: WorkerregistermanagerStatus.failure,
+        );
+      }
     } on Exception catch (_) {
       yield state.copyWith(status: WorkerregistermanagerStatus.failure);
     }

@@ -1,24 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:repairservice/config/themes/constants.dart';
-
 import 'package:repairservice/config/themes/light_theme.dart';
-import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/core/auth/bloc/authentication_bloc.dart';
 import 'package:repairservice/modules/home/home_page.dart';
-import 'package:repairservice/modules/post/post_form_page.dart';
-
 import 'package:repairservice/modules/user/user_profile_page.dart';
-import 'package:repairservice/repository/user_repository/models/user_enum.dart';
-import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
-
 import 'manager/manager_page.dart';
-import 'notification/notification_screen.dart';
-import 'post/bloc/post_bloc.dart';
+import 'notification/notification_provider_page.dart';
 
 class MainPage extends StatefulWidget {
   static Route route() {
@@ -38,6 +26,12 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   bool isHomePageSelected = true;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.selectIndex != -1) onBottomIconPressed(widget.selectIndex);
+  }
+
   void onBottomIconPressed(int index) {
     setState(() {
       _selectedIndex = index;
@@ -49,7 +43,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _children = [
     HomePage(),
     ManagerPage(),
-    NotificationScreen(),
+    NotificationPage(),
     UserProfilePage(),
   ];
 

@@ -1,4 +1,4 @@
-import 'dart:async'; 
+import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
@@ -9,7 +9,6 @@ import 'package:repairservice/core/user/register/models/register_phone.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/repository/user_repository/models/user_register_model.dart';
- 
 
 part 'register_event.dart';
 part 'register_state.dart';
@@ -25,10 +24,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     RegisterEvent event,
   ) async* {
     if (event is RegisterInitial) {
-      yield state.copyWith();
+      yield state.copyWith(
+        status: FormzStatus.pure,
+      );
     } else if (event is RegisterWithAddPhone) {
       final phone = PhoneRegister.dirty(event.value);
-      yield state.copyWith(phone: phone);
+      yield state.copyWith(phone: phone, status: FormzStatus.pure);
     } else if (event is RegisterFullnameChanged) {
       yield _mapRegisterFullnameToState(event, state);
     } else if (event is RegisterPasswordChanged) {

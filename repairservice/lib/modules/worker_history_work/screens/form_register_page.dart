@@ -177,7 +177,7 @@ class FormBody extends StatelessWidget {
                 return !state.imageAfterInvalid & !state.imageBeforeInvalid &&
                         state.serviceText.isNotEmpty
                     ? PostButton(
-                        title: "Đăng tin ngay",
+                        title: "Ứng tuyển ngay",
                         color: LightColor.lightteal,
                         textColor: Colors.white,
                         onPressed: () {
@@ -187,7 +187,7 @@ class FormBody extends StatelessWidget {
                         },
                       )
                     : PostButton(
-                        title: "Đăng tin ngay",
+                        title: "Ứng tuyển ngay",
                         color: LightColor.lightteal,
                         textColor: Colors.black,
                         onPressed: null);

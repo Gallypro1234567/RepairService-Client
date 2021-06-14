@@ -91,6 +91,7 @@ class _BottomSheet extends StatelessWidget {
             context
                 .read<UpdateserviceBloc>()
                 .add(UpdateserviceImageChanged(ImageSource.gallery));
+            Navigator.pop(context);
           },
         ),
         CupertinoActionSheetAction(
@@ -99,6 +100,7 @@ class _BottomSheet extends StatelessWidget {
             context
                 .read<UpdateserviceBloc>()
                 .add(UpdateserviceImageChanged(ImageSource.camera));
+            Navigator.pop(context);
           },
         )
       ],

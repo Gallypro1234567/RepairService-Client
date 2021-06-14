@@ -136,6 +136,7 @@ class MyActionSheet extends StatelessWidget {
             context
                 .read<UserProfileBloc>()
                 .add(UserProfileImageChanged(ImageSource.gallery));
+            Navigator.pop(context);
           },
         ),
         CupertinoActionSheetAction(
@@ -144,6 +145,7 @@ class MyActionSheet extends StatelessWidget {
             context
                 .read<UserProfileBloc>()
                 .add(UserProfileImageChanged(ImageSource.camera));
+            Navigator.pop(context);
           },
         )
       ],

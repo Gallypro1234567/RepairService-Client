@@ -67,9 +67,16 @@ class PostrateBloc extends Bloc<PostrateEvent, PostrateState> {
           workerofservicecode: state.wofsCode,
           description: state.description,
           pointrating: state.rating);
-      if (response.statusCode == 200)
+      if (response.statusCode == 200) {
+        await _postRepository.sendNotification(
+            tilte: "Thông báo giao dịch",
+            content: "đã hoàn tất đánh giá",
+            receiveBy: state.workerRating.phone,
+            postCode: state.postcode,
+            status: 3,
+            type: 1);
         yield state.copyWith(status: PostRatingStatus.submitted);
-      else
+      } else
         yield state.copyWith(status: PostRatingStatus.failure);
     } on Exception catch (_) {
       yield state.copyWith(status: PostRatingStatus.failure);

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
@@ -39,7 +40,7 @@ class PostApplyContainer extends StatelessWidget {
                     ? Colors.red
                     : Colors.blue
                 : Colors.green
-            : postStatus == 1
+            : postStatus >= 1
                 ? Colors.grey
                 : Colors.amber,
         geometry: BadgeGeometry(width: 70, height: 70),
@@ -50,7 +51,7 @@ class PostApplyContainer extends StatelessWidget {
                       ? "Đã hủy"
                       : "Đã Check In"
                   : "Được chọn"
-              : postStatus == 1
+              : postStatus >= 1
                   ? "Đã qua"
                   : "Đang đợi",
           style: TextStyle(
@@ -75,22 +76,37 @@ class PostApplyContainer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
-              height: 120,
-              width: 120,
-              margin: EdgeInsets.all(
-                kDefaultPadding / 4,
-              ),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: postApply.imageUrl != null
-                          ? postApply.imageUrl.isNotEmpty
-                              ? NetworkImage(postApply.imageUrl)
-                              : AssetImage(
-                                  "assets/images/user_profile_background.jpg")
-                          : AssetImage(
-                              "assets/images/user_profile_background.jpg")))),
+            height: 120,
+            width: 120,
+            margin: EdgeInsets.all(
+              kDefaultPadding / 4,
+            ),
+            // decoration: BoxDecoration(
+            //     shape: BoxShape.circle,
+            //     image: DecorationImage(
+            //         fit: BoxFit.cover,
+            //         image: postApply.imageUrl != null
+            //             ? postApply.imageUrl.isNotEmpty
+            //                 ? NetworkImage(postApply.imageUrl)
+            //                 : AssetImage(
+            //                     "assets/images/user_profile_background.jpg")
+            //             : AssetImage(
+            //                 "assets/images/user_profile_background.jpg"))),
+            child: postApply.imageUrl == null
+                ? Image.asset("assets/images/user_profile_background.jpg")
+                : CachedNetworkImage(
+                    imageUrl: postApply.imageUrl,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+          ),
           SizedBox(
             width: kDefaultPadding / 2,
           ),

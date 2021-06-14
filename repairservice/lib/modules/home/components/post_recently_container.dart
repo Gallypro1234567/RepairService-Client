@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
@@ -33,14 +34,30 @@ class PostRecentlyContainer extends StatelessWidget {
                   kDefaultPadding / 4,
                 ),
                 decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    image: post.imageUrl == null
-                        ? DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage("assets/images/default.jpg"))
-                        : DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(post.imageUrl))),
+                  shape: BoxShape.rectangle,
+                  // image: post.imageUrl == null
+                  //     ? DecorationImage(
+                  //         fit: BoxFit.cover,
+                  //         image: AssetImage("assets/images/default.jpg"))
+                  //     : DecorationImage(
+                  //         fit: BoxFit.cover,
+                  //         image: NetworkImage(post.imageUrl))
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: post.imageUrl == null ? "assets/images/default.jpg":  post.imageUrl,
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                        // colorFilter: ColorFilter.mode(
+                        //     Colors.red, BlendMode.colorBurn),
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) => Container(child:  Image.asset("assets/images/loading2.gif")),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
               ),
             ),
             SizedBox(
@@ -105,6 +122,12 @@ class PostRecentlyContainer extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
+                          Expanded(child: Container()),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
                           Expanded(child: Container()),
                           TitleText(
                             text: TimeAgo.timeAgoSinceDate(post.createAt),

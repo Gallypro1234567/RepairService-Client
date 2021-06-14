@@ -103,7 +103,7 @@ class UserRepository {
     }
   }
 
-  Future<UserDetail> tryGetUser() async {
+  Future<List<UserDetail>> tryGetUser() async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
     Map<String, String> headers = {"Authorization": "bearer $token"};
@@ -140,7 +140,7 @@ class UserRepository {
                   : UserType.worker,
               role: json["Role"] as int,
             );
-          }).first;
+          }).toList();
       }
       return null;
     } on Exception catch (e) {
@@ -212,11 +212,11 @@ class UserRepository {
       request.fields['isApproval'] = "0";
 
       if (files != null) {
-        for (var file in files) {
-          request.files.add(http.MultipartFile(
-              'File', file.readAsBytes().asStream(), file.lengthSync(),
-              filename: file.path.split("/").last));
-        }
+        // for (var file in files) {
+        //   request.files.add(http.MultipartFile(
+        //       'File', file.readAsBytes().asStream(), file.lengthSync(),
+        //       filename: file.path.split("/").last));
+        // }
       }
 
       var streamedResponse = await request.send();
@@ -252,16 +252,19 @@ class UserRepository {
         var body = jsons['data'] as List;
         return body.map((dynamic json) {
           return WorkerRegister(
-              code: json["Code"] as String,
-              isApproval: json["isApproval"] as int,
-              serviceCode: json["ServiceCode"] as String,
-              serviceName: json["ServiceName"] as String,
-              serviceImageurl: json["ServiceImageUrl"] != null
-                  ? json["ServiceImageUrl"].toString().length > 0
-                      ? Uri.http(Host.Server_hosting, json["ServiceImageUrl"])
-                          .toString()
-                      : null
-                  : null);
+            code: json["Code"] as String,
+            isApproval: json["isApproval"] as int,
+            serviceCode: json["ServiceCode"] as String,
+            serviceName: json["ServiceName"] as String,
+            serviceImageurl: json["ServiceImageUrl"] != null
+                ? json["ServiceImageUrl"].toString().length > 0
+                    ? Uri.http(Host.Server_hosting, json["ServiceImageUrl"])
+                        .toString()
+                    : null
+                : null,
+            feedbackPoint: json["FeedbackPoint"] as double,
+            reviewAmount: json["ReviewAmount"] as int,
+          );
         }).toList();
       }
       return null;

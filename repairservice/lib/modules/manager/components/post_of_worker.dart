@@ -88,7 +88,8 @@ class WorkerContainerBuilder extends StatelessWidget {
           },
           onPressedDelete: () {
             context.read<ManagerBloc>().add(ManagerWorkerDeleteApply(
-                  state.posts[index].code,
+                  postCode: state.posts[index].code,
+                  customerPhone: state.posts[index].phone,
                 ));
           },
         );

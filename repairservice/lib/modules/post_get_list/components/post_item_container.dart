@@ -1,19 +1,19 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:intl/intl.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
 import 'package:repairservice/widgets/title_text.dart';
-import '../../../utils/ui/extensions.dart';
 
 class ItemPostContainer extends StatelessWidget {
   final Post post;
-
-  const ItemPostContainer({Key key, this.post}) : super(key: key);
+  const ItemPostContainer({
+    Key key,
+    this.post,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -35,15 +35,22 @@ class ItemPostContainer extends StatelessWidget {
                 margin: EdgeInsets.all(
                   kDefaultPadding / 4,
                 ),
-                decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    image: post.imageUrl == null
-                        ? DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage("assets/images/default.jpg"))
-                        : DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(post.imageUrl))),
+                child: post.imageUrl == null
+                    ? Image.asset("assets/images/default.jpg")
+                    : CachedNetworkImage(
+                        imageUrl: post.imageUrl,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        placeholder: (context, url) => Container(
+                            child: Image.asset("assets/images/loading2.gif")),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
               ),
             ),
             SizedBox(
@@ -55,7 +62,6 @@ class ItemPostContainer extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: kDefaultPadding / 2),
                   child: Column(
-                    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Padding(
@@ -88,6 +94,12 @@ class ItemPostContainer extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
+                          Expanded(child: Container()),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
                           Expanded(child: Container()),
                           TitleText(
                             text: TimeAgo.timeAgoSinceDate(post.createAt),

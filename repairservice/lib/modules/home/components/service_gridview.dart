@@ -24,7 +24,7 @@ class ServiceGridview extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(bottom: kDefaultPadding / 4),
       width: AppTheme.fullWidth(context),
-      height: model.length > 5
+      height: model.length > 6
           ? AppTheme.fullWidth(context) * .62
           : AppTheme.fullWidth(context) * .35,
       color: Colors.white,
@@ -47,7 +47,7 @@ class ServiceGridview extends StatelessWidget {
           Expanded(
             child: GridView(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: model.length > 5 ? 2 : 1,
+                crossAxisCount: model.length > 6 ? 2 : 1,
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
               ),

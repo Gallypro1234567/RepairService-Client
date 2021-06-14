@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/auth/authentication.dart';
 
 import 'package:repairservice/core/auth/my_elevated_button.dart';
@@ -41,82 +43,86 @@ class _LoginPageState extends State<LoginPage> {
           }
         },
         child: Scaffold(
-          body: LoginBackground(
-            children: [
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: kDefaultPadding / 2,
-                          vertical: kDefaultPadding / 2),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset("assets/images/37691.jpg"),
-                          SizedBox(
-                            height: kDefaultPadding,
-                          ),
-                          TitleText(
-                            text: "Đăng Nhập",
-                            fontSize: 20,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          SizedBox(
-                            height: kDefaultPadding,
-                          ),
-                          _PhoneInput(),
-                          SizedBox(
-                            height: kDefaultPadding,
-                          ),
-                          _PasswordInput(),
-                          SizedBox(
-                            height: kDefaultPadding,
-                          ),
-                          _LoginBlocButton(
-                            title: 'Đăng nhập',
-                          ),
-                          SizedBox(
-                            height: kDefaultPadding,
-                          ),
-
-                          // MyElevatedButton(
-                          //   title: "Đăng ký tài khoản",
-                          //   key: const Key('loginForm_register_raisedButton'),
-                          //   isValidated: false,
-                          //   color: LightColor.lightGrey,
-                          //   onPressed: () {
-                          //     Navigator.push(
-                          //         context, SlideFadeRoute(page: VerifyPhonePage()));
-                          //   },
-                          // ),
-                        ],
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: kDefaultPadding / 2, vertical: kDefaultPadding),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    height: AppTheme.fullHeight(context) * 0.5,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage("assets/images/37691.jpg"))),
+                  ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: kDefaultPadding,
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(),
+                      TitleText(
+                        text: "Đăng Nhập",
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      SizedBox(
+                        height: kDefaultPadding,
+                      ),
+                      _PhoneInput(),
+                      SizedBox(
+                        height: kDefaultPadding,
+                      ),
+                      _PasswordInput(),
+                      SizedBox(
+                        height: kDefaultPadding,
+                      ),
+                      _LoginBlocButton(
+                        title: 'Đăng nhập',
+                      ),
+                      SizedBox(
+                        height: kDefaultPadding,
+                      ),
+                      Center(
+                        child: TitleText(
+                          text: "Hay",
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(context,
-                                SlideFadeRoute(page: VerifyPhonePage()));
-                          },
-                          child: RichText(
-                              text: TextSpan(
-                                  text: "Tạo tài khoản mới tại đây",
-                                  style: GoogleFonts.muli(
-                                      color: Colors.blue,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500))),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      SizedBox(
+                        height: kDefaultPadding,
+                      ),
+                      RichText(
+                          text: TextSpan(
+                              text: "Chưa có tài khoản? ",
+                              style: GoogleFonts.muli(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                              children: [
+                            TextSpan(
+                                text: "Đăng ký ngay",
+                                style: GoogleFonts.muli(
+                                    color: Colors.blue,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500),
+                                recognizer: new TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                        context,
+                                        SlideFadeRoute(
+                                            page: VerifyPhonePage()));
+                                  })
+                          ])),
+                    ],
+                  )
+                ],
               ),
-            ],
+            ),
           ),
         ));
   }

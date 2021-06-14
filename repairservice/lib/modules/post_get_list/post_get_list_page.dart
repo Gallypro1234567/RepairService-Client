@@ -81,7 +81,7 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
                   child: ListPostView(
                     titleCategory: widget.title,
                     state: state,
-                    onNavigator: () {
+                    onSelect: () {
                       context
                           .read<PostgetlistBloc>()
                           .add(PostgetlistCityFetched());
@@ -98,12 +98,12 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
 
 class ListPostView extends StatelessWidget {
   final PostgetlistState state;
-  final Function onNavigator;
+  final Function onSelect;
   final String titleCategory;
   const ListPostView({
     Key key,
     this.state,
-    this.onNavigator,
+    this.onSelect,
     this.titleCategory,
   }) : super(key: key);
 
@@ -160,7 +160,7 @@ class ListPostView extends StatelessWidget {
                     ])),
               ],
             ),
-          ).ripple(onNavigator),
+          ).ripple(onSelect),
           SizedBox(
             height: kDefaultPadding / 6,
           ),

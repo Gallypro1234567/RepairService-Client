@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:repairservice/modules/search/bloc/search_bloc.dart';
 
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
 import 'package:repairservice/repository/dashboard_repository/dashboard_repository.dart';
@@ -21,7 +22,6 @@ import 'modules/admin_dashboard/screens/worker_register_manager/bloc/workerregis
 import 'modules/home/bloc/home_bloc.dart';
 import 'modules/manager/bloc/manager_bloc.dart';
 import 'modules/notification/bloc/notification_bloc.dart';
-import 'modules/notification/notification_pages.dart';
 import 'modules/post/bloc/post_bloc.dart';
 import 'modules/post_apply/bloc/postapply_bloc.dart';
 import 'modules/post_apply_detail/bloc/postapplydetail_bloc.dart';
@@ -82,6 +82,11 @@ class AppProvider extends StatelessWidget {
                   homeRepository: HomeRepository(),
                   postRepository: PostRepository(),
                 )..add(HomeFetched())),
+        //Search page
+        BlocProvider(
+            create: (_) => SearchBloc(
+                  postRepository: PostRepository(),
+                )..add(SearchInitial())),
         // Manager Page
         BlocProvider(
             create: (_) => ManagerBloc(
@@ -139,8 +144,9 @@ class AppProvider extends StatelessWidget {
                 )..add(WorkermanagerInitial())),
         BlocProvider(
             create: (_) => WorkerregistermanagerBloc(
-                  dashboardRepository: DashboardRepository(),
-                )..add(WorkerregistermanagerFetched())),
+                dashboardRepository: DashboardRepository(),
+                postRepository: PostRepository())
+              ..add(WorkerregistermanagerFetched())),
         BlocProvider(
             create: (_) => PostmanagerBloc(
                   dashboardRepository: DashboardRepository(),

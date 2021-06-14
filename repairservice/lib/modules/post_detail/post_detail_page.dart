@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -289,7 +290,7 @@ class PostDetailBottomSheet extends StatelessWidget {
                               FontAwesome.edit,
                               size: 30,
                             ),
-                            title: "Apply",
+                            title: "Ứng tuyển",
                             primaryColor: Colors.green,
                             shadowColor: LightColor.lightGrey,
                             textColor: Colors.white,
@@ -486,10 +487,27 @@ class PostDescriptionBloc extends StatelessWidget {
                         height: 60,
                         child: CircleAvatar(
                           backgroundColor: Colors.transparent,
-                          backgroundImage: state.post.customerImageUrl == null
-                              ? AssetImage(
-                                  "assets/images/user_profile_background.jpg")
-                              : AssetImage(state.post.customerImageUrl),
+                          child: state.post.customerImageUrl != null
+                              ? CachedNetworkImage(
+                                  imageUrl: state.post.customerImageUrl,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  // placeholder: (context, url) => Container(
+                                  //     child: Image.asset(
+                                  //         "assets/images/loading2.gif")),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                )
+                              : Image.asset(
+                                  "assets/images/user_profile_background.jpg"),
                         ),
                       ),
                       SizedBox(
@@ -625,9 +643,23 @@ class _PostDetailImageShowBlocState extends State<PostDetailImageShowBloc> {
         for (var item in state.post.imageUrls) {
           list
             ..add(Container(
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      fit: BoxFit.fitWidth, image: NetworkImage(item))),
+              // decoration: BoxDecoration(
+              //     image: DecorationImage(
+              //         fit: BoxFit.fitWidth, image: NetworkImage(item))),
+              child: CachedNetworkImage(
+                imageUrl: item,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) =>
+                    Container(child: Image.asset("assets/images/loading2.gif")),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
             ));
         }
         return Center(

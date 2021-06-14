@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -135,22 +136,42 @@ class ApprovalPostContainer extends StatelessWidget {
             padding: EdgeInsets.symmetric(
               horizontal: kDefaultPadding / 2,
             ),
-            height: AppTheme.fullHeight(context) * 0.1,
+            height: AppTheme.fullHeight(context) * 0.15,
             decoration: BoxDecoration(color: Colors.white),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
-                  flex: 1,
-                  child: post.imageUrl == null
-                      ? Image.asset("assets/images/default.jpg")
-                      : Image.network(post.imageUrl),
+                  flex: 2,
+                  child: Container(
+                      // decoration: BoxDecoration(
+                      //     image: DecorationImage(
+                      //         fit: BoxFit.cover,
+                      //         image: post.imageUrl == null
+                      //             ? AssetImage("assets/images/default.jpg")
+                      //             : NetworkImage(post.imageUrl))),
+                      child: post.imageUrl == null
+                          ? Image.asset("assets/images/default.jpg")
+                          : CachedNetworkImage(
+                              imageUrl: post.imageUrl,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            )),
                 ),
                 SizedBox(
                   width: kDefaultPadding / 2,
                 ),
                 Expanded(
-                    flex: 3,
+                    flex: 4,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: kDefaultPadding / 2),

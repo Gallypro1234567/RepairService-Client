@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +39,8 @@ class _PostApplyWorkerDetailPageState extends State<PostApplyWorkerDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LightColor.lightGrey,
-      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
+      appBar: AppBar(
+        toolbarHeight: AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Thông tin chi tiết",
           fontSize: 16,
@@ -276,15 +278,30 @@ class WorkerProfile extends StatelessWidget {
         child: Column(
           children: [
             Container(
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: model.imageUrl != null
-                        ? DecorationImage(image: NetworkImage(model.imageUrl))
-                        : DecorationImage(
-                            image: AssetImage(
-                                "assets/images/user_profile_background.jpg")))),
+              height: 100,
+              width: 100,
+              // decoration: BoxDecoration(
+              //     shape: BoxShape.circle,
+              //     image: model.imageUrl != null
+              //         ? DecorationImage(image: NetworkImage(model.imageUrl))
+              //         : DecorationImage(
+              //             image: AssetImage(
+              //                 "assets/images/user_profile_background.jpg"))),
+              child: model.imageUrl == null
+                  ? Image.asset("assets/images/user_profile_background.jpg")
+                  : CachedNetworkImage(
+                      imageUrl: model.imageUrl,
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+            ),
             TitleText(
               text: model.fullname,
               fontSize: 18,

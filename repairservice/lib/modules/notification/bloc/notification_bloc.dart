@@ -23,10 +23,15 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     else if (event is NotificationOnSelect)
       yield event.select != -1
           ? event.select != 0
-              ? state.copyWith(
-                  pageActive: event.select,
-                  status: NotificationStatus.selectPage,
-                  checkAdmin: 1)
+              ? event.select != 1
+                  ? state.copyWith(
+                      pageActive: event.select,
+                      status: NotificationStatus.selectPage,
+                      checkApply: 1)
+                  : state.copyWith(
+                      pageActive: event.select,
+                      status: NotificationStatus.selectPage,
+                      checkAdmin: 1)
               : state.copyWith(
                   pageActive: event.select,
                   status: NotificationStatus.selectPage,
@@ -52,19 +57,27 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           length: 20, start: 0, status: -1, type: event.type);
 
       yield event.type != -1
-          ? event.type != 0
+          ? event.type == 0
               ? state.copyWith(
                   notifiadmin: data,
                   status: NotificationStatus.success,
                   checkAdmin: 1,
                   checkperson: state.checkperson,
                   checkall: state.checkall)
-              : state.copyWith(
-                  notifiperson: data,
-                  status: NotificationStatus.success,
-                  checkperson: 1,
-                  checkAdmin: state.checkAdmin,
-                  checkall: state.checkall)
+              : event.type != 1
+                  ? state.copyWith(
+                      notifiApply: data,
+                      status: NotificationStatus.success,
+                      checkApply: 1,
+                      checkAdmin: state.checkperson,
+                      checkperson: state.checkperson,
+                      checkall: state.checkall)
+                  : state.copyWith(
+                      notifiperson: data,
+                      status: NotificationStatus.success,
+                      checkperson: 1,
+                      checkAdmin: state.checkAdmin,
+                      checkall: state.checkall)
           : state.copyWith(
               notifiAll: data,
               status: NotificationStatus.success,

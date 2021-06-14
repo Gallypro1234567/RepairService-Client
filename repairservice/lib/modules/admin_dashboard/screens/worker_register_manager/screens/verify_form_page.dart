@@ -85,7 +85,7 @@ class VerificationFormPage extends StatelessWidget {
                   : () {
                       context
                           .read<WorkerregistermanagerBloc>()
-                          .add(WorkerregistermanagerSubmit());
+                          .add(WorkerregistermanagerSubmit(workerPhone:  model.phone, serviceCode: model.serviceCode));
                     },
             );
           },

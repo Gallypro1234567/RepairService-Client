@@ -81,7 +81,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       await _authenticationRepository.logOut();
       yield state.copyWith(
-        status: FormzStatus.submissionSuccess,
+        status: FormzStatus.pure,
         password: Password.pure(),
         phone: Phone.pure(),
       );

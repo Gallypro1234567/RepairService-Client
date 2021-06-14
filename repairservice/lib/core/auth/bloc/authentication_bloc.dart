@@ -37,7 +37,7 @@ class AuthenticationBloc
     AuthenticationEvent event,
   ) async* {
     if (event is AuthenticationStatusChanged) {
-      yield*  _mapAuthenticationStatusChangedToState(event);
+      yield* _mapAuthenticationStatusChangedToState(event);
     } else if (event is AuthenticationLogoutRequested) {
       _authenticationRepository.logOut();
     }
@@ -58,10 +58,10 @@ class AuthenticationBloc
         yield const AuthenticationState.unauthenticated();
         break;
       case AuthenticationStatus.authenticated:
-        yield const AuthenticationState.unknown(); 
+        yield const AuthenticationState.unknown();
         final user = await _tryGetUser();
-        yield user != null
-            ? AuthenticationState.authenticated(user)
+        yield user.length > 0
+            ? AuthenticationState.authenticated(user.first)
             : const AuthenticationState.unauthenticated();
         break;
       default:
@@ -70,12 +70,12 @@ class AuthenticationBloc
     }
   }
 
-  Future<UserDetail> _tryGetUser() async {
+  Future<List<UserDetail>> _tryGetUser() async {
     try {
       final user = _userRepository.tryGetUser();
       return user;
     } on Exception {
-      return null;
+      return <UserDetail>[];
     }
   }
 }

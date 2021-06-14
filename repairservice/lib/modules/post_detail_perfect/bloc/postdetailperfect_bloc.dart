@@ -60,11 +60,18 @@ class PostdetailperfectBloc
           applystatus: 3,
           poststatus: 2);
 
-      if (response.statusCode == 200)
+      if (response.statusCode == 200) {
         yield state.copyWith(
           status: PostPerfectStatus.perfectSubmitted,
         );
-      else
+        await _postRepository.sendNotification(
+            tilte: "Thông báo giao dịch",
+            content: "đã hoàn tất công việc",
+            receiveBy: state.post.customerphone,
+            postCode: state.postCode,
+            status: 2,
+            type: 1);
+      } else
         yield state.copyWith(
           status: PostPerfectStatus.failure,
         );
@@ -83,11 +90,11 @@ class PostdetailperfectBloc
           workerofservicecode: state.post.wofsCode,
           applystatus: 2,
           poststatus: 1);
-      if (response.statusCode == 200)
+      if (response.statusCode == 200) {
         yield state.copyWith(
           status: PostPerfectStatus.perfectSubmitted,
         );
-      else
+      } else
         yield state.copyWith(
           status: PostPerfectStatus.failure,
         );
@@ -106,11 +113,11 @@ class PostdetailperfectBloc
           workerofservicecode: state.post.wofsCode,
           applystatus: 4,
           poststatus: 3);
-      if (response.statusCode == 200)
+      if (response.statusCode == 200) {
         yield state.copyWith(
           status: PostPerfectStatus.perfectSubmitted,
         );
-      else
+      } else
         yield state.copyWith(
           status: PostPerfectStatus.failure,
         );

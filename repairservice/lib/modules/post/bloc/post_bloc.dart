@@ -79,9 +79,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   _mapPostDistrictChangedToState(PostDistrictChanged event, PostState state) {
     return state.copyWith(
-        districtId: event.id,
-        districtText: event.text,
-        districtInvalid: event.invalid);
+      districtId: event.id,
+      districtText: event.text,
+      districtInvalid: event.invalid,
+      wardId: -1,
+      wardText: "",
+      wardInvalid: false,
+    );
   }
 
   _mapPostCityChangedToState(PostCityChanged event, PostState state) {

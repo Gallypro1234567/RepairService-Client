@@ -19,28 +19,33 @@ class NotificationState extends Equatable {
       this.notifiAll = const <NotificationModel>[],
       this.notifiperson = const <NotificationModel>[],
       this.notifiadmin = const <NotificationModel>[],
+      this.notifiApply = const <NotificationModel>[],
       this.checkAdmin = 0,
       this.checkperson = 0,
-      this.checkall = 0});
+      this.checkall = 0,
+      this.checkApply = 0});
   final NotificationStatus status;
   final int pageActive;
   final List<NotificationModel> notifiadmin;
   final List<NotificationModel> notifiperson;
   final List<NotificationModel> notifiAll;
+  final List<NotificationModel> notifiApply;
   final int checkAdmin;
   final int checkperson;
   final int checkall;
-
+  final int checkApply;
   @override
   List<Object> get props => [
         status,
         notifiAll,
         pageActive,
         notifiadmin,
+        notifiApply,
         notifiperson,
         checkall,
         checkperson,
-        checkAdmin
+        checkAdmin,
+        checkApply
       ];
 
   NotificationState copyWith(
@@ -48,18 +53,22 @@ class NotificationState extends Equatable {
       List<NotificationModel> notifiAll,
       List<NotificationModel> notifiadmin,
       List<NotificationModel> notifiperson,
+      List<NotificationModel> notifiApply,
       int pageActive,
-      final int checkAdmin,
-      final int checkperson,
-      final int checkall}) {
+      int checkAdmin,
+      int checkperson,
+      int checkall,
+      int checkApply}) {
     return NotificationState(
         status: status ?? this.status,
         notifiAll: notifiAll ?? this.notifiAll,
         notifiadmin: notifiadmin ?? this.notifiadmin,
         notifiperson: notifiperson ?? this.notifiperson,
+        notifiApply: notifiApply ?? this.notifiApply,
         pageActive: pageActive ?? this.pageActive,
         checkAdmin: checkAdmin ?? this.checkAdmin,
         checkperson: checkperson ?? this.checkperson,
-        checkall: checkall ?? this.checkall);
+        checkall: checkall ?? this.checkall,
+        checkApply: checkApply ?? this.checkApply);
   }
 }

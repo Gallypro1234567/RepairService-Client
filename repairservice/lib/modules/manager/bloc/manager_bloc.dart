@@ -76,13 +76,20 @@ class ManagerBloc extends Bloc<ManagerEvent, ManagerState> {
     yield state.copyWith(pageStatus: PageStatus.loading);
     try {
       var response = await _postRepository.deletePostApplyByWorker(
-          postCode: event.postApplyCode);
+          postCode: event.postCode);
 
-      if (response.statusCode == 200)
+      if (response.statusCode == 200) {
+        await _postRepository.sendNotification(
+            tilte: "Thông báo ứng tuyển",
+            content: "đã hủy ứng tuyển",
+            receiveBy: event.customerPhone,
+            postCode: event.postCode,
+            status: 0,
+            type: 2);
         yield state.copyWith(
           pageStatus: PageStatus.deleteSuccess,
         );
-      else
+      } else
         yield state.copyWith(
           pageStatus: PageStatus.failure,
         );

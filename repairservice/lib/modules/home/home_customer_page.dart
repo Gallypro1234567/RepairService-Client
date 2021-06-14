@@ -13,9 +13,10 @@ import 'package:repairservice/modules/post/post_form_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/modules/user/user_profile_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
-import 'package:repairservice/utils/ui/animations/slide_fade_route.dart'; 
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:shimmer/shimmer.dart';
+import 'components/avatar_container.dart';
 import 'components/home_background.dart';
 import 'components/post_recently_gridview.dart';
 import 'components/service_gridview.dart';
@@ -105,38 +106,25 @@ class _HomeCustomerState extends State<HomeCustomerPage> {
               BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {
                   switch (state.status) {
-                    case UserStatus.loading:
+                    case UserStatus.success:
+                      return SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: AvatarContainer(
+                          imageUrl: state.user.imageUrl,
+                        ).ripple(() {
+                          Navigator.push(
+                              context, SlideFadeRoute(page: UserProfilePage()));
+                        }),
+                      );
+                    default:
                       return SizedBox(
                           height: 30,
                           width: 30,
-                          child: CircleAvatar(
-                            backgroundImage: null,
+                          child: AvatarContainer(
+                            imageUrl: "",
                           ));
                       break;
-                    case UserStatus.failure:
-                      return SizedBox(
-                        height: 30,
-                        width: 30,
-                        child: CircleAvatar(backgroundImage: null),
-                      );
-                      break;
-                    default:
-                      return SizedBox(
-                        height: 30,
-                        width: 30,
-                        child: CircleAvatar(
-                          backgroundImage: state.user.imageUrl != null
-                              ? state.user.imageUrl.isNotEmpty
-                                  ? NetworkImage(state.user.imageUrl)
-                                  : AssetImage(
-                                      "assets/images/user_profile_background.jpg")
-                              : AssetImage(
-                                  "assets/images/user_profile_background.jpg"),
-                        )..ripple(() {
-                            Navigator.push(context,
-                                SlideFadeRoute(page: UserProfilePage()));
-                          }),
-                      );
                   }
                 },
               )

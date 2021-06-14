@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/auth/my_elevated_button.dart';
 
 import 'package:repairservice/core/user/login/components/textfield_container.dart';
@@ -28,51 +29,63 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LoginBackground(
-        children: [
-          Positioned(
-            top: kDefaultPadding * 2,
-            left: 0,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.arrow_back),
-              color: Colors.black,
-            ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        backgroundColor: Colors.white,
+        titleSpacing: 0,
+        bottomOpacity: 0,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: kDefaultPadding, vertical: kDefaultPadding),
-            child: SingleChildScrollView(
-              child: Column(
-                //crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset("assets/images/37691.jpg"),
-                  SizedBox(
-                    height: kDefaultPadding,
-                  ),
-                  TitleText(
-                    text: "Nhập số điện thoại",
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  SizedBox(
-                    height: kDefaultPadding,
-                  ),
-                  _PhoneInput(controler: _verifyphoneController),
-                  SizedBox(
-                    height: kDefaultPadding,
-                  ),
-                  _VerifyPhoneBlocButton(
-                    title: "Tiếp tục",
-                  )
-                ],
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [],
+        title: TitleText(
+          text: "Đăng ký tài khoản",
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding / 2, vertical: kDefaultPadding / 2),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: AppTheme.fullHeight(context) * 0.5,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/37691.jpg"))),
               ),
-            ),
+              SizedBox(
+                height: kDefaultPadding,
+              ),
+              TitleText(
+                text: "Nhập số điện thoại",
+                fontSize: 20,
+                fontWeight: FontWeight.w400,
+              ),
+              SizedBox(
+                height: kDefaultPadding,
+              ),
+              _PhoneInput(controler: _verifyphoneController),
+              SizedBox(
+                height: kDefaultPadding,
+              ),
+              _VerifyPhoneBlocButton(
+                title: "Tiếp tục",
+              )
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -119,7 +132,7 @@ class _VerifyPhoneBlocButton extends StatelessWidget {
             : MyElevatedButton(
                 key: const Key('Verifyform_phone_to_continue_textField'),
                 title: title,
-                color: LightColor.orange,
+                color: LightColor.lightteal,
                 isValidated: state.status.isValidated,
                 onPressed: state.status.isValidated
                     ? () {

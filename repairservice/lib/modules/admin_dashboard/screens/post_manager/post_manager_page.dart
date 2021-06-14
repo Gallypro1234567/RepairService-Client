@@ -1,23 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:formz/formz.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/modules/admin_dashboard/screens/service_manager/screens/bloc/updateservice_bloc.dart';
-import 'package:repairservice/modules/home/bloc/home_bloc.dart';
-import 'package:repairservice/modules/post/components/post_form_input.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
-
-import '../../../../utils/ui/extensions.dart';
 import 'bloc/postmanager_bloc.dart';
 
 class PostmanagerPage extends StatefulWidget {
@@ -30,7 +25,9 @@ class _PostmanagerPageState extends State<PostmanagerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: TitleText(
             text: "Quản lý Đăng tin",
             fontSize: 16,
@@ -75,11 +72,31 @@ class _PostmanagerPageState extends State<PostmanagerPage> {
                                 height: 30,
                                 width: 30,
                                 child: CircleAvatar(
-                                  backgroundImage: e.imageUrl != null
-                                      ? NetworkImage(e.imageUrl)
-                                      : null,
+                                  // backgroundImage: e.imageUrl != null
+                                  //     ? NetworkImage(e.imageUrl)
+                                  //     : null,
+                                  child: e.imageUrl == null
+                                      ? Image.asset(
+                                          "assets/images/background_default.jpg")
+                                      : CachedNetworkImage(
+                                          imageUrl: e.imageUrl,
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        ),
                                 ),
                               )),
+                              DataCell(Text(e.title)),
                               DataCell(Container(
                                 margin: EdgeInsets.symmetric(
                                     vertical: kDefaultPadding / 2),
@@ -136,7 +153,6 @@ class _PostmanagerPageState extends State<PostmanagerPage> {
                                             ),
                                 ),
                               ),
-                              DataCell(Text(e.title)),
                               DataCell(Text(e.fullname)),
                               DataCell(Text(e.phone)),
                             ]))
@@ -186,6 +202,13 @@ class DataTableBloc extends StatelessWidget {
             ),
             DataColumn(
               label: TitleText(
+                text: 'Tiêu đề',
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            DataColumn(
+              label: TitleText(
                 text: 'Trạng thái',
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
@@ -194,13 +217,6 @@ class DataTableBloc extends StatelessWidget {
             DataColumn(
               label: TitleText(
                 text: 'Phê duyệt',
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            DataColumn(
-              label: TitleText(
-                text: 'Tiêu đề',
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
@@ -298,7 +314,9 @@ class StatusContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: AppTheme.fullWidth(context) * .3,
+        width: Responsive.isTablet(context)
+            ? AppTheme.fullWidth(context) * .2
+            : AppTheme.fullWidth(context) * .3,
         padding: EdgeInsets.symmetric(
             horizontal: kDefaultPadding / 4, vertical: kDefaultPadding / 4),
         decoration: BoxDecoration(

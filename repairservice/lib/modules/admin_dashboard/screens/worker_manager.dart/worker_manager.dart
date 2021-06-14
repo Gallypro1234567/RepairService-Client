@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 import 'bloc/workermanager_bloc.dart';
@@ -12,7 +14,10 @@ class WorkerManagerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( toolbarHeight: AppTheme.fullHeight(context) * .06,
+      appBar: AppBar(
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: TitleText(
             text: "Quản lý thợ", fontSize: 16, fontWeight: FontWeight.w500),
         centerTitle: true,
@@ -35,9 +40,28 @@ class WorkerManagerPage extends StatelessWidget {
                           height: 30,
                           width: 30,
                           child: CircleAvatar(
-                              backgroundImage: e.imageUrl != null
-                                  ? NetworkImage(e.imageUrl)
-                                  : null),
+                            // backgroundImage: e.imageUrl != null
+                            //     ? NetworkImage(e.imageUrl)
+                            //     : null,
+                            child: e.imageUrl == null
+                                ? Image.asset(
+                                    "assets/images/user_profile_background.jpg")
+                                : CachedNetworkImage(
+                                    imageUrl: e.imageUrl,
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                          ),
                         )),
                         DataCell(TitleText(
                           text: e.fullname,

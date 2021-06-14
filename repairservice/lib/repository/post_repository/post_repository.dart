@@ -104,6 +104,7 @@ class PostRepository {
       {String serviceCode,
       String cityId,
       String districtId,
+      String search,
       int start = 0,
       int lenght = 10,
       int status = -2,
@@ -115,6 +116,7 @@ class PostRepository {
     Map<String, String> paramters = {
       "start": start.toString(),
       "length": lenght.toString(),
+      "search": search.toString(),
       "order": "1",
       "status": status.toString(),
       "servicecode": serviceCode,
@@ -154,9 +156,11 @@ class PostRepository {
           return Post(
               code: json["Code"] as String,
               title: json["Title"] as String,
+              serviceCode: json["SrviceCode"] as String,
+              serviceText: json["ServiceName"] as String,
               address: addressShort,
               createAt: json["CreateAt"] as String,
-              finishAt: DateTime.parse(json["FinishAt"]),
+              finishAt: json["FinishAt"] as String,
               fullname: json["Fullname"] as String,
               cityId: json["CityId"] as int,
               districtId: json["DistrictId"] as int,
@@ -210,7 +214,7 @@ class PostRepository {
               title: json["Title"] as String,
               address: json["Address"] as String,
               createAt: json["CreateAt"] as String,
-              finishAt: DateTime.parse(json["FinishAt"]),
+              finishAt: json["FinishAt"] as String,
               fullname: json["Fullname"] as String,
               cityId: json["CityId"] as int,
               districtId: json["DistrictId"] as int,
@@ -459,7 +463,7 @@ class PostRepository {
             if (json["Address"].toString().isNotEmpty) {
               List<String> list = json["Address"].split(',');
               if (list.length == 3) {
-                addressShort = list[1].toString() + "," + list[2];
+                addressShort = list[2].toString();
               } else
                 addressShort = json["Address"].toString();
             }
@@ -469,7 +473,7 @@ class PostRepository {
               title: json["Title"] as String,
               address: addressShort,
               createAt: json["CreateAt"] as String,
-              finishAt: DateTime.parse(json["FinishAt"]),
+              finishAt: json["FinishAt"] as String,
               fullname: json["Fullname"] as String,
               cityId: json["CityId"] as int,
               districtId: json["DistrictId"] as int,
@@ -595,9 +599,7 @@ class PostRepository {
               title: json["Title"] as String,
               address: addressShort,
               createAt: json["CreateAt"] as String,
-              finishAt: json["FinishAt"] == null
-                  ? null
-                  : DateTime.parse(json["FinishAt"]),
+              finishAt: json["FinishAt"] as String,
               fullname: json["Fullname"] as String,
               cityId: json["CityId"] as int,
               districtId: json["DistrictId"] as int,
@@ -664,6 +666,7 @@ class PostRepository {
               code: json["PostCode"] as String,
               title: json["Title"] as String,
               createAt: json["CreateAt"] as String,
+              finishAt: json["FinishAt"] as String,
               wofsCode: json["WorkerOfServiceCode"] as String,
               status: int.parse(json["PostStatus"].toString()),
               feedbackAmount: json["FeedbackAmount"] as int,
@@ -941,7 +944,12 @@ class PostRepository {
   }
 
   Future<http.Response> sendNotification(
-      {String tilte, String content, String receiveBy}) async {
+      {String tilte,
+      String content,
+      String receiveBy,
+      String postCode,
+      int status,
+      int type}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
     try {
@@ -950,8 +958,11 @@ class PostRepository {
       var request = http.MultipartRequest('POST', uri);
       request.headers['Authorization'] = "bearer $token";
       request.fields['Title'] = tilte;
-      request.fields['Content'] = content.toString();
-      request.fields['ReceiveBy'] = receiveBy.toString();
+      request.fields['Content'] = content;
+      request.fields['ReceiveBy'] = receiveBy;
+      request.fields['postcode'] = postCode;
+      request.fields['status'] = status.toString();
+      request.fields['type'] = type.toString();
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
       return response;
@@ -992,13 +1003,15 @@ class PostRepository {
           Uri.http(Host.Server_hosting, "/api/notifications/update", paramters);
       var request = http.MultipartRequest('POST', uri);
       request.headers['Authorization'] = "bearer $token";
-      var streamedResponse = await request.send().timeout(Duration(seconds: 10));
+      var streamedResponse =
+          await request.send().timeout(Duration(seconds: 10));
       var response = await http.Response.fromStream(streamedResponse);
       return response;
     } on TimeoutException catch (_) {
       return null;
     } on SocketException catch (_) {
       // Other exception
+      return null;
     }
   }
 
@@ -1024,15 +1037,23 @@ class PostRepository {
       var jsons = json.decode(response.body);
       if (response.statusCode == 200) {
         var body = jsons['data'] as List;
+
         return body.map((dynamic json) {
           return NotificationModel(
             code: json["Code"] as String,
             title: json["Title"] as String,
             content: json["Content"] as String,
             sendBy: json["SendBy"] as String,
+            sendPhone: json["SendPhone"] as String,
+            receiveBy: json["ReceiveBy"] as String,
+            receivephone: json["ReceivePhone"] as String,
             isReaded: json["isReaded"] as int,
             createAt: json["CreateAt"] as String,
             type: json["type"] as int,
+            postCode: json["PostCode"] as String,
+            statusAccept: json["status"] as int,
+            receiveByDelete: json["ReceiveByDelete"] as int,
+            sendByDelete: json["SendByDelete"] as int,
           );
         }).toList();
       }

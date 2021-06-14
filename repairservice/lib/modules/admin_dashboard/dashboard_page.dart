@@ -5,6 +5,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/service_manager/service_manager.dart';
+import 'package:repairservice/modules/home/components/avatar_container.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/widgets/title_text.dart';
@@ -76,7 +77,7 @@ class DashboardPage extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.app_registration),
                 title: TitleText(
-                  text: 'Danh sách thợ đăng ký',
+                  text: 'Quản lý đăng ký ngành nghề',
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
@@ -87,10 +88,27 @@ class DashboardPage extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.app_registration),
-                title: TitleText(
-                  text: 'Danh sách tin',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                title: Stack(
+                  children: [
+                    TitleText(
+                      text: 'Quản lý đăng tin',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          height: 10,
+                          width: 10,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: kDefaultPadding / 4,
+                              vertical: kDefaultPadding / 4),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.red),
+                          alignment: Alignment.center,
+                        ))
+                  ],
                 ),
                 onTap: () {
                   context.read<PostmanagerBloc>().add(PostmanagerFetched());
@@ -125,8 +143,7 @@ class Header extends StatelessWidget {
               SizedBox(
                 height: 100,
                 width: 100,
-                child: CircleAvatar(
-                    backgroundImage: NetworkImage(state.user.imageUrl)),
+                child: AvatarContainer(imageUrl: state.user.imageUrl),
               ),
               SizedBox(
                 height: kDefaultPadding / 2,
