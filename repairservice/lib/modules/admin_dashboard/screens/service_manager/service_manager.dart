@@ -12,6 +12,7 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/service_manager/screens/bloc/updateservice_bloc.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post/components/post_form_input.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
@@ -113,10 +114,15 @@ class _ServiceManagerPageState extends State<ServiceManagerPage> {
           }
         },
         child: BlocBuilder<ServicemanagerBloc, ServicemanagerState>(
+          buildWhen: (previousState, state) {
+            if (previousState.status == ServiceManagerStatus.loading)
+              Navigator.pop(context, true);
+            return true;
+          },
           builder: (context, state) {
             switch (state.status) {
               case ServiceManagerStatus.loading:
-                return SplashPage();
+                return Loading();
               case ServiceManagerStatus.failure:
                 return Center(
                   child: Text("Error"),

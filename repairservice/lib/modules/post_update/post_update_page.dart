@@ -12,6 +12,7 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post/components/post_button.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
@@ -57,13 +58,18 @@ class PostUpdatePage extends StatelessWidget {
             ),
           ),
           body: BlocBuilder<PostUpdateBloc, PostUpdateState>(
+            buildWhen: (previousState, state) {
+              if (previousState.pageStatus == PostUpdateStatus.loading)
+                Navigator.pop(context, true);
+              return true;
+            },
             builder: (context, state) {
               switch (state.pageStatus) {
                 case PostUpdateStatus.loading:
-                  return SplashPage();
-                  break; 
+                  return Loading();
+                  break;
                 case PostUpdateStatus.failure:
-                  return Center(child: Text("Error")); 
+                  return Center(child: Text("Error"));
                 default:
                   return FormBodyUpdate();
                   break;

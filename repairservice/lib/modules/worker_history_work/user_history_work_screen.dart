@@ -7,6 +7,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 
 import 'package:repairservice/modules/splash/splash_page.dart';
 
@@ -14,6 +15,7 @@ import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwor
 import 'package:repairservice/modules/worker_history_work/screens/form_register_page.dart';
 
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../utils/ui/extensions.dart';
 import 'screens/post_of_worker.dart';
@@ -25,10 +27,14 @@ class WorkerHistoryWorkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WorkerregisterworkBloc, WorkerregisterworkState>(
-        builder: (context, state) {
+        buildWhen: (previousState, state) {
+      if (previousState.status == WorkerRegisterStatus.loading)
+        Navigator.pop(context, true);
+      return true;
+    }, builder: (context, state) {
       switch (state.status) {
         case WorkerRegisterStatus.loading:
-          return SplashPage();
+          return Loading();
         case WorkerRegisterStatus.loadSuccessed:
           return WorkerHistoryWorkView();
           break;
@@ -54,7 +60,9 @@ class WorkerHistoryWorkView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         backgroundColor: LightColor.lightteal,
         centerTitle: false,
         leadingWidth: 30,
@@ -105,9 +113,9 @@ class ServiceGridview extends StatelessWidget {
       shrinkWrap: true,
       itemCount: state.serviceRegisters.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 5.0,
-        mainAxisSpacing: 6,
+        crossAxisCount: Responsive.isTablet(context) ? 3 : 2,
+        crossAxisSpacing: 0,
+        mainAxisSpacing: 0,
       ),
       itemBuilder: (context, index) {
         return Padding(

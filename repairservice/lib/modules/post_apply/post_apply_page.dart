@@ -8,8 +8,10 @@ import 'package:repairservice/modules/post_apply_detail/bloc/postapplydetail_blo
 import 'package:repairservice/modules/post_apply_detail/post_apply_detail_page.dart';
 import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
 import 'package:repairservice/modules/post_rating/post_rating.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 import 'bloc/postapply_bloc.dart';
@@ -26,7 +28,9 @@ class PostApplyPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: LightColor.lightGrey,
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Danh sách thợ muốn thực hiện",
           fontSize: 16,
@@ -41,10 +45,15 @@ class PostApplyPage extends StatelessWidget {
             icon: Icon(Icons.arrow_back)),
       ),
       body: BlocBuilder<PostapplyBloc, PostapplyState>(
+        buildWhen: (previousState, state) {
+          if (previousState.status == ApplyStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.status) {
             case ApplyStatus.loading:
-              return SplashPage();
+              return Loading();
               break;
             case ApplyStatus.success:
               if (state.postApply.length == 0)

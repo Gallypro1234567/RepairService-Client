@@ -8,6 +8,8 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/search/bloc/search_bloc.dart';
 import 'package:repairservice/modules/search/screens/select_city_page.dart';
+import 'package:repairservice/modules/search/screens/select_service_page.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
@@ -16,6 +18,7 @@ import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../utils/ui//extensions.dart';
 
@@ -36,7 +39,9 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: LightColor.lightGrey,
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
@@ -52,8 +57,10 @@ class _SearchPageState extends State<SearchPage> {
                           return SearchContainers(
                             controller: _controller,
                             onchanged: (val) {
-                              context.read<SearchBloc>().add(SearchFetched(
-                                  search: val, code: state.serviceCode));
+                              context
+                                  .read<SearchBloc>()
+                                  .add(SearchChange(searhString: val));
+                              context.read<SearchBloc>().add(SearchFetched());
                             },
                           );
                         },
@@ -69,10 +76,15 @@ class _SearchPageState extends State<SearchPage> {
         elevation: 0,
       ),
       body: BlocBuilder<SearchBloc, SearchState>(
+        buildWhen: (previousState, state) {
+          if (previousState.pageStatus == SearchStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.pageStatus) {
             case SearchStatus.loading:
-              return SplashPage();
+              return Loading();
               break;
             case SearchStatus.failure:
               return Center(
@@ -84,16 +96,17 @@ class _SearchPageState extends State<SearchPage> {
                   onRefresh: () async {},
                   child: RefreshIndicator(
                       onRefresh: () async {
-                        context.read<SearchBloc>().add(SearchFetched(
-                            search: state.searchString,
-                            code: state.serviceCode));
+                        context.read<SearchBloc>().add(SearchFetched());
                       },
                       child: ListPostView(
-                        state: state,
-                        onSelect: () {
+                        onSelectPosition: () {
                           context.read<SearchBloc>().add(SearchCityFetched());
                           Navigator.push(
                               context, SlideFadeRoute(page: SelectCityPage()));
+                        },
+                        onSelectService: () {
+                          Navigator.push(context,
+                              SlideFadeRoute(page: SelectServicePage()));
                         },
                       )));
           }
@@ -107,6 +120,7 @@ class SearchContainers extends StatelessWidget {
   final String isActive;
   final TextEditingController controller;
   final Function(String) onchanged;
+
   const SearchContainers({
     Key key,
     this.isActive,
@@ -119,7 +133,9 @@ class SearchContainers extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: Container(
-        height: AppTheme.fullHeight(context) * .04,
+        height: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .08
+            : AppTheme.fullHeight(context) * .04,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -156,14 +172,14 @@ class SearchContainers extends StatelessWidget {
 }
 
 class ListPostView extends StatelessWidget {
-  final SearchState state;
-  final Function onSelect;
+  final Function onSelectPosition;
+  final Function onSelectService;
   final String titleCategory;
   const ListPostView({
     Key key,
-    this.state,
-    this.onSelect,
+    this.onSelectPosition,
     this.titleCategory,
+    this.onSelectService,
   }) : super(key: key);
 
   @override
@@ -182,53 +198,102 @@ class ListPostView extends StatelessWidget {
                 SizedBox(
                   width: kDefaultPadding / 2,
                 ),
-                TitleText(
-                  text: "Khu vực: ",
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                BlocBuilder<SearchBloc, SearchState>(
-                  builder: (context, state) {
-                    return TitleText(
-                      text: state.districtQuery.length == 0
-                          ? "${state.cityQuery}"
-                          : "${state.districtQuery}, ${state.cityQuery} ",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    );
-                  },
-                ),
-                Icon(FontAwesome.caret_down, size: 20, color: Colors.black),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 4,
+                      vertical: kDefaultPadding / 4),
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Row(
+                    children: [
+                      BlocBuilder<SearchBloc, SearchState>(
+                        builder: (context, state) {
+                          return TitleText(
+                            text: state.districtQuery.length == 0
+                                ? "${state.cityQuery}"
+                                : "${state.districtQuery}, ${state.cityQuery} ",
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          );
+                        },
+                      ),
+                      Icon(FontAwesome.caret_down,
+                          size: 20, color: Colors.black),
+                    ],
+                  ),
+                ).ripple(onSelectPosition),
                 Expanded(
                   child: Container(),
                 ),
               ],
             ),
-          ).ripple(onSelect),
+          ),
+          Container(
+            padding: EdgeInsets.only(
+                left: kDefaultPadding / 2,
+                right: kDefaultPadding / 2,
+                bottom: kDefaultPadding / 2),
+            color: Colors.white,
+            child: Row(
+              children: [
+                Icon(Icons.filter_alt_sharp, size: 20, color: Colors.black),
+                SizedBox(
+                  width: kDefaultPadding / 2,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 4,
+                      vertical: kDefaultPadding / 4),
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Row(children: [
+                    Container(
+                      child: BlocBuilder<SearchBloc, SearchState>(
+                        builder: (context, state) {
+                          return TitleText(
+                            text: state.serviceText,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          );
+                        },
+                      ),
+                    ),
+                    Icon(FontAwesome.caret_down, size: 20, color: Colors.black),
+                  ]),
+                ).ripple(onSelectService)
+              ],
+            ),
+          ),
           SizedBox(
             height: kDefaultPadding / 6,
           ),
-          ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: state.posts.length,
-              itemBuilder: (context, index) =>
-                  BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                    builder: (context, authstate) {
-                      return ItemPostContainer(
-                        post: state.posts[index],
-                      ).ripple(() {
-                        if (authstate.user.isCustomer == UserType.worker)
-                          context.read<PostdetailBloc>().add(
-                              PostdetailCheckWorker(state.posts[index].code));
-                        context
-                            .read<PostdetailBloc>()
-                            .add(PostdetailFetched(state.posts[index].code));
-                        Navigator.push(
-                            context, SlideFadeRoute(page: PostDetailPage()));
-                      });
-                    },
-                  ))
+          BlocBuilder<SearchBloc, SearchState>(
+            builder: (context, state) {
+              return ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: state.posts.length,
+                  itemBuilder: (context, index) =>
+                      BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                        builder: (context, authstate) {
+                          return ItemPostContainer(
+                            post: state.posts[index],
+                          ).ripple(() {
+                            if (authstate.user.isCustomer == UserType.worker)
+                              context.read<PostdetailBloc>().add(
+                                  PostdetailCheckWorker(
+                                      state.posts[index].code));
+                            context.read<PostdetailBloc>().add(
+                                PostdetailFetched(state.posts[index].code));
+                            Navigator.push(context,
+                                SlideFadeRoute(page: PostDetailPage()));
+                          });
+                        },
+                      ));
+            },
+          )
         ],
       ),
     );
@@ -251,7 +316,9 @@ class ItemPostContainer extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           horizontal: kDefaultPadding / 2,
         ),
-        height: AppTheme.fullHeight(context) * 0.15,
+        height: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .4
+            : AppTheme.fullHeight(context) * 0.15,
         decoration: BoxDecoration(color: Colors.white),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

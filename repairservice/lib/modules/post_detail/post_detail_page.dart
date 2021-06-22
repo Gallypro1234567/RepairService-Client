@@ -14,9 +14,11 @@ import 'package:repairservice/modules/post_apply/bloc/postapply_bloc.dart';
 import 'package:repairservice/modules/post_apply/post_apply_page.dart';
 import 'package:repairservice/modules/post_update/bloc/postupdate_bloc.dart';
 import 'package:repairservice/modules/post_update/post_update_page.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'bloc/postdetail_bloc.dart';
 import 'components/post_detail_button.dart';
@@ -28,7 +30,9 @@ class PostDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Trang tin chi tiết",
           fontSize: 16,
@@ -62,10 +66,15 @@ class PostDetailPage extends StatelessWidget {
                   .add(PostdetailFetched(state.postCode));
           },
           child: BlocBuilder<PostdetailBloc, PostdetailState>(
+            buildWhen: (previousState, state) {
+              if (previousState.status == PostDetailStatus.loading)
+                Navigator.pop(context, true);
+              return true;
+            },
             builder: (context, state) {
               switch (state.status) {
                 case PostDetailStatus.loading:
-                  return SplashPage();
+                  return Loading();
                   break;
                 case PostDetailStatus.failure:
                   return Center(
@@ -73,10 +82,14 @@ class PostDetailPage extends StatelessWidget {
                   );
                   break;
                 default:
-                  return Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.start,
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      context
+                          .read<PostdetailBloc>()
+                          .add(PostdetailFetched(state.postCode));
+                    },
+                    child: ListView(
+                      physics: AlwaysScrollableScrollPhysics(),
                       children: [
                         PostDetailImageShowBloc(),
                         SizedBox(
@@ -87,6 +100,10 @@ class PostDetailPage extends StatelessWidget {
                           height: kDefaultPadding,
                         ),
                         PostDescriptionBloc(),
+                        Container(
+                          height: AppTheme.fullHeight(context) * .2,
+                          color: Colors.white,
+                        )
                       ],
                     ),
                   );
@@ -99,17 +116,21 @@ class PostDetailPage extends StatelessWidget {
       bottomSheet: BlocBuilder<PostdetailBloc, PostdetailState>(
         builder: (context, state) {
           switch (state.status) {
-            case PostDetailStatus.loading:
-              return SplashPage();
-              break;
+           
             case PostDetailStatus.success:
               return PostDetailBottomSheet(
                 postCode: postCode,
+                height: Responsive.isTablet(context)
+                    ? AppTheme.fullHeight(context) * .2
+                    : AppTheme.fullHeight(context) * .1,
               );
               break;
             case PostDetailStatus.submitted:
               return PostDetailBottomSheet(
                 postCode: postCode,
+                height: Responsive.isTablet(context)
+                    ? AppTheme.fullHeight(context) * .2
+                    : AppTheme.fullHeight(context) * .1,
               );
               break;
             default:
@@ -125,8 +146,9 @@ class PostDetailPage extends StatelessWidget {
 
 class PostDetailBottomSheet extends StatelessWidget {
   final String postCode;
-
-  const PostDetailBottomSheet({Key key, this.postCode}) : super(key: key);
+  final double height;
+  const PostDetailBottomSheet({Key key, this.postCode, this.height})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocListener<PostdetailBloc, PostdetailState>(
@@ -140,7 +162,7 @@ class PostDetailBottomSheet extends StatelessWidget {
                 switch (state.post.approval) {
                   case -1:
                     return Container(
-                      height: AppTheme.fullHeight(context) * 0.1,
+                      height: height,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -183,7 +205,7 @@ class PostDetailBottomSheet extends StatelessWidget {
                     break;
                   case 1:
                     return Container(
-                      height: AppTheme.fullHeight(context) * 0.1,
+                      height: height,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -226,7 +248,7 @@ class PostDetailBottomSheet extends StatelessWidget {
                     break;
                   default:
                     return Container(
-                      height: AppTheme.fullHeight(context) * 0.1,
+                      height: height,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -276,7 +298,7 @@ class PostDetailBottomSheet extends StatelessWidget {
           if (authstate.user.isCustomer == UserType.worker &&
               authstate.user.role == 1) {
             return Container(
-              height: AppTheme.fullHeight(context) * 0.1,
+              height: height,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -384,7 +406,7 @@ class PostDetailBottomSheet extends StatelessWidget {
             builder: (context, poststate) {
               if (poststate.post.phone == authstate.user.phone)
                 return Container(
-                  height: AppTheme.fullHeight(context) * 0.1,
+                  height: height,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -449,7 +471,7 @@ class PostDetailBottomSheet extends StatelessWidget {
                     ],
                   ),
                 );
-              return Container(height: AppTheme.fullHeight(context) * 0.1);
+              return Container(height: height);
             },
           );
         },
@@ -465,128 +487,115 @@ class PostDescriptionBloc extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 2,
-      child: Container(
-        padding: const EdgeInsets.only(left: kDefaultPadding / 2),
-        height: AppTheme.fullHeight(context) * 0.1,
-        decoration: BoxDecoration(color: Colors.white),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            BlocBuilder<PostdetailBloc, PostdetailState>(
-              builder: (context, state) {
-                return Container(
-                  height: AppTheme.fullHeight(context) * 0.1,
-                  decoration: BoxDecoration(color: Colors.white),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          child: state.post.customerImageUrl != null
-                              ? CachedNetworkImage(
-                                  imageUrl: state.post.customerImageUrl,
-                                  imageBuilder: (context, imageProvider) =>
-                                      Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  // placeholder: (context, url) => Container(
-                                  //     child: Image.asset(
-                                  //         "assets/images/loading2.gif")),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                )
-                              : Image.asset(
-                                  "assets/images/user_profile_background.jpg"),
-                        ),
-                      ),
-                      SizedBox(
-                        width: kDefaultPadding,
-                      ),
-                      TitleText(
-                        text: state.post.fullname,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
-            Divider(
-              height: 1,
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(left: kDefaultPadding / 2),
+    return Container(
+      padding: const EdgeInsets.only(left: kDefaultPadding / 2),
+      decoration: BoxDecoration(color: Colors.white),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          BlocBuilder<PostdetailBloc, PostdetailState>(
+            builder: (context, state) {
+              return Container(
                 height: AppTheme.fullHeight(context) * 0.1,
                 decoration: BoxDecoration(color: Colors.white),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.start,
+                child: Row(
                   children: [
                     SizedBox(
-                      height: kDefaultPadding / 2,
+                      width: 60,
+                      height: 60,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: state.post.customerImageUrl != null
+                            ? CachedNetworkImage(
+                                imageUrl: state.post.customerImageUrl,
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              )
+                            : Image.asset(
+                                "assets/images/user_profile_background.jpg"),
+                      ),
+                    ),
+                    SizedBox(
+                      width: kDefaultPadding,
                     ),
                     TitleText(
-                      text: "Thông tin chi tiết",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    SizedBox(
-                      height: kDefaultPadding / 2,
-                    ),
-                    BlocBuilder<PostdetailBloc, PostdetailState>(
-                      builder: (context, state) {
-                        return RichText(
-                          text: TextSpan(
-                            text: 'Địa chỉ: ',
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                color: Colors.black),
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text:
-                                      '${state.post.address == null ? "" : state.post.address} ',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: kDefaultPadding / 2,
-                    ),
-                    BlocBuilder<PostdetailBloc, PostdetailState>(
-                      builder: (context, state) {
-                        return RichText(
-                          text: TextSpan(
-                            text:
-                                '${state.post.desciption == null ? "" : state.post.desciption}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                color: Colors.black),
-                          ),
-                        );
-                      },
-                    ),
+                      text: state.post.fullname,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    )
                   ],
                 ),
-              ),
-            )
-          ],
-        ),
+              );
+            },
+          ),
+          Divider(
+            height: 1,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: kDefaultPadding / 2),
+            decoration: BoxDecoration(color: Colors.white),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
+                TitleText(
+                  text: "Thông tin chi tiết",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
+                BlocBuilder<PostdetailBloc, PostdetailState>(
+                  builder: (context, state) {
+                    return RichText(
+                      text: TextSpan(
+                        text: 'Địa chỉ: ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal, color: Colors.black),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text:
+                                  '${state.post.address == null ? "" : state.post.address} ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: kDefaultPadding / 2,
+                ),
+                BlocBuilder<PostdetailBloc, PostdetailState>(
+                  builder: (context, state) {
+                    return RichText(
+                      text: TextSpan(
+                        text:
+                            '${state.post.desciption == null ? "" : state.post.desciption}',
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal, color: Colors.black),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

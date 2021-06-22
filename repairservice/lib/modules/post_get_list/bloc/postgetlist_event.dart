@@ -13,7 +13,9 @@ class PostgetlistFetched extends PostgetlistEvent {
   final String code;
   final int cityId;
   final int districtId;
-  PostgetlistFetched({this.code, this.cityId, this.districtId});
+  final String searchText;
+  PostgetlistFetched(
+      {this.code, this.cityId, this.districtId, this.searchText = ""});
 }
 
 class PostgetlistCityFetched extends PostgetlistEvent {}

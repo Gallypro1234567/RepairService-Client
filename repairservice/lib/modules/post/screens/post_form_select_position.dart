@@ -5,6 +5,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post/bloc/post_bloc.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
@@ -42,10 +43,15 @@ class PostSelectCityPage extends StatelessWidget {
         ),
       ),
       body: BlocBuilder<PostBloc, PostState>(
+        buildWhen: (previousState, state) {
+          if (previousState.positionStatus == PositionStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.positionStatus) {
             case PositionStatus.loading:
-              return SplashPage();
+              return Loading();
               break;
             case PositionStatus.failure:
               return SplashPage();
@@ -109,10 +115,15 @@ class PostSelectDistrictPage extends StatelessWidget {
         ),
       ),
       body: BlocBuilder<PostBloc, PostState>(
+        buildWhen: (previousState, state) {
+          if (previousState.positionStatus == PositionStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.positionStatus) {
             case PositionStatus.loading:
-              return SplashPage();
+              return Loading();
               break;
             case PositionStatus.failure:
               return SplashPage();
@@ -176,13 +187,20 @@ class PostSelectWardPage extends StatelessWidget {
         ),
       ),
       body: BlocBuilder<PostBloc, PostState>(
+        buildWhen: (previousState, state) {
+          if (previousState.positionStatus == PositionStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.positionStatus) {
             case PositionStatus.loading:
-              return SplashPage();
+              return Loading();
               break;
             case PositionStatus.failure:
-              return SplashPage();
+              return Center(
+                child: Text("Error"),
+              );
 
               break;
             default:

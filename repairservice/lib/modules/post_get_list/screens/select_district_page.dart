@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post_get_list/bloc/postgetlist_bloc.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
 
@@ -15,6 +16,9 @@ class SelectDistrictPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Chọn quận, huyện, thị xã",
           fontSize: 16,
@@ -29,10 +33,15 @@ class SelectDistrictPage extends StatelessWidget {
             icon: Icon(Icons.arrow_back)),
       ),
       body: BlocBuilder<PostgetlistBloc, PostgetlistState>(
+        buildWhen: (previousState, state) {
+          if (previousState.postGetPositionStatus ==
+              PostGetPositionStatus.loading) Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.postGetPositionStatus) {
             case PostGetPositionStatus.loading:
-              return SplashPage();
+              return Loading();
               break;
             case PostGetPositionStatus.failure:
               return SplashPage();
@@ -109,7 +118,9 @@ class SelectRadioContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-      height: AppTheme.fullHeight(context) * 0.05,
+      height: Responsive.isTablet(context)
+          ? AppTheme.fullHeight(context) * .1
+          : AppTheme.fullHeight(context) * .05,
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 0.5, color: Colors.grey)),
       ),

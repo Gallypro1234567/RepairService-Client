@@ -5,8 +5,10 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post_detail_perfect/bloc/postdetailperfect_bloc.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
@@ -23,7 +25,9 @@ class PostRatingPage extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          toolbarHeight: AppTheme.fullHeight(context) * .06,
+          toolbarHeight: Responsive.isTablet(context)
+              ? AppTheme.fullHeight(context) * .1
+              : AppTheme.fullHeight(context) * .06,
           backgroundColor: Colors.white,
           leadingWidth: 30,
           leading: IconButton(
@@ -68,10 +72,15 @@ class PostRatingPage extends StatelessWidget {
             }
           },
           child: BlocBuilder<PostrateBloc, PostrateState>(
+            buildWhen: (previousState, state) {
+              if (previousState.status == PostRatingStatus.loading)
+                Navigator.pop(context, true);
+              return true;
+            },
             builder: (context, state) {
               switch (state.status) {
                 case PostRatingStatus.loading:
-                  return SplashPage();
+                  return Loading();
                   break;
                 case PostRatingStatus.failure:
                   return Center(
@@ -106,16 +115,14 @@ class Body extends StatelessWidget {
               vertical: kDefaultPadding / 2, horizontal: kDefaultPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: [
               WorkerInfoContainer(
                 fullname: model.workerRating.fullname,
                 phone: model.workerRating.phone,
                 imageUrl: model.workerRating.imageUrl != null
-                    ? model.workerRating.imageUrl.isNotEmpty
-                        ? NetworkImage(model.workerRating.imageUrl)
-                        : AssetImage(
-                            "assets/images/user_profile_background.jpg")
-                    : AssetImage("assets/images/user_profile_background.jpg"),
+                    ? model.workerRating.imageUrl
+                    : "",
                 wofsText: model.workerRating.services,
               ),
               SizedBox(
@@ -141,6 +148,8 @@ class Body extends StatelessWidget {
               model.postcode.isNotEmpty
                   ? CustomerRating()
                   : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
                         BlocBuilder<PostrateBloc, PostrateState>(
                           builder: (context, state) {
@@ -159,7 +168,23 @@ class Body extends StatelessWidget {
                         BlocBuilder<PostrateBloc, PostrateState>(
                           builder: (context, state) {
                             if (state.feedbacks.length == 0) return Container();
-                            return ListView.builder(
+                            return GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount:
+                                          Responsive.isTablet(context) ? 3 : 1,
+                                      mainAxisSpacing: 0,
+                                      crossAxisSpacing: 0,
+                                      childAspectRatio:
+                                          Responsive.isTablet(context)
+                                              ? AppTheme.fullHeight(context) /
+                                                  0.8 /
+                                                  AppTheme.fullHeight(context) /
+                                                  0.8
+                                              : AppTheme.fullHeight(context) /
+                                                  0.7 /
+                                                  AppTheme.fullHeight(context) /
+                                                  0.7),
                               physics: NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: state.feedbacks.length,
@@ -168,17 +193,11 @@ class Body extends StatelessWidget {
                                     fullName: state.feedbacks[index].username,
                                     createAt: TimeAgo.timeAgoSinceDate(
                                         state.feedbacks[index].createAt),
-                                    image: state.feedbacks[index]
+                                    imageUrl: state.feedbacks[index]
                                                 .userImageUrl !=
                                             null
                                         ? state.feedbacks[index].userImageUrl
-                                                .isNotEmpty
-                                            ? NetworkImage(state
-                                                .feedbacks[index].userImageUrl)
-                                            : AssetImage(
-                                                "assets/images/user_profile_background.jpg")
-                                        : AssetImage(
-                                            "assets/images/user_profile_background.jpg"),
+                                        : "",
                                     description:
                                         state.feedbacks[index].description,
                                     pointRating: state.feedbacks[index].rate);

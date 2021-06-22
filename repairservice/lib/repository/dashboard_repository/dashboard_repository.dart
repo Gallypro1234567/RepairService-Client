@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
+import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/repository/user_repository/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/service/server_hosting.dart' as Host;
@@ -200,7 +201,7 @@ class DashboardRepository {
   Future<List<UserDetail>> fetchWorker({String phone, String password}) async {
     var pref = await SharedPreferences.getInstance();
     var token = pref.getString("token");
-
+    var myphone = pref.getString("phone");
     Map<String, String> headers = {
       "Content-Type": "application/json",
       "Authorization": "bearer $token"
@@ -223,6 +224,9 @@ class DashboardRepository {
               fullname: json["Fullname"] as String,
               phone: json["Phone"] as String,
               email: json["Email"] as String,
+              status: myphone == json["Phone"] as String
+                  ? -1
+                  : json["Status"] as int,
               imageUrl: json["ImageUrl"] != null
                   ? json["ImageUrl"].toString().length > 0
                       ? Uri.http(Host.Server_hosting, json["ImageUrl"])
@@ -263,6 +267,7 @@ class DashboardRepository {
           return UserDetail(
               fullname: json["Fullname"] as String,
               phone: json["Phone"] as String,
+              status: json["Status"] as int,
               email: json["Email"] as String,
               imageUrl: json["ImageUrl"] != null
                   ? json["ImageUrl"].toString().length > 0
@@ -274,6 +279,81 @@ class DashboardRepository {
       }
       return null;
     } on Exception {
+      return null;
+    }
+  }
+
+  Future<http.Response> disableAccount({int status, String phone}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    Map<String, String> paramters = {
+      "phone": phone,
+    };
+    try {
+      var uri =
+          Uri.http(Host.Server_hosting, "/api/auth/managestate", paramters);
+
+      var request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = "bearer $token";
+      request.fields['Status'] = status.toString();
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } on Exception catch (_) {
+      return null;
+    }
+  }
+
+  Future<List<UserDetail>> getInfoOfUser({String phone}) async {
+    var pref = await SharedPreferences.getInstance();
+    var token = pref.getString("token");
+    var myphone = pref.getString("phone");
+    Map<String, String> headers = {"Authorization": "bearer $token"};
+    Map<String, String> paramters = {
+      "phone": phone.toString(),
+    };
+    try {
+      var response = await http.get(
+        Uri.http(Host.Server_hosting, "/api/users/getinfo", paramters),
+        headers: headers,
+      );
+      var jsons = json.decode(response.body);
+      if (response.statusCode == 200) {
+        var body = jsons['data'] as List;
+        if (body != null)
+          return body.map((dynamic json) {
+            return UserDetail(
+              fullname: json["Fullname"] as String,
+              phone: json["Phone"] as String,
+              status: myphone == json["Phone"] as String
+                  ? -1
+                  : json["Status"] as int,
+              sex: json["Sex"] as int == 1
+                  ? Sex.male
+                  : json["Sex"] as int == 2
+                      ? Sex.female
+                      : json["Sex"] as int == 3
+                          ? Sex.orther
+                          : Sex.empty,
+              email: json["Email"] as String,
+              address: json["Address"] as String,
+              imageUrl: json["ImageUrl"] != null
+                  ? json["ImageUrl"].toString().length > 0
+                      ? Uri.http(Host.Server_hosting, json["ImageUrl"])
+                          .toString()
+                      : null
+                  : null,
+              isCustomer: json["isCustomer"] as bool
+                  ? UserType.customer
+                  : UserType.worker,
+              role: json["Role"] as int,
+            );
+          }).toList();
+      }
+      return null;
+    } on Exception catch (e) {
+      print(e);
       return null;
     }
   }

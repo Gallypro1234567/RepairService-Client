@@ -37,44 +37,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is HomeFetched) {
-      yield await _mapFetchedToState(state);
+      yield* _mapFetchedToState(state, event);
     } else if (event is HomeRefesh) {
       yield* _mapRefeshedToState(state);
-    }
-  }
-
-  Future<HomeState> _mapFetchedToState(HomeState state) async {
-    if (state.hasReachedMax) return state;
-
-    try {
-      if (state.status == HomeStatus.initial) {
-        final userRole = await _homeRepository.getRole();
-        final services = await _homeRepository.fetchService();
-        final postRecently =
-            await _postRepository.fetchRecentlyPost(start: 0, length: 5);
-        return state.copyWith(
-          status: HomeStatus.success,
-          services: services,
-          role: userRole.role,
-          isCustomer: userRole.isCustomer,
-          pagestatus: PageStatus.initial,
-          hasReachedMax: postRecently.length < 5 ? true : false,
-          postRecently: postRecently,
-        );
-      } else {
-        final postRecently = await _postRepository.fetchRecentlyPost(
-            start: state.postRecently.length, length: 5);
-        return postRecently.isEmpty
-            ? state.copyWith(hasReachedMax: true)
-            : state.copyWith(
-                status: HomeStatus.success,
-                pagestatus: PageStatus.navigationPage,
-                hasReachedMax: false,
-                postRecently: List.of(state.postRecently)..addAll(postRecently),
-              );
-      }
-    } on Exception catch (e) {
-      return state.copyWith(status: HomeStatus.failure, message: e.toString());
     }
   }
 
@@ -93,6 +58,44 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           role: userRole.role,
           hasReachedMax: postRecently.length < 5 ? true : false,
           postRecently: postRecently);
+    } on Exception catch (e) {
+      yield state.copyWith(status: HomeStatus.failure, message: e.toString());
+    }
+  }
+
+  Stream<HomeState> _mapFetchedToState(
+      HomeState state, HomeFetched event) async* {
+    if (state.hasReachedMax) yield state;
+    yield state.copyWith(
+      status: HomeStatus.loading,
+    );
+    try {
+      if (state.status == HomeStatus.initial) {
+        final userRole = await _homeRepository.getRole();
+        final services = await _homeRepository.fetchService();
+        final postRecently =
+            await _postRepository.fetchRecentlyPost(start: 0, length: 5);
+        yield state.copyWith(
+          status: HomeStatus.success,
+          services: services,
+          role: userRole.role,
+          isCustomer: userRole.isCustomer,
+          pagestatus: PageStatus.initial,
+          hasReachedMax: postRecently.length < 5 ? true : false,
+          postRecently: postRecently,
+        );
+      } else {
+        final postRecently = await _postRepository.fetchRecentlyPost(
+            start: state.postRecently.length, length: 5);
+        yield postRecently.isEmpty
+            ? state.copyWith(hasReachedMax: true)
+            : state.copyWith(
+                status: HomeStatus.success,
+                pagestatus: PageStatus.navigationPage,
+                hasReachedMax: false,
+                postRecently: List.of(state.postRecently)..addAll(postRecently),
+              );
+      }
     } on Exception catch (e) {
       yield state.copyWith(status: HomeStatus.failure, message: e.toString());
     }

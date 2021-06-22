@@ -13,6 +13,7 @@ import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/manager/models/event_model.dart';
 import 'package:repairservice/modules/manager/screens/customer_approval_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -40,7 +41,9 @@ class _ManagerPageState extends State<ManagerPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
             return TitleText(
@@ -87,6 +90,9 @@ class PostOfCustomer extends StatelessWidget {
             labelColor: LightColor.lightBlue,
             unselectedLabelColor: Colors.grey,
             labelPadding: EdgeInsets.zero,
+            onTap: (value) {
+         
+            },
             tabs: [
               Tab(
                 child: RichText(

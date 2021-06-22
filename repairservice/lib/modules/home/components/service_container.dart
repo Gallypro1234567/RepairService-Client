@@ -18,42 +18,44 @@ class ServiceContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-            SizedBox(
-              child: CircleAvatar(
-                backgroundColor: imageUrl != null ? Colors.transparent : null,
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                        // colorFilter: ColorFilter.mode(
-                        //     Colors.red, BlendMode.colorBurn)
+        Container(
+          alignment: Alignment.center,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: kDefaultPadding / 2,
+              ),
+              SizedBox(
+                child: CircleAvatar(
+                  backgroundColor: imageUrl != null ? Colors.transparent : null,
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
+                    placeholder: (context, url) => Container(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
-                  placeholder: (context, url) => Container(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),
-            ),
-            SizedBox(
-              height: kDefaultPadding / 2,
-            ),
-            TitleText(
-              text: title,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              textAlign: TextAlign.center,
-            ),
-          ],
+              SizedBox(
+                height: kDefaultPadding / 2,
+              ),
+              TitleText(
+                text: title,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
         BlocBuilder<PostBloc, PostState>(
           builder: (context, state) {

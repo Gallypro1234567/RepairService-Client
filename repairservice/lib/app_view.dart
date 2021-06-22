@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 
@@ -37,6 +38,8 @@ class _AppViewState extends State<AppView> {
         textTheme: GoogleFonts.muliTextTheme(
           Theme.of(context).textTheme,
         ),
+        bottomSheetTheme:
+            BottomSheetThemeData(backgroundColor: Colors.black.withOpacity(0)),
       ),
       //routes: Routes.getRoute(),
       //initialRoute: "/",
@@ -58,7 +61,7 @@ class _AppViewState extends State<AppView> {
                 break;
               case AuthenticationStatus.unknown:
                 _navigator.pushAndRemoveUntil(
-                    SplashPage.route(), (route) => false);
+                    Loading.route(), (route) => false);
                 break;
               default:
                 break;

@@ -48,7 +48,7 @@ class ReviewChart extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TitleText(
-                      text: pointRating.toString().replaceAll('.', ','),
+                      text: pointRating.toStringAsFixed(1).replaceAll('.', ','),
                       fontSize: 60,
                       fontWeight: FontWeight.w500,
                     ),

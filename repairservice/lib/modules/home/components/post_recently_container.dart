@@ -6,6 +6,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 class PostRecentlyContainer extends StatelessWidget {
@@ -22,7 +23,9 @@ class PostRecentlyContainer extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           horizontal: kDefaultPadding / 2,
         ),
-        height: AppTheme.fullHeight(context) * 0.15,
+        height: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * 0.4
+            : AppTheme.fullHeight(context) * 0.15,
         decoration: BoxDecoration(color: Colors.white),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -35,16 +38,11 @@ class PostRecentlyContainer extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  // image: post.imageUrl == null
-                  //     ? DecorationImage(
-                  //         fit: BoxFit.cover,
-                  //         image: AssetImage("assets/images/default.jpg"))
-                  //     : DecorationImage(
-                  //         fit: BoxFit.cover,
-                  //         image: NetworkImage(post.imageUrl))
                 ),
                 child: CachedNetworkImage(
-                  imageUrl: post.imageUrl == null ? "assets/images/default.jpg":  post.imageUrl,
+                  imageUrl: post.imageUrl == null
+                      ? "assets/images/default.jpg"
+                      : post.imageUrl,
                   imageBuilder: (context, imageProvider) => Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -55,7 +53,8 @@ class PostRecentlyContainer extends StatelessWidget {
                       ),
                     ),
                   ),
-                  placeholder: (context, url) => Container(child:  Image.asset("assets/images/loading2.gif")),
+                  placeholder: (context, url) => Container(
+                      child: Image.asset("assets/images/loading2.gif")),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),

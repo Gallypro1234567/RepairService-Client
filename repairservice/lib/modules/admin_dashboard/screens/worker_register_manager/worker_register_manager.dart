@@ -7,6 +7,7 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 
 import 'package:repairservice/modules/post/components/post_form_input.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
@@ -43,10 +44,15 @@ class _WorkerRegisterManagerPageState extends State<WorkerRegisterManagerPage> {
         ),
       ),
       body: BlocBuilder<WorkerregistermanagerBloc, WorkerregistermanagerState>(
+        buildWhen: (previousState, state) {
+          if (previousState.status == WorkerregistermanagerStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.status) {
             case WorkerregistermanagerStatus.loading:
-              return SplashPage();
+              return Loading();
             case WorkerregistermanagerStatus.success:
               var datarows = state.workerregister
                   .map((e) => DataRow(

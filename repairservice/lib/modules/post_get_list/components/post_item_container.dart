@@ -6,6 +6,7 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 class ItemPostContainer extends StatelessWidget {
@@ -24,13 +25,15 @@ class ItemPostContainer extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           horizontal: kDefaultPadding / 2,
         ),
-        height: AppTheme.fullHeight(context) * 0.15,
+        height: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * 0.4
+            : AppTheme.fullHeight(context) * 0.15,
         decoration: BoxDecoration(color: Colors.white),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
-              flex: 2,
+              flex: Responsive.isTablet(context) ? 1 : 2,
               child: Container(
                 margin: EdgeInsets.all(
                   kDefaultPadding / 4,
@@ -117,3 +120,4 @@ class ItemPostContainer extends StatelessWidget {
     );
   }
 }
+ 

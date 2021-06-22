@@ -8,6 +8,7 @@ import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 import '../../../utils/ui/extensions.dart';
@@ -21,6 +22,9 @@ class WorkerSelectAddressPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         backgroundColor: LightColor.lightGrey,
         centerTitle: true,
         title: Text("Chọn danh mục"),
@@ -69,7 +73,7 @@ class ServiceGridview extends StatelessWidget {
           shrinkWrap: true,
           itemCount: state.services.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+            crossAxisCount: Responsive.isTablet(context) ? 3 : 2,
             crossAxisSpacing: 5.0,
             mainAxisSpacing: 6,
           ),

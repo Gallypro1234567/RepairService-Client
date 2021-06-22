@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
@@ -9,14 +11,14 @@ class CommentsContainer extends StatelessWidget {
   final String createAt;
   final String description;
   final double pointRating;
-  final ImageProvider<Object> image;
+  final String imageUrl;
   const CommentsContainer({
     Key key,
     this.fullName,
     this.createAt,
     this.description,
     this.pointRating,
-    this.image,
+    this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -25,11 +27,30 @@ class CommentsContainer extends StatelessWidget {
       children: [
         Row(
           children: [
-            CircleAvatar(
-              backgroundImage: image,
-            ),
+            imageUrl.isNotEmpty
+                ? CircleAvatar(
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                            // colorFilter: ColorFilter.mode(
+                            //     Colors.red, BlendMode.colorBurn),
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  )
+                : CircleAvatar(
+                    backgroundImage:
+                        AssetImage("assets/images/user_profile_background.jpg"),
+                  ),
             SizedBox(
-              width: kDefaultPadding,
+              width: kDefaultPadding / 2,
             ),
             Expanded(
               child: TitleText(

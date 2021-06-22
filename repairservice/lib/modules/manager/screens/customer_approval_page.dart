@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
@@ -11,10 +10,12 @@ import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
 
@@ -49,10 +50,15 @@ class _CustomerApprovalPageState extends State<CustomerApprovalPage> {
             context.read<ManagerBloc>().add(ManagerFetched());
           },
           child: BlocBuilder<ManagerBloc, ManagerState>(
+            buildWhen: (previousState, state) {
+              if (previousState.pageStatus == PageStatus.loading)
+                Navigator.pop(context, true);
+              return true;
+            },
             builder: (context, state) {
               switch (state.pageStatus) {
                 case PageStatus.loading:
-                  return SplashPage();
+                  return Loading();
                 case PageStatus.none:
                   context.read<ManagerBloc>().add(ManagerFetched());
                   return SplashPage();
@@ -136,13 +142,15 @@ class ApprovalPostContainer extends StatelessWidget {
             padding: EdgeInsets.symmetric(
               horizontal: kDefaultPadding / 2,
             ),
-            height: AppTheme.fullHeight(context) * 0.15,
+            height: Responsive.isTablet(context)
+                ? AppTheme.fullHeight(context) * .4
+                : AppTheme.fullHeight(context) * 0.15,
             decoration: BoxDecoration(color: Colors.white),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Container(
                       // decoration: BoxDecoration(
                       //     image: DecorationImage(

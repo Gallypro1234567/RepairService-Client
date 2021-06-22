@@ -112,16 +112,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   _mapPostTitleChangedToState(PostTitleChanged event, PostState state) {
     final value = Title.dirty(event.value);
     return state.copyWith(
-        title: value,
-        formzstatus: Formz.validate([value, state.description, state.address]));
+        title: value, formzstatus: Formz.validate([value, state.description]));
   }
 
   _mapPostDescriptionChangedToState(
       PostDescriptionChanged event, PostState state) {
     final value = Description.dirty(event.value);
     return state.copyWith(
-        description: value,
-        formzstatus: Formz.validate([value, state.title, state.address]));
+        description: value, formzstatus: Formz.validate([value, state.title]));
   }
 
   Stream<PostState> _mapPostAddImageMutiChangedToState(

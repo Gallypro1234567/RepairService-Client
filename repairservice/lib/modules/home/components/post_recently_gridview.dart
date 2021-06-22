@@ -2,17 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
+import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
-import 'package:repairservice/modules/post_detail/post_detail_page.dart'; 
-import 'package:repairservice/modules/splash/splash_page.dart'; 
+import 'package:repairservice/modules/post_detail/post_detail_page.dart';
+import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
-import 'package:repairservice/utils/ui/animations/slide_fade_route.dart'; 
+import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
 import 'post_recently_container.dart';
+
 class PostRecently extends StatelessWidget {
   const PostRecently({
     Key key,
@@ -39,10 +42,16 @@ class PostRecently extends StatelessWidget {
                 return index >= state.postRecently.length &&
                         state.hasReachedMax == false
                     ? Center(
-                        child: SizedBox(
-                          height: 24,
-                          width: 24,
-                          child: CircularProgressIndicator(strokeWidth: 1.5),
+                        child: Container(
+                          height: Responsive.isTablet(context)
+                              ? AppTheme.fullHeight(context) * .3
+                              : AppTheme.fullHeight(context) * .1,
+                          width: AppTheme.fullWidth(context),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              image: DecorationImage(
+                                  image:
+                                      AssetImage("assets/images/loading.gif"))),
                         ),
                       )
                     : BlocBuilder<AuthenticationBloc, AuthenticationState>(
@@ -80,7 +89,11 @@ class PostRecenttlyGridview extends StatelessWidget {
   final int length;
   final Function(BuildContext, int) itemBuilder;
   const PostRecenttlyGridview(
-      {Key key, this.posts, this.scrollController, this.length, this.itemBuilder})
+      {Key key,
+      this.posts,
+      this.scrollController,
+      this.length,
+      this.itemBuilder})
       : super(key: key);
 
   @override

@@ -74,72 +74,72 @@ class FormBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TitleText(
-              text: "Chụp ảnh CMND (trước)",
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-            SizedBox(
-              height: kDefaultPadding,
-            ),
-            BlocBuilder<WorkerregisterworkBloc, WorkerregisterworkState>(
-              builder: (context, state) {
-                if (!state.imageAfterInvalid) {
-                  return SelectImage(
-                    onPressedCancel: () {
-                      context
-                          .read<WorkerregisterworkBloc>()
-                          .add(WorkerregisterworkAfterDeleteImage());
-                    },
-                    child: Container(
-                        width: AppTheme.fullWidth(context),
-                        child: Image(
-                            fit: BoxFit.cover,
-                            image: FileImage(
-                              state.imageCMNDAfter,
-                            ))),
-                  );
-                }
-                return DottedBorderCamara().ripple(() {
-                  context.read<WorkerregisterworkBloc>().add(
-                      WorkerregisterworkImageAfterChanged(ImageSource.camera));
-                });
-              },
-            ),
-            SizedBox(
-              height: kDefaultPadding * 2,
-            ),
-            TitleText(
-              text: "Chụp ảnh CMND (sau)",
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-            SizedBox(
-              height: kDefaultPadding,
-            ),
-            BlocBuilder<WorkerregisterworkBloc, WorkerregisterworkState>(
-              builder: (context, state) {
-                if (!state.imageBeforeInvalid) {
-                  return SelectImage(
-                    onPressedCancel: () {
-                      context
-                          .read<WorkerregisterworkBloc>()
-                          .add(WorkerregisterworkBeforeDeleteImage());
-                    },
-                    child: Container(
-                        child: Image(
-                            fit: BoxFit.cover,
-                            image: FileImage(
-                              state.imageCMNDBefore,
-                            ))),
-                  );
-                }
-                return DottedBorderCamara().ripple(() {
-                  context.read<WorkerregisterworkBloc>().add(
-                      WorkerregisterworkImageBeforeChanged(ImageSource.camera));
-                });
-              },
-            ),
+            // TitleText(
+            //   text: "Chụp ảnh CMND (trước)",
+            //   fontSize: 16,
+            //   fontWeight: FontWeight.w500,
+            // ),
+            // SizedBox(
+            //   height: kDefaultPadding,
+            // ),
+            // BlocBuilder<WorkerregisterworkBloc, WorkerregisterworkState>(
+            //   builder: (context, state) {
+            //     if (!state.imageAfterInvalid) {
+            //       return SelectImage(
+            //         onPressedCancel: () {
+            //           context
+            //               .read<WorkerregisterworkBloc>()
+            //               .add(WorkerregisterworkAfterDeleteImage());
+            //         },
+            //         child: Container(
+            //             width: AppTheme.fullWidth(context),
+            //             child: Image(
+            //                 fit: BoxFit.cover,
+            //                 image: FileImage(
+            //                   state.imageCMNDAfter,
+            //                 ))),
+            //       );
+            //     }
+            //     return DottedBorderCamara().ripple(() {
+            //       context.read<WorkerregisterworkBloc>().add(
+            //           WorkerregisterworkImageAfterChanged(ImageSource.camera));
+            //     });
+            //   },
+            // ),
+            // SizedBox(
+            //   height: kDefaultPadding * 2,
+            // ),
+            // TitleText(
+            //   text: "Chụp ảnh CMND (sau)",
+            //   fontSize: 16,
+            //   fontWeight: FontWeight.w500,
+            // ),
+            // SizedBox(
+            //   height: kDefaultPadding,
+            // ),
+            // BlocBuilder<WorkerregisterworkBloc, WorkerregisterworkState>(
+            //   builder: (context, state) {
+            //     if (!state.imageBeforeInvalid) {
+            //       return SelectImage(
+            //         onPressedCancel: () {
+            //           context
+            //               .read<WorkerregisterworkBloc>()
+            //               .add(WorkerregisterworkBeforeDeleteImage());
+            //         },
+            //         child: Container(
+            //             child: Image(
+            //                 fit: BoxFit.cover,
+            //                 image: FileImage(
+            //                   state.imageCMNDBefore,
+            //                 ))),
+            //       );
+            //     }
+            //     return DottedBorderCamara().ripple(() {
+            //       context.read<WorkerregisterworkBloc>().add(
+            //           WorkerregisterworkImageBeforeChanged(ImageSource.camera));
+            //     });
+            //   },
+            // ),
             SizedBox(
               height: kDefaultPadding * 2,
             ),

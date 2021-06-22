@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
-import 'package:repairservice/config/themes/theme_config.dart'; 
+import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/search/bloc/search_bloc.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
 
@@ -14,6 +16,9 @@ class SelectDistrictPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Chọn quận, huyện, thị xã",
           fontSize: 16,
@@ -28,10 +33,15 @@ class SelectDistrictPage extends StatelessWidget {
             icon: Icon(Icons.arrow_back)),
       ),
       body: BlocBuilder<SearchBloc, SearchState>(
+        buildWhen: (previousState, state) {
+          if (previousState.postGetPositionStatus == SearchPositionStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.postGetPositionStatus) {
             case SearchPositionStatus.loading:
-              return SplashPage();
+              return Loading();
               break;
             case SearchPositionStatus.failure:
               return SplashPage();
@@ -49,9 +59,7 @@ class SelectDistrictPage extends StatelessWidget {
                       context.read<SearchBloc>().add(
                           SearchDistrictSelectChanged(
                               districtId: -1, districtText: ""));
-                      context
-                          .read<SearchBloc>()
-                          .add(SearchFetched(code: state.serviceCode));
+                      context.read<SearchBloc>().add(SearchFetched());
                       int count = 0;
                       Navigator.popUntil(context, (route) {
                         return count++ == 2;
@@ -69,9 +77,7 @@ class SelectDistrictPage extends StatelessWidget {
                               SearchDistrictSelectChanged(
                                   districtText: state.distrists[index].title,
                                   districtId: state.distrists[index].id));
-                          context
-                              .read<SearchBloc>()
-                              .add(SearchFetched(code: state.serviceCode));
+                          context.read<SearchBloc>().add(SearchFetched());
                           int count = 0;
                           Navigator.popUntil(context, (route) {
                             return count++ == 2;
@@ -108,7 +114,9 @@ class SelectRadioContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-      height: AppTheme.fullHeight(context) * 0.05,
+      height: Responsive.isTablet(context)
+          ? AppTheme.fullHeight(context) * .1
+          : AppTheme.fullHeight(context) * 0.05,
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 0.5, color: Colors.grey)),
       ),

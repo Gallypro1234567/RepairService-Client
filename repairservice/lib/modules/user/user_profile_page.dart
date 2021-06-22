@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
@@ -13,12 +14,14 @@ import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
 import 'package:repairservice/modules/post_rating/post_rating.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/user_profile/bloc/userprofile_bloc.dart';
 import 'package:repairservice/modules/user_profile/user_profile_update_page.dart';
 import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
 import 'package:repairservice/modules/worker_history_work/user_history_work_screen.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../utils/ui/extensions.dart';
 import 'bloc/user_bloc.dart';
@@ -39,7 +42,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Thông tin cá nhân",
           fontSize: 22,
@@ -53,10 +58,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
           BlocListener<UserBloc, UserState>(
             listener: (context, state) {},
             child: BlocBuilder<UserBloc, UserState>(
+              buildWhen: (previousState, state) {
+                if (previousState.status == UserStatus.loading)
+                  Navigator.pop(context, true);
+                return true;
+              },
               builder: (context, state) {
                 switch (state.status) {
                   case UserStatus.loading:
-                    return const CircularProgressIndicator();
+                    return Loading();
                   case UserStatus.failure:
                     return Center(
                       child: Text("Error Loading data"),
@@ -137,6 +147,9 @@ class UserWidget extends StatelessWidget {
                     : null,
               ),
               _LogOutSubmitted(),
+              Container(
+                  color: Colors.white,
+                  height: AppTheme.fullHeight(context) * .1)
             ],
           ),
         ),
@@ -332,14 +345,13 @@ class ItemSub extends StatelessWidget {
 }
 
 class Work extends StatelessWidget {
+  final UserState state;
   final Function onPressed;
   const Work({
     Key key,
     @required this.state,
     this.onPressed,
   }) : super(key: key);
-
-  final UserState state;
 
   @override
   Widget build(BuildContext context) {
@@ -375,7 +387,9 @@ class Work extends StatelessWidget {
             itemBuilder: (context, index) {
               if (state.workeRegister[index].isApproval == 1)
                 return Container(
-                  height: AppTheme.fullHeight(context) * .04,
+                  height: Responsive.isTablet(context)
+                      ? AppTheme.fullHeight(context) * .08
+                      : AppTheme.fullHeight(context) * .04,
                   child: Row(
                     children: [
                       Expanded(

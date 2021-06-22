@@ -81,7 +81,7 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
             receiveBy: state.post.phone,
             postCode: state.postCode,
             status: 1,
-            type: 2); 
+            type: 2);
       } else {
         yield state.copyWith(status: PostDetailStatus.failure);
       }
@@ -97,7 +97,6 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
       var response = await _postRepository.adminApprovalPost(
           code: state.postCode, approved: event.approved);
       if (response.statusCode == 200) {
-        yield state.copyWith(status: PostDetailStatus.submitted);
         if (event.approved > 0)
           await _postRepository.sendNotification(
               tilte: "Thông báo hệ thống",
@@ -108,6 +107,7 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
               postCode: state.postCode,
               status: event.approved,
               type: 0);
+        yield state.copyWith(status: PostDetailStatus.submitted);
       } else
         yield state.copyWith(status: PostDetailStatus.failure);
     } on Exception catch (_) {

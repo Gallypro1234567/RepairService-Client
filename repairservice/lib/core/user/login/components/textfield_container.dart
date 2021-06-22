@@ -12,6 +12,7 @@ class TextFieldContainerBloc extends StatelessWidget {
   final String initialValue;
   final TextEditingController controller;
   final Function(String) validator;
+  final Function(String) onFieldSubmitted;
   final bool readOnly;
   final bool invalid;
   final String errorText;
@@ -27,7 +28,7 @@ class TextFieldContainerBloc extends StatelessWidget {
       this.validator,
       this.readOnly = false,
       this.invalid,
-      this.errorText})
+      this.errorText, this.onFieldSubmitted})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -35,6 +36,7 @@ class TextFieldContainerBloc extends StatelessWidget {
       controller: controller,
       validator: validator,
       initialValue: initialValue,
+      onFieldSubmitted: onFieldSubmitted,
       scrollPadding: const EdgeInsets.symmetric(vertical: 0.0),
       keyboardType: keyboard,
       obscureText: isPassword,
@@ -48,7 +50,7 @@ class TextFieldContainerBloc extends StatelessWidget {
         contentPadding: EdgeInsets.only(top: kDefaultPadding / 2),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            borderSide: BorderSide(color: Colors.grey)), 
+            borderSide: BorderSide(color: Colors.grey)),
         prefixIcon: Container(
           margin: EdgeInsets.symmetric(
               vertical: kDefaultPadding / 2, horizontal: kDefaultPadding / 4),

@@ -104,7 +104,7 @@ class PostRepository {
       {String serviceCode,
       String cityId,
       String districtId,
-      String search,
+      String search = "",
       int start = 0,
       int lenght = 10,
       int status = -2,

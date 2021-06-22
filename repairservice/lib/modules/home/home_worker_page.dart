@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,14 +7,15 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/main_screen.dart';
-import 'package:repairservice/modules/notification/notification_pages.dart';
-import 'package:repairservice/modules/notification/notification_customer_page.dart';
+
 import 'package:repairservice/modules/post_get_list/components/post_search_container.dart';
 import 'package:repairservice/modules/search/search_page.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/modules/user/user_profile_page.dart';
-import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
+
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:shimmer/shimmer.dart';
 import 'components/avatar_container.dart';
@@ -44,7 +45,9 @@ class _HomeWorkerState extends State<HomeWorkerPage> {
     Size _size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
@@ -129,33 +132,18 @@ class _HomeWorkerState extends State<HomeWorkerPage> {
         elevation: 0,
       ),
       body: BlocBuilder<HomeBloc, HomeState>(
+        buildWhen: (previousState, state) {
+          if (previousState.status == HomeStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.status) {
             case HomeStatus.failure:
               return const Center(child: Text("state.message"));
             case HomeStatus.loading:
-              return Center(
-                child: SizedBox(
-                  width: 200.0,
-                  height: 100.0,
-                  child: Shimmer.fromColors(
-                    baseColor: Colors.red,
-                    highlightColor: Colors.yellow,
-                    child: Text(
-                      'Loading',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 40.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              );
+              return Loading();
             default:
-              if (state.services.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              }
               return _refreshIndicator(_size, context, state);
           }
         },

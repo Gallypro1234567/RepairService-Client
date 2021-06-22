@@ -5,6 +5,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/repository/post_repository/models/post_apply.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -32,7 +33,9 @@ class PostApplyContainer extends StatelessWidget {
       padding: EdgeInsets.symmetric(
         horizontal: kDefaultPadding / 2,
       ),
-      height: AppTheme.fullHeight(context) * 0.15,
+      height: Responsive.isTablet(context)
+          ? AppTheme.fullHeight(context) * .4
+          : AppTheme.fullHeight(context) * 0.15,
       foregroundDecoration: RotatedCornerDecoration(
         color: status != 1
             ? status != 2
@@ -81,23 +84,13 @@ class PostApplyContainer extends StatelessWidget {
             margin: EdgeInsets.all(
               kDefaultPadding / 4,
             ),
-            // decoration: BoxDecoration(
-            //     shape: BoxShape.circle,
-            //     image: DecorationImage(
-            //         fit: BoxFit.cover,
-            //         image: postApply.imageUrl != null
-            //             ? postApply.imageUrl.isNotEmpty
-            //                 ? NetworkImage(postApply.imageUrl)
-            //                 : AssetImage(
-            //                     "assets/images/user_profile_background.jpg")
-            //             : AssetImage(
-            //                 "assets/images/user_profile_background.jpg"))),
             child: postApply.imageUrl == null
                 ? Image.asset("assets/images/user_profile_background.jpg")
                 : CachedNetworkImage(
                     imageUrl: postApply.imageUrl,
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                         image: DecorationImage(
                           image: imageProvider,
                           fit: BoxFit.cover,
@@ -235,7 +228,9 @@ class PostApplyDisableContainer extends StatelessWidget {
       padding: EdgeInsets.symmetric(
         horizontal: kDefaultPadding / 2,
       ),
-      height: AppTheme.fullHeight(context) * 0.15,
+      height: Responsive.isTablet(context)
+          ? AppTheme.fullHeight(context) * .4
+          : AppTheme.fullHeight(context) * 0.15,
       foregroundDecoration: const RotatedCornerDecoration(
         color: Colors.red,
         geometry: const BadgeGeometry(width: 64, height: 64),
@@ -251,22 +246,27 @@ class PostApplyDisableContainer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
-              height: 120,
-              width: 120,
-              margin: EdgeInsets.all(
-                kDefaultPadding / 4,
-              ),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: postApply.imageUrl != null
-                          ? postApply.imageUrl.isNotEmpty
-                              ? NetworkImage(postApply.imageUrl)
-                              : AssetImage(
-                                  "assets/images/user_profile_background.jpg")
-                          : AssetImage(
-                              "assets/images/user_profile_background.jpg")))),
+            height: 120,
+            width: 120,
+            margin: EdgeInsets.all(
+              kDefaultPadding / 4,
+            ),
+            child: postApply.imageUrl == null
+                ? Image.asset("assets/images/user_profile_background.jpg")
+                : CachedNetworkImage(
+                    imageUrl: postApply.imageUrl,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+          ),
           SizedBox(
             width: kDefaultPadding / 2,
           ),

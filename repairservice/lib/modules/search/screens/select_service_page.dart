@@ -1,19 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; 
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/modules/post_get_list/bloc/postgetlist_bloc.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
-import 'package:repairservice/modules/splash/splash_page.dart';
-import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/search/bloc/search_bloc.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';
-import 'select_district_page.dart';
 
-class SelectCityPage extends StatelessWidget {
+class SelectServicePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +19,7 @@ class SelectCityPage extends StatelessWidget {
             ? AppTheme.fullHeight(context) * .1
             : AppTheme.fullHeight(context) * .06,
         title: TitleText(
-          text: "Chọn tỉnh, thành phố",
+          text: "Chọn dịch vụ",
           fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
@@ -34,65 +31,37 @@ class SelectCityPage extends StatelessWidget {
             },
             icon: Icon(Icons.arrow_back)),
       ),
-      body: BlocBuilder<PostgetlistBloc, PostgetlistState>(
-        buildWhen: (previousState, state) {
-          if (previousState.postGetPositionStatus ==
-              PostGetPositionStatus.loading) Navigator.pop(context, true);
-          return true;
-        },
-        builder: (context, state) {
-          switch (state.postGetPositionStatus) {
-            case PostGetPositionStatus.loading:
-              return Loading();
-              break;
-            case PostGetPositionStatus.failure:
-              return SplashPage();
-
-              break;
-            default:
-              return SingleChildScrollView(
+      body: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) => SingleChildScrollView(
                 child: Column(
                   children: [
                     SelectContainer(
-                      title: "Toàn quốc",
+                      title: "Tất cả",
                     ).ripple(() {
-                      context.read<PostgetlistBloc>().add(
-                          PostgetlistCitySelectChanged(
-                              cityId: -1, cityTitle: "Toàn quốc"));
-                      context.read<PostgetlistBloc>().add(
-                          PostgetlistDistrictSelectChanged(
-                              districtId: -1, districtText: ""));
-                      context
-                          .read<PostgetlistBloc>()
-                          .add(PostgetlistFetched(code: state.serviceCode));
+                      context.read<SearchBloc>().add(SearchServiceChanged(
+                          serviceCode: "", serviceText: "Tất cả"));
+                      context.read<SearchBloc>().add(SearchFetched());
                       Navigator.pop(context);
                     }),
                     ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: state.cities.length,
+                      itemCount: state.services.length,
                       itemBuilder: (context, index) {
                         return SelectContainer(
-                          title: state.cities[index].title,
+                          title: state.services[index].name,
                         ).ripple(() {
-                          context.read<PostgetlistBloc>().add(
-                              PostgetlistCitySelectChanged(
-                                  cityTitle: state.cities[index].title,
-                                  cityId: state.cities[index].id));
-                          context.read<PostgetlistBloc>().add(
-                              PostgetlistDistrictFetched(
-                                  state.cities[index].id));
-                          Navigator.push(context,
-                              SlideFadeRoute(page: SelectDistrictPage()));
+                          context.read<SearchBloc>().add(SearchServiceChanged(
+                              serviceText: state.services[index].name,
+                              serviceCode: state.services[index].code));
+                          context.read<SearchBloc>().add(SearchFetched());
+                          Navigator.pop(context);
                         });
                       },
                     ),
                   ],
                 ),
-              );
-          }
-        },
-      ),
+              )),
     );
   }
 }

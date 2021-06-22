@@ -9,12 +9,12 @@ class SearchEvent extends Equatable {
 
 class SearchInitial extends SearchEvent {}
 
-class SearchFetched extends SearchEvent {
-  final String code;
-  final int cityId;
-  final int districtId;
-  final String search;
-  SearchFetched({this.code, this.cityId, this.districtId, this.search});
+class SearchFetched extends SearchEvent {}
+
+class SearchChange extends SearchEvent {
+  final String searhString;
+
+  SearchChange({this.searhString});
 }
 
 class SearchCityFetched extends SearchEvent {}
@@ -40,4 +40,13 @@ class SearchWardFetched extends SearchEvent {
   final int districtId;
   final int provinceId;
   SearchWardFetched({this.districtId, this.provinceId});
+}
+
+class SearchServiceChanged extends SearchEvent {
+  final String serviceCode;
+  final String serviceText;
+  SearchServiceChanged({
+    this.serviceCode,
+    this.serviceText,
+  });
 }

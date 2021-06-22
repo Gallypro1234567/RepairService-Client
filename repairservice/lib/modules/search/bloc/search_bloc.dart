@@ -33,6 +33,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     else if (event is SearchDistrictSelectChanged)
       yield state.copyWith(
           districtQuery: event.districtText, districtId: event.districtId);
+    else if (event is SearchServiceChanged)
+      yield state.copyWith(
+          serviceCode: event.serviceCode, serviceText: event.serviceText);
+    else if (event is SearchChange)
+      yield state.copyWith(searchString: event.searhString);
   }
 
   Stream<SearchState> _mapPostFetched(
@@ -42,16 +47,17 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     yield state.copyWith(pageStatus: SearchStatus.loading);
     try {
       var datas = await _postRepository.fetchPost(
-          search: event.search,
-          serviceCode: event.code,
+          search: state.searchString,
+          serviceCode: state.serviceCode,
           cityId: state.cityId.toString(),
           districtId: state.districtId.toString());
 
       yield state.copyWith(
-          pageStatus: SearchStatus.loadSuccess,
-          posts: datas,
-          searchString: event.search,
-          serviceCode: event.code);
+        pageStatus: SearchStatus.loadSuccess,
+        posts: datas,
+        
+
+      );
     } on Exception catch (_) {
       yield state.copyWith(pageStatus: SearchStatus.failure);
     }

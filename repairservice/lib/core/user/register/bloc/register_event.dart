@@ -26,7 +26,11 @@ class RegisterPasswordChanged extends RegisterEvent {
 
   const RegisterPasswordChanged(this.value);
 }
+class RegisterPasswordChecked extends RegisterEvent {
+  final String value;
 
+  const RegisterPasswordChecked(this.value);
+}
 class RegisterRadioCustomerChanged extends RegisterEvent {
   final UserType value;
 
@@ -34,8 +38,7 @@ class RegisterRadioCustomerChanged extends RegisterEvent {
 }
 
 class RegisterVerifyPasswordChanged extends RegisterEvent {
-  final String value;
-
+  final String value; 
   const RegisterVerifyPasswordChanged(this.value);
 }
 

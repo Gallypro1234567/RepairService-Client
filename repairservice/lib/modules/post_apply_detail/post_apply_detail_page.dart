@@ -13,6 +13,7 @@ import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/components/post_detail_button.dart';
 import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
 import 'package:repairservice/modules/post_rating/post_rating.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/post_apply.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
@@ -64,10 +65,15 @@ class _PostApplyWorkerDetailPageState extends State<PostApplyWorkerDetailPage> {
           }
         },
         child: BlocBuilder<PostapplydetailBloc, PostapplydetailState>(
+          buildWhen: (previousState, state) {
+            if (previousState.status == ApplyDetailStatus.loading)
+              Navigator.pop(context, true);
+            return true;
+          },
           builder: (context, state) {
             switch (state.status) {
               case ApplyDetailStatus.loading:
-                return SplashPage();
+                return Loading();
                 break;
               case ApplyDetailStatus.success:
                 return PostApplyDetailContainer(

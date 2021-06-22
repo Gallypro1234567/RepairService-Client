@@ -13,11 +13,13 @@ import 'package:repairservice/modules/post_get_list/components/post_search_conta
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 import 'package:repairservice/modules/post_get_list/screens/select_city_page.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 import 'bloc/postgetlist_bloc.dart';
@@ -39,7 +41,9 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
     return Scaffold(
       backgroundColor: LightColor.lightGrey,
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         backgroundColor: LightColor.lightteal,
         leadingWidth: 30,
         leading: IconButton(
@@ -47,30 +51,37 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
               Navigator.pop(context);
             },
             icon: Icon(Icons.arrow_back)),
-        title: SearchContainer(),
+        title: BlocBuilder<PostgetlistBloc, PostgetlistState>(
+          builder: (context, state) {
+            return SearchContainer(
+              onChanged: (val) {
+                context.read<PostgetlistBloc>().add(PostgetlistFetched(
+                    searchText: val,
+                    cityId: state.cityId,
+                    districtId: state.districtId,
+                    code: state.serviceCode));
+              },
+            );
+          },
+        ),
         bottomOpacity: 0.0,
         elevation: 0.0,
       ),
       body: BlocBuilder<PostgetlistBloc, PostgetlistState>(
+        buildWhen: (previousState, state) {
+          if (previousState.pageStatus == PostGetStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.pageStatus) {
             case PostGetStatus.loading:
-              return SplashPage();
+              return Loading();
             case PostGetStatus.failure:
               return Center(
                 child: Text("Error"),
               );
-            // case PostGetStatus.sbumitSuccess:
-            //   return RefreshIndicator(
-            //       onRefresh: () async {
-            //         context
-            //             .read<PostgetlistBloc>()
-            //             .add(PostgetlistFetched(code: widget.serviceCode));
-            //       },
-            //       child: ListPostView(
 
-            //         state: state,
-            //       ));
             default:
               return RefreshIndicator(
                   onRefresh: () async {
@@ -123,44 +134,42 @@ class ListPostView extends StatelessWidget {
                 SizedBox(
                   width: kDefaultPadding / 2,
                 ),
-                TitleText(
-                  text: "Khu vực: ",
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                BlocBuilder<PostgetlistBloc, PostgetlistState>(
-                  builder: (context, state) {
-                    return TitleText(
-                      text: state.districtQuery.length == 0
-                          ? "${state.cityQuery}"
-                          : "${state.districtQuery}, ${state.cityQuery} ",
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    );
-                  },
-                ),
-                Icon(FontAwesome.caret_down, size: 20, color: Colors.black),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: kDefaultPadding / 4,
+                      vertical: kDefaultPadding / 4),
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Row(
+                    children: [
+                      TitleText(
+                        text: "Khu vực: ",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      BlocBuilder<PostgetlistBloc, PostgetlistState>(
+                        builder: (context, state) {
+                          return TitleText(
+                            text: state.districtQuery.length == 0
+                                ? "${state.cityQuery}"
+                                : "${state.districtQuery}, ${state.cityQuery} ",
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          );
+                        },
+                      ),
+                      Icon(FontAwesome.caret_down,
+                          size: 20, color: Colors.black),
+                    ],
+                  ),
+                ).ripple(onSelect),
                 Expanded(
                   child: Container(),
                 ),
-                RichText(
-                    text: TextSpan(
-                        text: "Danh mục: ",
-                        style: GoogleFonts.muli(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black),
-                        children: [
-                      TextSpan(
-                          text: titleCategory,
-                          style: GoogleFonts.muli(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black))
-                    ])),
               ],
             ),
-          ).ripple(onSelect),
+          ),
           SizedBox(
             height: kDefaultPadding / 6,
           ),
@@ -184,7 +193,7 @@ class ListPostView extends StatelessWidget {
                             context, SlideFadeRoute(page: PostDetailPage()));
                       });
                     },
-                  )),
+                  ))
         ],
       ),
     );

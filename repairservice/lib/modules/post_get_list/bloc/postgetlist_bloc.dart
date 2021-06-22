@@ -44,6 +44,7 @@ class PostgetlistBloc extends Bloc<PostgetlistEvent, PostgetlistState> {
     yield state.copyWith(pageStatus: PostGetStatus.loading);
     try {
       var datas = await _postRepository.fetchPost(
+          search: event.searchText,
           serviceCode: event.code,
           cityId: state.cityId.toString(),
           districtId: state.districtId.toString());
@@ -73,7 +74,8 @@ class PostgetlistBloc extends Bloc<PostgetlistEvent, PostgetlistState> {
           cities: listData,
         );
       } on Exception catch (_) {
-        yield state.copyWith(postGetPositionStatus: PostGetPositionStatus.failure);
+        yield state.copyWith(
+            postGetPositionStatus: PostGetPositionStatus.failure);
       }
     }
   }
@@ -86,9 +88,11 @@ class PostgetlistBloc extends Bloc<PostgetlistEvent, PostgetlistState> {
           provinceId: event.cityId.toString());
 
       yield state.copyWith(
-          postGetPositionStatus: PostGetPositionStatus.success, distrists: listData);
+          postGetPositionStatus: PostGetPositionStatus.success,
+          distrists: listData);
     } on Exception catch (_) {
-      yield state.copyWith(postGetPositionStatus: PostGetPositionStatus.failure);
+      yield state.copyWith(
+          postGetPositionStatus: PostGetPositionStatus.failure);
     }
   }
 
@@ -98,13 +102,14 @@ class PostgetlistBloc extends Bloc<PostgetlistEvent, PostgetlistState> {
     try {
       var listData = await _postRepository.fetchWardbyDisctrictId(
           districtId: event.districtId.toString(),
-          provinceId: event.provinceId.toString()
-          );
+          provinceId: event.provinceId.toString());
 
       yield state.copyWith(
-          postGetPositionStatus: PostGetPositionStatus.success, wards: listData);
+          postGetPositionStatus: PostGetPositionStatus.success,
+          wards: listData);
     } on Exception catch (_) {
-      yield state.copyWith(postGetPositionStatus: PostGetPositionStatus.failure);
+      yield state.copyWith(
+          postGetPositionStatus: PostGetPositionStatus.failure);
     }
   }
 }

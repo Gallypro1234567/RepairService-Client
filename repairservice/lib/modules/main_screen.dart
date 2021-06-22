@@ -111,28 +111,40 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        tablet: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height - 50,
-            child: Column(
-              children: [
-                Expanded(
-                  child: AnimatedSwitcher(
-                    transitionBuilder: (child, animation) {
-                      return FadeTransition(
-                        alwaysIncludeSemantics: true,
-                        opacity: animation,
-                        child: HomePage(),
-                      );
-                    },
-                    duration: Duration(milliseconds: 200),
-                    switchInCurve: Curves.easeInToLinear,
-                    switchOutCurve: Curves.easeOutBack,
-                    child: children[_selectedIndex],
+        tablet: SafeArea(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              SingleChildScrollView(
+                child: Container(
+                  height: MediaQuery.of(context).size.height - 50,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: AnimatedSwitcher(
+                          transitionBuilder: (child, animation) {
+                            return FadeTransition(
+                              alwaysIncludeSemantics: true,
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                          duration: Duration(milliseconds: 200),
+                          switchInCurve: Curves.easeInToLinear,
+                          switchOutCurve: Curves.easeOutBack,
+                          child: children[_selectedIndex],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: CustomBottomNavigationBar(
+                      onIconPresedCallback: onBottomIconPressed)),
+            ],
           ),
         ),
       ),

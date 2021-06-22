@@ -5,6 +5,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 
@@ -59,7 +60,7 @@ class UserProfileView extends StatelessWidget {
           }
         }
         if (state.status == UserProfileStatus.modified) {
-           context.read<UserBloc>().add(UserFetch());
+          context.read<UserBloc>().add(UserFetch());
           context.read<UserProfileBloc>().add(UserProfileInitial());
         }
       },
@@ -73,10 +74,15 @@ class UserProfileView extends StatelessWidget {
             elevation: 0.0,
           ),
           body: BlocBuilder<UserProfileBloc, UserProfileState>(
+            buildWhen: (previousState, state) {
+              if (previousState.status == UserProfileStatus.loading)
+                Navigator.pop(context, true);
+              return true;
+            },
             builder: (context, state) {
               switch (state.status) {
                 case UserProfileStatus.loading:
-                  return SplashPage();
+                  return Loading();
                 case UserProfileStatus.success:
                   return UserProfileBackground(
                     imageUrl: state.imageUrl != null ? state.imageUrl : "",

@@ -9,6 +9,7 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
@@ -43,10 +44,15 @@ class _PostmanagerPageState extends State<PostmanagerPage> {
       body: BlocListener<PostmanagerBloc, PostmanagerState>(
         listener: (context, state) {},
         child: BlocBuilder<PostmanagerBloc, PostmanagerState>(
+           buildWhen: (previousState, state) {
+            if (previousState.status == PostManagerStatus.loading)
+              Navigator.pop(context, true);
+            return true;
+          },
           builder: (context, state) {
             switch (state.status) {
               case PostManagerStatus.loading:
-                return SplashPage();
+                return Loading();
               case PostManagerStatus.failure:
                 return Center(
                   child: Text("Error"),

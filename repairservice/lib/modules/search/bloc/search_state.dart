@@ -14,10 +14,11 @@ class SearchState extends Equatable {
       this.districtQuery = '',
       this.cityId = -1,
       this.districtId = -1,
-      this.serviceCode,
+      this.serviceCode = "",
+      this.serviceText = "Tất cả",
       this.postGetPositionStatus,
       this.searchString = ""});
-  final SearchStatus pageStatus; 
+  final SearchStatus pageStatus;
   final List<Post> posts;
   final List<City> cities;
   final List<District> distrists;
@@ -27,6 +28,7 @@ class SearchState extends Equatable {
   final int cityId;
   final int districtId;
   final String serviceCode;
+  final String serviceText;
   final String searchString;
   final SearchPositionStatus postGetPositionStatus;
   @override
@@ -41,6 +43,8 @@ class SearchState extends Equatable {
         cityId,
         districtId,
         serviceCode,
+        serviceText,
+        searchString,
         postGetPositionStatus
       ];
 
@@ -55,6 +59,7 @@ class SearchState extends Equatable {
       int cityId,
       int districtId,
       String serviceCode,
+      String serviceText,
       SearchPositionStatus postGetPositionStatus,
       String searchString}) {
     return SearchState(
@@ -68,6 +73,7 @@ class SearchState extends Equatable {
         cityId: cityId ?? this.cityId,
         districtId: districtId ?? this.districtId,
         serviceCode: serviceCode ?? this.serviceCode,
+        serviceText: serviceText ?? this.serviceText,
         postGetPositionStatus:
             postGetPositionStatus ?? this.postGetPositionStatus,
         searchString: searchString ?? this.searchString);

@@ -7,8 +7,10 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
 import 'package:repairservice/modules/post_rating/post_rating.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 import '../main_screen.dart';
@@ -19,7 +21,9 @@ class PostDetailPerfectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Thông tin công việc",
           fontSize: 18,
@@ -45,10 +49,14 @@ class PostDetailPerfectPage extends StatelessWidget {
         }
       }, builder: (context, state) {
         return BlocBuilder<PostdetailperfectBloc, PostdetailperfectState>(
-            builder: (context, state) {
+            buildWhen: (previousState, state) {
+          if (previousState.status == PostPerfectStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        }, builder: (context, state) {
           switch (state.status) {
             case PostPerfectStatus.loading:
-              return SplashPage();
+              return Loading();
               break;
             case PostPerfectStatus.failure:
               return Center(
@@ -110,7 +118,9 @@ class PostDetailPerfectPage extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: kDefaultPadding / 2,
                           horizontal: kDefaultPadding / 2),
-                      height: AppTheme.fullHeight(context) * 0.1,
+                      height: Responsive.isTablet(context)
+                          ? AppTheme.fullHeight(context) * .2
+                          : AppTheme.fullHeight(context) * .1,
                       width: AppTheme.fullWidth(context),
                       child: Row(
                         children: [
@@ -147,7 +157,9 @@ class PostDetailPerfectPage extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: kDefaultPadding / 2,
                           horizontal: kDefaultPadding / 2),
-                      height: AppTheme.fullHeight(context) * 0.1,
+                      height: Responsive.isTablet(context)
+                          ? AppTheme.fullHeight(context) * .2
+                          : AppTheme.fullHeight(context) * .1,
                       width: AppTheme.fullWidth(context),
                       child: Row(
                         children: [
@@ -172,7 +184,9 @@ class PostDetailPerfectPage extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: kDefaultPadding / 2,
                           horizontal: kDefaultPadding / 2),
-                      height: AppTheme.fullHeight(context) * 0.1,
+                      height: Responsive.isTablet(context)
+                          ? AppTheme.fullHeight(context) * .2
+                          : AppTheme.fullHeight(context) * 0.1,
                       width: AppTheme.fullWidth(context),
                       child: Row(
                         children: [
@@ -209,7 +223,9 @@ class PostDetailPerfectPage extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: kDefaultPadding / 2,
                           horizontal: kDefaultPadding / 2),
-                      height: AppTheme.fullHeight(context) * 0.1,
+                      height: Responsive.isTablet(context)
+                          ? AppTheme.fullHeight(context) * .2
+                          : AppTheme.fullHeight(context) * 0.1,
                       width: AppTheme.fullWidth(context),
                       child: Row(
                         children: [
@@ -234,7 +250,9 @@ class PostDetailPerfectPage extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: kDefaultPadding / 2,
                           horizontal: kDefaultPadding / 2),
-                      height: AppTheme.fullHeight(context) * 0.1,
+                      height: Responsive.isTablet(context)
+                          ? AppTheme.fullHeight(context) * .2
+                          : AppTheme.fullHeight(context) * 0.1,
                       width: AppTheme.fullWidth(context),
                       child: Row(
                         children: [
@@ -265,7 +283,9 @@ class PostDetailPerfectPage extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: kDefaultPadding / 2,
                           horizontal: kDefaultPadding / 2),
-                      height: AppTheme.fullHeight(context) * 0.1,
+                      height: Responsive.isTablet(context)
+                          ? AppTheme.fullHeight(context) * .2
+                          : AppTheme.fullHeight(context) * .1,
                       width: AppTheme.fullWidth(context),
                       child: Row(
                         children: [
@@ -300,7 +320,9 @@ class PostDetailPerfectPage extends StatelessWidget {
                     padding: EdgeInsets.symmetric(
                         vertical: kDefaultPadding / 2,
                         horizontal: kDefaultPadding / 2),
-                    height: AppTheme.fullHeight(context) * 0.1,
+                    height: Responsive.isTablet(context)
+                        ? AppTheme.fullHeight(context) * .2
+                        : AppTheme.fullHeight(context) * .1,
                     width: AppTheme.fullWidth(context),
                     child: Row(
                       children: [
@@ -347,12 +369,14 @@ class PostInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-            height: AppTheme.fullHeight(context) * 0.05,
+            height: Responsive.isTablet(context)
+                ? AppTheme.fullHeight(context) * .1
+                : AppTheme.fullHeight(context) * .05,
             color: LightColor.lightGrey,
             alignment: Alignment.centerLeft,
             child: TitleText(
@@ -421,7 +445,9 @@ class WorkerInformation extends StatelessWidget {
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-            height: AppTheme.fullHeight(context) * 0.05,
+            height: Responsive.isTablet(context)
+                ? AppTheme.fullHeight(context) * .1
+                : AppTheme.fullHeight(context) * 0.05,
             color: LightColor.lightGrey,
             alignment: Alignment.centerLeft,
             child: TitleText(
@@ -488,7 +514,9 @@ class CustomerInformation extends StatelessWidget {
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
-            height: AppTheme.fullHeight(context) * 0.05,
+            height: Responsive.isTablet(context)
+                ? AppTheme.fullHeight(context) * .1
+                : AppTheme.fullHeight(context) * .05,
             color: LightColor.lightGrey,
             alignment: Alignment.centerLeft,
             child: TitleText(
@@ -528,7 +556,9 @@ class PostDetailPefectContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppTheme.fullHeight(context) * 0.05,
+      height: Responsive.isTablet(context)
+          ? AppTheme.fullHeight(context) * .1
+          : AppTheme.fullHeight(context) * .05,
       padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
       margin: const EdgeInsets.only(
           top: kDefaultPadding / 2, bottom: kDefaultPadding / 2),
@@ -570,7 +600,9 @@ class PostDetailPefectStatusContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppTheme.fullHeight(context) * 0.05,
+      height: Responsive.isTablet(context)
+          ? AppTheme.fullHeight(context) * .1
+          : AppTheme.fullHeight(context) * .05,
       padding: EdgeInsets.symmetric(horizontal: kDefaultPadding / 2),
       margin: const EdgeInsets.only(
           top: kDefaultPadding / 2, bottom: kDefaultPadding / 2),
@@ -628,9 +660,9 @@ class WorkerRegisterButton extends StatelessWidget {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
       key: key,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+        padding: EdgeInsets.symmetric(
+            horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
         child: Container(
-            height: AppTheme.fullHeight(context) * 0.06,
             width: AppTheme.fullWidth(context) * 0.7,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
             alignment: Alignment.center,

@@ -10,6 +10,7 @@ import 'package:repairservice/modules/post_get_list/post_get_list_page.dart';
 
 import 'package:repairservice/repository/home_repository/models/service_model.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 
 import '../../../utils/ui/extensions.dart';
@@ -24,9 +25,13 @@ class ServiceGridview extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(bottom: kDefaultPadding / 4),
       width: AppTheme.fullWidth(context),
-      height: model.length > 6
-          ? AppTheme.fullWidth(context) * .62
-          : AppTheme.fullWidth(context) * .35,
+      height: Responsive.isTablet(context)
+          ? model.length > 6
+              ? AppTheme.fullHeight(context) * .55
+              : AppTheme.fullHeight(context) * .4
+          : model.length > 6
+              ? AppTheme.fullHeight(context) * .35
+              : AppTheme.fullHeight(context) * .2,
       color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -41,15 +46,18 @@ class ServiceGridview extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(
-            height: kDefaultPadding / 4,
-          ),
           Expanded(
             child: GridView(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: model.length > 6 ? 2 : 1,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
+                crossAxisCount: Responsive.isTablet(context)
+                    ? model.length > 12
+                        ? 2
+                        : 1
+                    : model.length > 6
+                        ? 2
+                        : 1,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
               ),
               scrollDirection: Axis.horizontal,
               children: model

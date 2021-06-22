@@ -34,7 +34,9 @@ class ReviewFeedBack extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TitleText(
-                      text: avgPointRating.toString().replaceAll('.', ','),
+                      text: avgPointRating
+                          .toStringAsFixed(1)
+                          .replaceAll('.', ','),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),

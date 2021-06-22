@@ -9,11 +9,13 @@ import 'package:repairservice/modules/admin_dashboard/dashboard_page.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/notification/notification_pages.dart';
 import 'package:repairservice/modules/notification/notification_customer_page.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 
 import 'package:repairservice/modules/user/user_profile_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:shimmer/shimmer.dart';
 import 'components/avatar_container.dart';
@@ -45,7 +47,9 @@ class _HomeAdminState extends State<HomeAdminPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5.0))),
@@ -95,8 +99,8 @@ class _HomeAdminState extends State<HomeAdminPage> {
               ),
               BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {
-                  switch (state.status) { 
-                   case UserStatus.success:
+                  switch (state.status) {
+                    case UserStatus.success:
                       return SizedBox(
                         height: 30,
                         width: 30,
@@ -136,33 +140,18 @@ class _HomeAdminState extends State<HomeAdminPage> {
       ),
       drawer: DashboardPage(),
       body: BlocBuilder<HomeBloc, HomeState>(
+        buildWhen: (previousState, state) {
+          if (previousState.status == HomeStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.status) {
             case HomeStatus.failure:
               return const Center(child: Text("state.message"));
             case HomeStatus.loading:
-              return Center(
-                child: SizedBox(
-                  width: 200.0,
-                  height: 100.0,
-                  child: Shimmer.fromColors(
-                    baseColor: Colors.red,
-                    highlightColor: Colors.yellow,
-                    child: Text(
-                      'Loading',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 40.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              );
+              return Loading();
             default:
-              if (state.services.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              }
               return _refreshIndicator(_size, context, state);
           }
         },
@@ -220,4 +209,3 @@ class _HomeAdminState extends State<HomeAdminPage> {
     return currentScroll >= (maxScroll * 0.9);
   }
 }
-

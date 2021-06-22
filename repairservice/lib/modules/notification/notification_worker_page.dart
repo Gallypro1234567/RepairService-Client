@@ -8,18 +8,19 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/auth/bloc/authentication_bloc.dart';
-import 'package:repairservice/modules/home/home_page.dart';
 import 'package:repairservice/modules/post_apply/bloc/postapply_bloc.dart';
 import 'package:repairservice/modules/post_apply/post_apply_page.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 import 'package:repairservice/modules/post_detail_perfect/bloc/postdetailperfect_bloc.dart';
 import 'package:repairservice/modules/post_detail_perfect/post_detail_perfect_page.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
 import 'package:repairservice/modules/worker_history_work/user_history_work_screen.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:vertical_tabs/vertical_tabs.dart';
 
@@ -42,7 +43,9 @@ class _NotificationWorkerPageState extends State<NotificationWorkerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: AppTheme.fullHeight(context) * .06,
+        toolbarHeight: Responsive.isTablet(context)
+            ? AppTheme.fullHeight(context) * .1
+            : AppTheme.fullHeight(context) * .06,
         title: TitleText(
           text: "Thông báo",
           fontSize: 22,
@@ -55,25 +58,27 @@ class _NotificationWorkerPageState extends State<NotificationWorkerPage> {
       body: BlocBuilder<NotificationBloc, NotificationState>(
         builder: (context, state) {
           return VerticalTabs(
-            tabsWidth: AppTheme.fullWidth(context) * .12,
+            tabsWidth: Responsive.isTablet(context)
+                ? AppTheme.fullWidth(context) * .1
+                : AppTheme.fullWidth(context) * .12,
             backgroundColor: LightColor.lightGrey,
             selectedTabBackgroundColor: Colors.white,
             tabBackgroundColor: LightColor.lightGrey,
             indicatorColor: LightColor.lightteal,
             onSelect: (val) {
-              if (state.checkall != 1)
+              if (state.checkall != 1 && val == 0)
                 context
                     .read<NotificationBloc>()
                     .add(NotificationFetched(val - 1));
-              if (state.checkAdmin != 1)
+              if (state.checkAdmin != 1 && val == 1)
                 context
                     .read<NotificationBloc>()
                     .add(NotificationFetched(val - 1));
-              if (state.checkperson != 1)
+              if (state.checkperson != 1 && val == 2)
                 context
                     .read<NotificationBloc>()
                     .add(NotificationFetched(val - 1));
-              if (state.checkApply != 1)
+              if (state.checkApply != 1 && val == 3)
                 context
                     .read<NotificationBloc>()
                     .add(NotificationFetched(val - 1));
@@ -217,16 +222,19 @@ class TabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<NotificationBloc, NotificationState>(
       listener: (context, state) {
-        if (state.status == NotificationStatus.none)
-          context.read<NotificationBloc>().add(NotificationFetched(type));
         if (state.status == NotificationStatus.submittedSuccess)
           context.read<NotificationBloc>().add(NotificationRefeshed(type));
       },
       child: BlocBuilder<NotificationBloc, NotificationState>(
+        buildWhen: (previousState, state) {
+          if (previousState.status == NotificationStatus.loading)
+            Navigator.pop(context, true);
+          return true;
+        },
         builder: (context, state) {
           switch (state.status) {
             case NotificationStatus.loading:
-              return SplashPage();
+              return Loading();
               break;
             case NotificationStatus.failure:
               return Center(

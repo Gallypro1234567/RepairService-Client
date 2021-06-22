@@ -1,11 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:repairservice/config/themes/constants.dart';
-import 'package:repairservice/config/themes/light_theme.dart';
+import 'package:repairservice/utils/ui/reponsive.dart';
 
 class WorkerInfoContainer extends StatelessWidget {
-  final ImageProvider<Object> imageUrl;
+  final String imageUrl;
   final String fullname;
   final String phone;
   final String wofsText;
@@ -24,11 +24,36 @@ class WorkerInfoContainer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
-            child: SizedBox(
-              height: 100,
-              width: 100,
-              child: CircleAvatar(
-                backgroundImage: imageUrl,
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: Responsive.isTablet(context) ? 120 : 100,
+                    width: Responsive.isTablet(context) ? 120 : 100,
+                    child: imageUrl.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: imageUrl,
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                  // colorFilter: ColorFilter.mode(
+                                  //     Colors.red, BlendMode.colorBurn),
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          )
+                        : CircleAvatar(
+                            backgroundImage: AssetImage(
+                                "assets/images/user_profile_background.jpg"),
+                          ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -60,25 +85,6 @@ class WorkerInfoContainer extends StatelessWidget {
                             ))
                       ]),
                 ),
-                // SizedBox(
-                //   height: kDefaultPadding / 4,
-                // ),
-                // RichText(
-                //     text: TextSpan(
-                //         text: "Nghề nghiệp: $wofsText",
-                //         style: TextStyle(
-                //             color: LightColor.black,
-                //             fontWeight: FontWeight.normal),
-                //         children: [TextSpan(text: phone)])),
-                // SizedBox(
-                //   height: kDefaultPadding / 4,
-                // ),
-                // RichText(
-                //     text: TextSpan(
-                //         text: "Nghề nghiệp: ",
-                //         style: TextStyle(
-                //             color: Colors.black, fontWeight: FontWeight.normal),
-                //         children: [TextSpan(text: wofsText)])),
               ],
             ),
           )

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:formz/formz.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
@@ -12,6 +12,7 @@ import 'package:repairservice/modules/post/bloc/post_bloc.dart';
 import 'package:repairservice/modules/post/components/post_change_image.dart';
 
 import 'package:repairservice/modules/post/screens/post_form_select_service.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
@@ -29,7 +30,6 @@ class PostPage extends StatelessWidget {
     return BlocListener<PostBloc, PostState>(
         listener: (context, state) {
           if (state.pageStatus == PostStatus.sbumitSuccess) {
-            context.read<HomeBloc>().add(HomeRefesh());
             Navigator.pop(context);
           }
         },
@@ -56,10 +56,15 @@ class PostPage extends StatelessWidget {
             ),
           ),
           body: BlocBuilder<PostBloc, PostState>(
+            buildWhen: (previousState, state) {
+              if (previousState.pageStatus == PostStatus.loading)
+                Navigator.pop(context, true);
+              return true;
+            },
             builder: (context, state) {
               switch (state.pageStatus) {
                 case PostStatus.loading:
-                  return SplashPage();
+                  return Loading();
                   break;
                 case PostStatus.failure:
                   return Center(
@@ -306,9 +311,18 @@ class FormBody extends StatelessWidget {
                 return PostButton(
                   title: "Đăng tin ngay",
                   color: LightColor.lightteal,
-                  onPressed: () {
-                    context.read<PostBloc>().add(PostCustomerSubmitted());
-                  },
+                  onPressed: state.formzstatus.isValidated &&
+                          !state.cityInvalid &&
+                          !state.districtInvalid &&
+                          !state.wardInvalid &&
+                          state.cityText.length > 0 &&
+                          state.districtText.length > 0 &&
+                          state.wardText.length > 0 &&
+                          state.serviceText.length > 0
+                      ? () {
+                          context.read<PostBloc>().add(PostCustomerSubmitted());
+                        }
+                      : null,
                 );
               },
             )
