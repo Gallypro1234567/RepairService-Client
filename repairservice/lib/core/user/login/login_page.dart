@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -6,18 +8,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
-import 'package:repairservice/core/auth/authentication.dart';
-
+import 'package:repairservice/core/auth/bloc/authentication_bloc.dart';
 import 'package:repairservice/core/auth/my_elevated_button.dart';
 import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'package:repairservice/core/user/login/components/textfield_container.dart';
 
 import 'package:repairservice/core/user/verifyphone/verify_phone_page.dart';
+import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/main_screen.dart';
+import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/splash_page.dart';
+import 'package:repairservice/modules/user/bloc/user_bloc.dart';
+import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
-import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'package:formz/formz.dart';
-import 'components/background.dart';
 
 class LoginPage extends StatefulWidget {
   static Route route() {
@@ -35,6 +40,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
+          // if (state.status == FormzStatus.submissionSuccess) {
+          //   _controller.add(AuthenticationStatus.authenticated);
+          // }
           if (state.statusCode == 400) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
@@ -197,39 +205,6 @@ class _LoginBlocButton extends StatelessWidget {
                       }
                     : null,
               );
-      },
-    );
-  }
-}
-
-class _RegisterBlocButton extends StatelessWidget {
-  final String title;
-
-  const _RegisterBlocButton({Key key, this.title}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      builder: (context, authenState) {
-        return BlocBuilder<LoginBloc, LoginState>(
-          buildWhen: (previous, current) => previous.status != current.status,
-          builder: (context, loginState) {
-            return loginState.status.isSubmissionInProgress
-                ? const CircularProgressIndicator()
-                : MyElevatedButton(
-                    key: const Key('loginForm_continue_raisedButton'),
-                    title: title,
-                    color: LightColor.lightteal,
-                    isValidated: loginState.status.isValidated,
-                    onPressed: loginState.status.isValidated
-                        ? () {
-                            context
-                                .read<LoginBloc>()
-                                .add(const LoginSubmitted());
-                          }
-                        : null,
-                  );
-          },
-        );
       },
     );
   }

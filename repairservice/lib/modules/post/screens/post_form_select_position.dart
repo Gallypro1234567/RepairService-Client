@@ -5,7 +5,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post/bloc/post_bloc.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import '../../../utils/ui/extensions.dart';

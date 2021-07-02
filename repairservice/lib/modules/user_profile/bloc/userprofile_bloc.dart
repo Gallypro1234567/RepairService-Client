@@ -84,6 +84,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
   Stream<UserProfileState> _mapUserProfileFetchedToState(
       UserProfileInitial event, UserProfileState state) async* {
+        
     yield state.copyWith(status: UserProfileStatus.loading);
     try {
       var user = await _userRepository.fetchUser();
@@ -125,7 +126,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
             formzstatus: FormzStatus.submissionFailure, checkPass: 2);
       }
     }
-    yield state.copyWith(status: UserProfileStatus.loading);
+    yield state.copyWith(status: UserProfileStatus.isSuccessProcessing);
     try {
       var a = await _userRepository.modifyOfUserProfile(
           phone: state.phone.value,

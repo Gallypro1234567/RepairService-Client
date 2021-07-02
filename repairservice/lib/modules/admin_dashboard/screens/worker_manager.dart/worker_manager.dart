@@ -8,7 +8,7 @@ import 'package:repairservice/modules/admin_dashboard/screens/customer_detail/bl
 import 'package:repairservice/modules/admin_dashboard/screens/customer_detail/customer_detail_page.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/customer_detail/worker_detail_page.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/customer_manager/customer_manager.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';

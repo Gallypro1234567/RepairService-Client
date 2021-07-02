@@ -12,7 +12,7 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/post/components/post_button.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';

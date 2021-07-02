@@ -1,62 +1,55 @@
 import 'dart:math';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-class Loading extends StatefulWidget {
-  static Route route() {
-    return MaterialPageRoute<void>(builder: (_) => Loading());
-  }
-
-  const Loading({
+class LoadingProcessPage extends StatefulWidget {
+  final Widget child;
+  final isLoading;
+  const LoadingProcessPage({
     Key key,
+    this.child,
+    this.isLoading = false,
   }) : super(key: key);
 
   @override
-  State<Loading> createState() => _LoadingState();
+  State<LoadingProcessPage> createState() => _LoadingProcessPageState();
 }
 
-class _LoadingState extends State<Loading> {
-  @override
-  void initState() {
-    Future.delayed(Duration.zero, () {
-      showModal<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return Center(
-              child: LoadingProcessPage(
-            color1: Colors.white,
-            color2: Colors.white,
-            color3: Colors.white,
-          ));
-        },
-      );
-    });
-    super.initState();
-  }
-
+class _LoadingProcessPageState extends State<LoadingProcessPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.transparent,
+    return ModalProgressHUD(
+      progressIndicator: Center(
+          child: LoadingProcess(
+        color1: Colors.white,
+        color2: Colors.white,
+        color3: Colors.white,
+      )),
+      opacity: 0.5,
+      color: Colors.black,
+      dismissible: true,
+      inAsyncCall: widget.isLoading,
+      child: widget.child,
     );
   }
 }
 
-class LoadingProcessPage extends StatefulWidget {
+class LoadingProcess extends StatefulWidget {
   final Color color1;
   final Color color2;
   final Color color3;
 
-  LoadingProcessPage(
+  LoadingProcess(
       {this.color1 = Colors.deepOrangeAccent,
       this.color2 = Colors.yellow,
       this.color3 = Colors.lightGreen});
 
   @override
-  _LoadingProcessPageState createState() => _LoadingProcessPageState();
+  _LoadingProcessState createState() => _LoadingProcessState();
 }
 
-class _LoadingProcessPageState extends State<LoadingProcessPage>
+class _LoadingProcessState extends State<LoadingProcess>
     with TickerProviderStateMixin {
   Animation<double> animation1;
   Animation<double> animation2;

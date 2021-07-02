@@ -13,7 +13,7 @@ import 'package:repairservice/modules/post_get_list/components/post_search_conta
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 import 'package:repairservice/modules/post_get_list/screens/select_city_page.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
@@ -68,15 +68,15 @@ class _PostOfServicePageState extends State<PostOfServicePage> {
         elevation: 0.0,
       ),
       body: BlocBuilder<PostgetlistBloc, PostgetlistState>(
-        buildWhen: (previousState, state) {
-          if (previousState.pageStatus == PostGetStatus.loading)
-            Navigator.pop(context, true);
-          return true;
-        },
+        // buildWhen: (previousState, state) {
+        //   if (previousState.pageStatus == PostGetStatus.loading)
+        //     Navigator.pop(context, true);
+        //   return true;
+        // },
         builder: (context, state) {
           switch (state.pageStatus) {
             case PostGetStatus.loading:
-              return Loading();
+              return SplashPage();
             case PostGetStatus.failure:
               return Center(
                 child: Text("Error"),

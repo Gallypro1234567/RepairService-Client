@@ -1,6 +1,6 @@
 part of 'userprofile_bloc.dart';
 
-enum UserProfileStatus { none, loading, success, failure, modified }
+enum UserProfileStatus { none, loading, success, failure, modified, isSuccessProcessing }
 enum FileStatus { none, loading, success, failure }
 
 class UserProfileState extends Equatable {

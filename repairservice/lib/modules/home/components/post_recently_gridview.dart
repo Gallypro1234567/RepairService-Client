@@ -5,6 +5,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
+import 'package:repairservice/modules/home/components/shimmer_post_container.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
@@ -88,13 +89,14 @@ class PostRecenttlyGridview extends StatelessWidget {
   final List<Post> posts;
   final int length;
   final Function(BuildContext, int) itemBuilder;
-  const PostRecenttlyGridview(
-      {Key key,
-      this.posts,
-      this.scrollController,
-      this.length,
-      this.itemBuilder})
-      : super(key: key);
+
+  const PostRecenttlyGridview({
+    Key key,
+    this.posts = const <Post>[],
+    this.scrollController,
+    this.length,
+    this.itemBuilder,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

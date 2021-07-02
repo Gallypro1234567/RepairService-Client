@@ -174,23 +174,23 @@ class FormBody extends StatelessWidget {
             ),
             BlocBuilder<WorkerregisterworkBloc, WorkerregisterworkState>(
               builder: (context, state) {
-                return !state.imageAfterInvalid & !state.imageBeforeInvalid &&
-                        state.serviceText.isNotEmpty
-                    ? PostButton(
-                        title: "Ứng tuyển ngay",
-                        color: LightColor.lightteal,
-                        textColor: Colors.white,
-                        onPressed: () {
-                          context
-                              .read<WorkerregisterworkBloc>()
-                              .add(WorkerregisterworkSubmitted());
-                        },
-                      )
-                    : PostButton(
-                        title: "Ứng tuyển ngay",
-                        color: LightColor.lightteal,
-                        textColor: Colors.black,
-                        onPressed: null);
+                return //!state.imageAfterInvalid & !state.imageBeforeInvalid &&
+                    state.serviceText.isNotEmpty
+                        ? PostButton(
+                            title: "Ứng tuyển ngay",
+                            color: LightColor.lightteal,
+                            textColor: Colors.white,
+                            onPressed: () {
+                              context
+                                  .read<WorkerregisterworkBloc>()
+                                  .add(WorkerregisterworkSubmitted());
+                            },
+                          )
+                        : PostButton(
+                            title: "Ứng tuyển ngay",
+                            color: LightColor.lightteal,
+                            textColor: Colors.black,
+                            onPressed: null);
               },
             )
           ],

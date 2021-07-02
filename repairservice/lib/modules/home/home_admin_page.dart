@@ -9,7 +9,7 @@ import 'package:repairservice/modules/admin_dashboard/dashboard_page.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/notification/notification_pages.dart';
 import 'package:repairservice/modules/notification/notification_customer_page.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 
@@ -20,6 +20,7 @@ import 'package:repairservice/widgets/title_text.dart';
 import 'package:shimmer/shimmer.dart';
 import 'components/avatar_container.dart';
 import 'components/home_background.dart';
+import 'components/home_shimmer.dart';
 import 'components/post_recently_gridview.dart';
 import 'components/service_gridview.dart';
 import '../../utils/ui/extensions.dart';
@@ -140,18 +141,17 @@ class _HomeAdminState extends State<HomeAdminPage> {
       ),
       drawer: DashboardPage(),
       body: BlocBuilder<HomeBloc, HomeState>(
-        buildWhen: (previousState, state) {
-          if (previousState.status == HomeStatus.loading)
-            Navigator.pop(context, true);
-          return true;
-        },
+        
         builder: (context, state) {
           switch (state.status) {
             case HomeStatus.failure:
               return const Center(child: Text("state.message"));
             case HomeStatus.loading:
-              return Loading();
+              return HomeShimmer();
             default:
+             if (state.services.isEmpty) {
+                return HomeShimmer();
+              }
               return _refreshIndicator(_size, context, state);
           }
         },

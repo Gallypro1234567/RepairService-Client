@@ -8,7 +8,7 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post_get_list/bloc/postgetlist_bloc.dart';
 import 'package:repairservice/modules/search/bloc/search_bloc.dart';
 import 'package:repairservice/modules/search/screens/select_district_page.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
@@ -37,18 +37,13 @@ class SelectCityPage extends StatelessWidget {
             icon: Icon(Icons.arrow_back)),
       ),
       body: BlocBuilder<SearchBloc, SearchState>(
-        buildWhen: (previousState, state) {
-          if (previousState.postGetPositionStatus ==
-              SearchPositionStatus.loading) Navigator.pop(context, true);
-          return true;
-        },
         builder: (context, state) {
           switch (state.postGetPositionStatus) {
             case SearchPositionStatus.loading:
-              return Loading();
+              return SplashPage();
               break;
             case SearchPositionStatus.failure:
-              return SplashPage();
+              return Center(child: Text("Error"));
 
               break;
             default:

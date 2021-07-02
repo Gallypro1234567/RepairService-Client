@@ -9,6 +9,7 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/search/bloc/search_bloc.dart';
 import 'package:repairservice/modules/search/screens/select_city_page.dart';
 import 'package:repairservice/modules/search/screens/select_service_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
@@ -76,15 +77,10 @@ class _SearchPageState extends State<SearchPage> {
         elevation: 0,
       ),
       body: BlocBuilder<SearchBloc, SearchState>(
-        buildWhen: (previousState, state) {
-          if (previousState.pageStatus == SearchStatus.loading)
-            Navigator.pop(context, true);
-          return true;
-        },
         builder: (context, state) {
           switch (state.pageStatus) {
             case SearchStatus.loading:
-              return Loading();
+              return SplashPage();
               break;
             case SearchStatus.failure:
               return Center(
@@ -92,23 +88,26 @@ class _SearchPageState extends State<SearchPage> {
               );
               break;
             default:
-              return RefreshIndicator(
-                  onRefresh: () async {},
-                  child: RefreshIndicator(
-                      onRefresh: () async {
-                        context.read<SearchBloc>().add(SearchFetched());
-                      },
-                      child: ListPostView(
-                        onSelectPosition: () {
-                          context.read<SearchBloc>().add(SearchCityFetched());
-                          Navigator.push(
-                              context, SlideFadeRoute(page: SelectCityPage()));
+              return LoadingProcessPage(
+                isLoading: state.pageStatus == SearchStatus.loading,
+                child: RefreshIndicator(
+                    onRefresh: () async {},
+                    child: RefreshIndicator(
+                        onRefresh: () async {
+                          context.read<SearchBloc>().add(SearchFetched());
                         },
-                        onSelectService: () {
-                          Navigator.push(context,
-                              SlideFadeRoute(page: SelectServicePage()));
-                        },
-                      )));
+                        child: ListPostView(
+                          onSelectPosition: () {
+                            context.read<SearchBloc>().add(SearchCityFetched());
+                            Navigator.push(context,
+                                SlideFadeRoute(page: SelectCityPage()));
+                          },
+                          onSelectService: () {
+                            Navigator.push(context,
+                                SlideFadeRoute(page: SelectServicePage()));
+                          },
+                        ))),
+              );
           }
         },
       ),

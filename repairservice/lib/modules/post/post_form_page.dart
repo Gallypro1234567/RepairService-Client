@@ -12,7 +12,7 @@ import 'package:repairservice/modules/post/bloc/post_bloc.dart';
 import 'package:repairservice/modules/post/components/post_change_image.dart';
 
 import 'package:repairservice/modules/post/screens/post_form_select_service.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';

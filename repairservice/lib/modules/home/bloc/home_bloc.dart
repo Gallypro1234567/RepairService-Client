@@ -37,7 +37,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is HomeFetched) {
-      yield* _mapFetchedToState(state, event);
+      yield await _mapFetchedToState(state, event);
     } else if (event is HomeRefesh) {
       yield* _mapRefeshedToState(state);
     }
@@ -63,19 +63,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Stream<HomeState> _mapFetchedToState(
-      HomeState state, HomeFetched event) async* {
-    if (state.hasReachedMax) yield state;
-    yield state.copyWith(
-      status: HomeStatus.loading,
-    );
+  Future<HomeState> _mapFetchedToState(
+      HomeState state, HomeFetched event) async {
+    if (state.hasReachedMax) return state;
     try {
       if (state.status == HomeStatus.initial) {
         final userRole = await _homeRepository.getRole();
         final services = await _homeRepository.fetchService();
         final postRecently =
             await _postRepository.fetchRecentlyPost(start: 0, length: 5);
-        yield state.copyWith(
+        return state.copyWith(
           status: HomeStatus.success,
           services: services,
           role: userRole.role,
@@ -87,7 +84,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       } else {
         final postRecently = await _postRepository.fetchRecentlyPost(
             start: state.postRecently.length, length: 5);
-        yield postRecently.isEmpty
+        return postRecently.isEmpty
             ? state.copyWith(hasReachedMax: true)
             : state.copyWith(
                 status: HomeStatus.success,
@@ -97,7 +94,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               );
       }
     } on Exception catch (e) {
-      yield state.copyWith(status: HomeStatus.failure, message: e.toString());
+      return state.copyWith(status: HomeStatus.failure, message: e.toString());
     }
   }
 }

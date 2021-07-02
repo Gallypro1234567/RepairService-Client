@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
@@ -15,6 +16,7 @@ import 'package:repairservice/modules/post_apply/post_apply_page.dart';
 import 'package:repairservice/modules/post_update/bloc/postupdate_bloc.dart';
 import 'package:repairservice/modules/post_update/post_update_page.dart';
 import 'package:repairservice/modules/splash/loading_process_page.dart';
+
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
@@ -66,15 +68,10 @@ class PostDetailPage extends StatelessWidget {
                   .add(PostdetailFetched(state.postCode));
           },
           child: BlocBuilder<PostdetailBloc, PostdetailState>(
-            buildWhen: (previousState, state) {
-              if (previousState.status == PostDetailStatus.loading)
-                Navigator.pop(context, true);
-              return true;
-            },
             builder: (context, state) {
               switch (state.status) {
                 case PostDetailStatus.loading:
-                  return Loading();
+                  return SplashPage();
                   break;
                 case PostDetailStatus.failure:
                   return Center(
@@ -82,29 +79,33 @@ class PostDetailPage extends StatelessWidget {
                   );
                   break;
                 default:
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      context
-                          .read<PostdetailBloc>()
-                          .add(PostdetailFetched(state.postCode));
-                    },
-                    child: ListView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      children: [
-                        PostDetailImageShowBloc(),
-                        SizedBox(
-                          height: kDefaultPadding,
-                        ),
-                        PostDetailTitleBloc(),
-                        SizedBox(
-                          height: kDefaultPadding,
-                        ),
-                        PostDescriptionBloc(),
-                        Container(
-                          height: AppTheme.fullHeight(context) * .2,
-                          color: Colors.white,
-                        )
-                      ],
+                  return LoadingProcessPage(
+                    isLoading:
+                        state.status == PostDetailStatus.isSubmitProccessing,
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        context
+                            .read<PostdetailBloc>()
+                            .add(PostdetailFetched(state.postCode));
+                      },
+                      child: ListView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        children: [
+                          PostDetailImageShowBloc(),
+                          SizedBox(
+                            height: kDefaultPadding,
+                          ),
+                          PostDetailTitleBloc(),
+                          SizedBox(
+                            height: kDefaultPadding,
+                          ),
+                          PostDescriptionBloc(),
+                          Container(
+                            height: AppTheme.fullHeight(context) * .2,
+                            color: Colors.white,
+                          )
+                        ],
+                      ),
                     ),
                   );
                   break;
@@ -116,7 +117,6 @@ class PostDetailPage extends StatelessWidget {
       bottomSheet: BlocBuilder<PostdetailBloc, PostdetailState>(
         builder: (context, state) {
           switch (state.status) {
-           
             case PostDetailStatus.success:
               return PostDetailBottomSheet(
                 postCode: postCode,

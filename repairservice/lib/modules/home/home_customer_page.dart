@@ -10,7 +10,9 @@ import 'package:repairservice/modules/home/bloc/home_bloc.dart';
 import 'package:repairservice/modules/notification/notification_pages.dart';
 import 'package:repairservice/modules/post/bloc/post_bloc.dart';
 import 'package:repairservice/modules/post/post_form_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/modules/user/user_profile_page.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
@@ -20,9 +22,12 @@ import 'package:repairservice/widgets/title_text.dart';
 import 'package:shimmer/shimmer.dart';
 import 'components/avatar_container.dart';
 import 'components/home_background.dart';
+import 'components/home_shimmer.dart';
 import 'components/post_recently_gridview.dart';
 import 'components/service_gridview.dart';
 import '../../utils/ui/extensions.dart';
+import 'components/shimmer_post_container.dart';
+import 'components/shimmer_service_container.dart';
 
 class HomeCustomerPage extends StatefulWidget {
   @override
@@ -140,51 +145,53 @@ class _HomeCustomerState extends State<HomeCustomerPage> {
         backgroundColor: LightColor.lightteal,
         elevation: 0,
       ),
-      body: Stack(
-        children: [
-          BlocBuilder<HomeBloc, HomeState>(
-            buildWhen: (previousState, state) {
-              if (previousState.status == HomeStatus.loading)
-                Navigator.pop(context, true);
-              return true;
-            },
-            builder: (context, state) {
-              switch (state.status) {
-                case HomeStatus.failure:
-                  return const Center(child: Text("state.message"));
-                case HomeStatus.loading:
-                  return Loading();
-                default:
-                  return _refreshIndicator(_size, context, state);
+      body: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case HomeStatus.loading:
+              return HomeShimmer();
+            case HomeStatus.failure:
+              return const Center(child: Text("state.message"));
+            default:
+              if (state.services.isEmpty) {
+                return HomeShimmer();
               }
-            },
-          ),
-          Positioned(
-              bottom: AppTheme.fullHeight(context) * .1,
-              right: kDefaultPadding / 2,
-              child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                builder: (context, state) {
-                  switch (state.user.isCustomer) {
-                    case UserType.customer:
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: kDefaultPadding),
-                        child: FloatingActionButton(
-                          backgroundColor: Colors.cyan,
-                          onPressed: () {
-                            context.read<PostBloc>().add(PostAddNewPage());
-                            Navigator.push(
-                                context, SlideFadeRoute(page: PostPage()));
-                          },
-                          child: Center(child: Icon(FontAwesome.edit)),
-                        ),
-                      );
-                      break;
-                    default:
-                      return Container();
-                  }
-                },
-              ))
-        ],
+              return Stack(
+                children: [
+                  _refreshIndicator(_size, context, state),
+                  Positioned(
+                      bottom: AppTheme.fullHeight(context) * .1,
+                      right: kDefaultPadding / 2,
+                      child:
+                          BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                        builder: (context, state) {
+                          switch (state.user.isCustomer) {
+                            case UserType.customer:
+                              return Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: kDefaultPadding),
+                                child: FloatingActionButton(
+                                  backgroundColor: Colors.cyan,
+                                  onPressed: () {
+                                    context
+                                        .read<PostBloc>()
+                                        .add(PostAddNewPage());
+                                    Navigator.push(context,
+                                        SlideFadeRoute(page: PostPage()));
+                                  },
+                                  child: Center(child: Icon(FontAwesome.edit)),
+                                ),
+                              );
+                              break;
+                            default:
+                              return Container();
+                          }
+                        },
+                      ))
+                ],
+              );
+          }
+        },
       ),
     );
   }

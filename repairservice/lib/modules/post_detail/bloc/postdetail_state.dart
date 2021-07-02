@@ -1,6 +1,6 @@
 part of 'postdetail_bloc.dart';
 
-enum PostDetailStatus { loading, none, success, failure, submitted }
+enum PostDetailStatus { loading, none, success, failure, submitted, isSubmitProccessing }
 
 class PostdetailState extends Equatable {
   const PostdetailState(

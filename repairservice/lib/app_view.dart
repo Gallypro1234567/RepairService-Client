@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 
@@ -44,6 +44,7 @@ class _AppViewState extends State<AppView> {
       //routes: Routes.getRoute(),
       //initialRoute: "/",
       navigatorKey: _navigatorKey,
+
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
@@ -53,24 +54,25 @@ class _AppViewState extends State<AppView> {
                 context.read<UserBloc>().add(UserFetch());
                 _navigator.pushAndRemoveUntil(
                     SlideFadeRoute(page: MainPage()), (route) => false);
-
                 break;
-              case AuthenticationStatus.unauthenticated:
-                _navigator.pushAndRemoveUntil(
-                    LoginPage.route(), (route) => false);
-                break;
+              // case AuthenticationStatus.unauthenticated:
+              //   _navigator.pushAndRemoveUntil(
+              //       LoginPage.route(), (route) => false);
+              //   break;
               case AuthenticationStatus.unknown:
                 _navigator.pushAndRemoveUntil(
-                    Loading.route(), (route) => false);
+                    SplashPages.route(), (route) => false);
                 break;
               default:
+                _navigator.pushAndRemoveUntil(
+                    LoginPage.route(), (route) => false);
                 break;
             }
           },
           child: child,
         );
       },
-      onGenerateRoute: (_) => SplashPage.route(),
+      onGenerateRoute: (_) => SplashPages.route(),
     );
   }
 }

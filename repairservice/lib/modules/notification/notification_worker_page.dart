@@ -14,7 +14,7 @@ import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
 import 'package:repairservice/modules/post_detail_perfect/bloc/postdetailperfect_bloc.dart';
 import 'package:repairservice/modules/post_detail_perfect/post_detail_perfect_page.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
 import 'package:repairservice/modules/worker_history_work/user_history_work_screen.dart';
@@ -226,15 +226,15 @@ class TabContent extends StatelessWidget {
           context.read<NotificationBloc>().add(NotificationRefeshed(type));
       },
       child: BlocBuilder<NotificationBloc, NotificationState>(
-        buildWhen: (previousState, state) {
-          if (previousState.status == NotificationStatus.loading)
-            Navigator.pop(context, true);
-          return true;
-        },
+        // buildWhen: (previousState, state) {
+        //   if (previousState.status == NotificationStatus.loading)
+        //     Navigator.pop(context, true);
+        //   return true;
+        // },
         builder: (context, state) {
           switch (state.status) {
             case NotificationStatus.loading:
-              return Loading();
+              return SplashPage();
               break;
             case NotificationStatus.failure:
               return Center(
@@ -943,7 +943,7 @@ class CheckContent extends StatelessWidget {
                           SlideFadeRoute(page: WorkerHistoryWorkPage()));
                     }),
               TextSpan(
-                  text: "Quản trị viên $content thông tin đăng tuyển của bạn",
+                  text: "Quản trị viên $content thông tin ứng tuyển của bạn",
                   style: GoogleFonts.muli(
                       color: Colors.black,
                       fontWeight: FontWeight.w300,

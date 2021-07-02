@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +11,7 @@ import 'package:repairservice/modules/main_screen.dart';
 
 import 'package:repairservice/modules/post_get_list/components/post_search_container.dart';
 import 'package:repairservice/modules/search/search_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/modules/user/user_profile_page.dart';
@@ -20,6 +22,7 @@ import 'package:repairservice/widgets/title_text.dart';
 import 'package:shimmer/shimmer.dart';
 import 'components/avatar_container.dart';
 import 'components/home_background.dart';
+import 'components/home_shimmer.dart';
 import 'components/post_recently_gridview.dart';
 import 'components/service_gridview.dart';
 import '../../utils/ui/extensions.dart';
@@ -32,7 +35,7 @@ class HomeWorkerPage extends StatefulWidget {
 class _HomeWorkerState extends State<HomeWorkerPage> {
   final _scrollController = ScrollController();
   HomeBloc _postBloc;
-
+  bool _loaded = false;
   @override
   void initState() {
     super.initState();
@@ -132,18 +135,16 @@ class _HomeWorkerState extends State<HomeWorkerPage> {
         elevation: 0,
       ),
       body: BlocBuilder<HomeBloc, HomeState>(
-        buildWhen: (previousState, state) {
-          if (previousState.status == HomeStatus.loading)
-            Navigator.pop(context, true);
-          return true;
-        },
         builder: (context, state) {
           switch (state.status) {
             case HomeStatus.failure:
               return const Center(child: Text("state.message"));
             case HomeStatus.loading:
-              return Loading();
+              return HomeShimmer();
             default:
+              if (state.services.isEmpty) {
+                return HomeShimmer();
+              }
               return _refreshIndicator(_size, context, state);
           }
         },

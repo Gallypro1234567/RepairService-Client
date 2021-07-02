@@ -13,7 +13,7 @@ import 'package:repairservice/modules/post_apply/bloc/postapply_bloc.dart';
 import 'package:repairservice/modules/post_apply/post_apply_page.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
@@ -235,15 +235,15 @@ class _TabContentsState extends State<TabContents> {
                 .add(NotificationRefeshed(widget.type));
         },
         child: BlocBuilder<NotificationBloc, NotificationState>(
-          buildWhen: (previousState, state) {
-            if (previousState.status == NotificationStatus.loading)
-              Navigator.pop(context, true);
-            return true;
-          },
+          // buildWhen: (previousState, state) {
+          //   if (previousState.status == NotificationStatus.loading)
+          //     Navigator.pop(context, true);
+          //   return true;
+          // },
           builder: (context, state) {
             switch (state.status) {
               case NotificationStatus.loading:
-                return Loading();
+                return SplashPage();
               case NotificationStatus.failure:
                 return Center(
                   child: Text("Lỗi"),

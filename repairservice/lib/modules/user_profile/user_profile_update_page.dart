@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/loading_process_page.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
@@ -64,27 +66,35 @@ class UserProfileView extends StatelessWidget {
           context.read<UserProfileBloc>().add(UserProfileInitial());
         }
       },
-      child: Scaffold(
-          appBar: AppBar(
-            toolbarHeight: AppTheme.fullHeight(context) * .06,
-            backgroundColor: Colors.white,
-            title: Text("Tài khoản"),
-            centerTitle: true,
-            bottomOpacity: 0.0,
-            elevation: 0.0,
-          ),
-          body: BlocBuilder<UserProfileBloc, UserProfileState>(
-            buildWhen: (previousState, state) {
-              if (previousState.status == UserProfileStatus.loading)
-                Navigator.pop(context, true);
-              return true;
-            },
-            builder: (context, state) {
-              switch (state.status) {
-                case UserProfileStatus.loading:
-                  return Loading();
-                case UserProfileStatus.success:
-                  return UserProfileBackground(
+      child: BlocBuilder<UserProfileBloc, UserProfileState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case UserProfileStatus.loading:
+              return SplashPage();
+            case UserProfileStatus.failure:
+              return Center(
+                child: TitleText(
+                  text: "Error",
+                  fontSize: 20,
+                  fontWeight: FontWeight.w400,
+                ),
+              );
+
+            default:
+              return LoadingProcessPage(
+                isLoading: state.status == UserProfileStatus.isSuccessProcessing
+                    ? true
+                    : false,
+                child: Scaffold(
+                  appBar: AppBar(
+                    toolbarHeight: AppTheme.fullHeight(context) * .06,
+                    backgroundColor: Colors.white,
+                    title: Text("Tài khoản"),
+                    centerTitle: true,
+                    bottomOpacity: 0.0,
+                    elevation: 0.0,
+                  ),
+                  body: UserProfileBackground(
                     imageUrl: state.imageUrl != null ? state.imageUrl : "",
                     title: state.fullname.value,
                     onchangedAvatr: () {},
@@ -131,18 +141,12 @@ class UserProfileView extends StatelessWidget {
                       ),
                       _UpdateProfileBlocButton()
                     ],
-                  );
-                default:
-                  return Center(
-                    child: TitleText(
-                      text: "Error",
-                      fontSize: 20,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  );
-              }
-            },
-          )),
+                  ),
+                ),
+              );
+          }
+        },
+      ),
     );
   }
 }

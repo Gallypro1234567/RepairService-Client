@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/core/auth/authentication.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/auth_repository/authentication_repository.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
@@ -19,11 +19,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      buildWhen: (previousState, state) {
-        if (previousState.status == AuthenticationStatus.unauthenticated)
-          Navigator.pop(context, true);
-        return true;
-      },
       builder: (context, state) {
         switch (state.status) {
           case AuthenticationStatus.authenticated:
@@ -39,7 +34,7 @@ class _HomePageState extends State<HomePage> {
               }
             break;
           default:
-            return Loading();
+            return Container();
         }
       },
     );

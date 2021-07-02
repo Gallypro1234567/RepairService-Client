@@ -11,7 +11,7 @@ import 'package:repairservice/modules/admin_dashboard/screens/customer_manager/b
 import 'package:repairservice/modules/post_detail/components/post_detail_button.dart';
 import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
 import 'package:repairservice/modules/post_rating/post_rating.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user/bloc/user_bloc.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
@@ -45,7 +45,7 @@ class _WorkerDetailPageState extends State<WorkerDetailPage> {
           switch (state.status) {
             case CustomerdetailStatus.loading:
               return Center(
-                  child: LoadingProcessPage(
+                  child: LoadingProcess(
                 color1: Colors.white,
                 color2: Colors.white,
                 color3: Colors.white,

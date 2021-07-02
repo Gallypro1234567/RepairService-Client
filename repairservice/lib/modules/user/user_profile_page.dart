@@ -13,8 +13,8 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/core/user/login/bloc/login_bloc.dart';
 import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
-import 'package:repairservice/modules/post_rating/post_rating.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/post_rating/post_rating.dart'; 
+import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/modules/user_profile/bloc/userprofile_bloc.dart';
 import 'package:repairservice/modules/user_profile/user_profile_update_page.dart';
 import 'package:repairservice/modules/worker_history_work/bloc/workerregisterwork_bloc.dart';
@@ -58,15 +58,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
           BlocListener<UserBloc, UserState>(
             listener: (context, state) {},
             child: BlocBuilder<UserBloc, UserState>(
-              buildWhen: (previousState, state) {
-                if (previousState.status == UserStatus.loading)
-                  Navigator.pop(context, true);
-                return true;
-              },
               builder: (context, state) {
                 switch (state.status) {
                   case UserStatus.loading:
-                    return Loading();
+                    return SplashPage();
                   case UserStatus.failure:
                     return Center(
                       child: Text("Error Loading data"),

@@ -5,7 +5,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post_detail_perfect/bloc/postdetailperfect_bloc.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
@@ -72,15 +72,15 @@ class PostRatingPage extends StatelessWidget {
             }
           },
           child: BlocBuilder<PostrateBloc, PostrateState>(
-            buildWhen: (previousState, state) {
-              if (previousState.status == PostRatingStatus.loading)
-                Navigator.pop(context, true);
-              return true;
-            },
+            // buildWhen: (previousState, state) {
+            //   if (previousState.status == PostRatingStatus.loading)
+            //     Navigator.pop(context, true);
+            //   return true;
+            // },
             builder: (context, state) {
               switch (state.status) {
                 case PostRatingStatus.loading:
-                  return Loading();
+                  return SplashPage();
                   break;
                 case PostRatingStatus.failure:
                   return Center(

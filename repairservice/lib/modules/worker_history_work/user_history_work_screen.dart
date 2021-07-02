@@ -7,7 +7,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/home/bloc/home_bloc.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 
 import 'package:repairservice/modules/splash/splash_page.dart';
 
@@ -27,14 +27,10 @@ class WorkerHistoryWorkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WorkerregisterworkBloc, WorkerregisterworkState>(
-        buildWhen: (previousState, state) {
-      if (previousState.status == WorkerRegisterStatus.loading)
-        Navigator.pop(context, true);
-      return true;
-    }, builder: (context, state) {
+        builder: (context, state) {
       switch (state.status) {
         case WorkerRegisterStatus.loading:
-          return Loading();
+          return SplashPage();
         case WorkerRegisterStatus.loadSuccessed:
           return WorkerHistoryWorkView();
           break;

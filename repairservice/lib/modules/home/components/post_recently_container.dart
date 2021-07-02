@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:repairservice/config/themes/constants.dart';
+import 'package:repairservice/config/themes/light_theme.dart';
 
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
@@ -12,7 +13,10 @@ import 'package:repairservice/widgets/title_text.dart';
 class PostRecentlyContainer extends StatelessWidget {
   final Post post;
 
-  const PostRecentlyContainer({Key key, this.post}) : super(key: key);
+  const PostRecentlyContainer({
+    Key key,
+    this.post,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -53,8 +57,8 @@ class PostRecentlyContainer extends StatelessWidget {
                       ),
                     ),
                   ),
-                  placeholder: (context, url) => Container(
-                      child: Image.asset("assets/images/loading2.gif")),
+                  // placeholder: (context, url) => Container(
+                  //     child: Image.asset("assets/images/loading2.gif")),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),

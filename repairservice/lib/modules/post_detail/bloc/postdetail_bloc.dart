@@ -66,7 +66,7 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
 
   Stream<PostdetailState> _mapPostdetailWorkerApplySubmittedToState(
       PostdetailWorkerApplySubmitted event, PostdetailState state) async* {
-    yield state.copyWith(status: PostDetailStatus.loading);
+    yield state.copyWith(status: PostDetailStatus.isSubmitProccessing);
     try {
       var response = await _postRepository.workerApplyPost(
           postCode: state.postCode, status: 1);
@@ -92,7 +92,7 @@ class PostdetailBloc extends Bloc<PostdetailEvent, PostdetailState> {
 
   Stream<PostdetailState> _mapPostApprovalByAdminSubmittedToState(
       PostApprovalByAdminSubmitted event, PostdetailState state) async* {
-    yield state.copyWith(status: PostDetailStatus.loading);
+    yield state.copyWith(status: PostDetailStatus.isSubmitProccessing);
     try {
       var response = await _postRepository.adminApprovalPost(
           code: state.postCode, approved: event.approved);

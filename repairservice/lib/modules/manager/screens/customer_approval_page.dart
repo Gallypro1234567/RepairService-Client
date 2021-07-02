@@ -10,7 +10,7 @@ import 'package:repairservice/core/auth/authentication.dart';
 import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/post_detail/bloc/postdetail_bloc.dart';
 import 'package:repairservice/modules/post_detail/post_detail_page.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/repository/post_repository/models/post.dart';
 import 'package:repairservice/repository/post_repository/models/time_ago.dart';
@@ -50,15 +50,15 @@ class _CustomerApprovalPageState extends State<CustomerApprovalPage> {
             context.read<ManagerBloc>().add(ManagerFetched());
           },
           child: BlocBuilder<ManagerBloc, ManagerState>(
-            buildWhen: (previousState, state) {
-              if (previousState.pageStatus == PageStatus.loading)
-                Navigator.pop(context, true);
-              return true;
-            },
+            // buildWhen: (previousState, state) {
+            //   if (previousState.pageStatus == PageStatus.loading)
+            //     Navigator.pop(context, true);
+            //   return true;
+            // },
             builder: (context, state) {
               switch (state.pageStatus) {
                 case PageStatus.loading:
-                  return Loading();
+                  return SplashPage();
                 case PageStatus.none:
                   context.read<ManagerBloc>().add(ManagerFetched());
                   return SplashPage();

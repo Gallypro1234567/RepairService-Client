@@ -9,7 +9,7 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/customer_detail/bloc/customerdetail_bloc.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/customer_detail/customer_detail_page.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/customer_detail/worker_detail_page.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
 import 'bloc/customermanager_bloc.dart';

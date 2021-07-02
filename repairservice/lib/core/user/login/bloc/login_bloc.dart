@@ -17,7 +17,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         super(const LoginState());
 
   final AuthenticationRepository _authenticationRepository;
-  final _controller = StreamController<AuthenticationStatus>();
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
@@ -64,7 +63,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
               status: FormzStatus.submissionFailure,
               statusCode: response.statusCode);
         } else if (response.statusCode == 404) {
-          _controller.add(AuthenticationStatus.unauthenticated);
           yield state.copyWith(
               status: FormzStatus.submissionFailure,
               statusCode: response.statusCode);

@@ -9,7 +9,7 @@ import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/admin_dashboard/screens/customer_manager/bloc/customermanager_bloc.dart';
 import 'package:repairservice/modules/post_detail/components/post_detail_button.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/repository/user_repository/models/user_enum.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
@@ -40,7 +40,7 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
           switch (state.status) {
             case CustomerdetailStatus.loading:
               return Center(
-                  child: LoadingProcessPage(
+                  child: LoadingProcess(
                 color1: Colors.white,
                 color2: Colors.white,
                 color3: Colors.white,
@@ -283,10 +283,10 @@ class ProfilHori extends StatelessWidget {
           Container(
             height: kDefaultPadding,
           ),
-          ReviewFeedBack(
-            amount: 1,
-            finishAmount: 1,
-          ),
+          // ReviewFeedBack(
+          //   amount: 1,
+          //   finishAmount: 1,
+          // ),
           Container(
             height: kDefaultPadding,
           ),

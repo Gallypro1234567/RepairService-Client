@@ -5,7 +5,7 @@ import 'package:repairservice/config/themes/constants.dart';
 import 'package:repairservice/config/themes/light_theme.dart';
 import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/post_get_list/bloc/postgetlist_bloc.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
 import 'package:repairservice/widgets/title_text.dart';
@@ -33,18 +33,15 @@ class SelectDistrictPage extends StatelessWidget {
             icon: Icon(Icons.arrow_back)),
       ),
       body: BlocBuilder<PostgetlistBloc, PostgetlistState>(
-        buildWhen: (previousState, state) {
-          if (previousState.postGetPositionStatus ==
-              PostGetPositionStatus.loading) Navigator.pop(context, true);
-          return true;
-        },
         builder: (context, state) {
           switch (state.postGetPositionStatus) {
             case PostGetPositionStatus.loading:
-              return Loading();
+              return SplashPage();
               break;
             case PostGetPositionStatus.failure:
-              return SplashPage();
+              return Center(
+                child: Text("Error"),
+              );
 
               break;
             default:

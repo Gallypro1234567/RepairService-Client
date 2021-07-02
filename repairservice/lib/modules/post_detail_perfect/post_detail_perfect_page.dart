@@ -7,7 +7,7 @@ import 'package:repairservice/config/themes/theme_config.dart';
 import 'package:repairservice/modules/manager/bloc/manager_bloc.dart';
 import 'package:repairservice/modules/post_rating/bloc/postrate_bloc.dart';
 import 'package:repairservice/modules/post_rating/post_rating.dart';
-import 'package:repairservice/modules/splash/loading_process_page.dart';
+import 'package:repairservice/modules/splash/loading_pages.dart';
 import 'package:repairservice/modules/splash/splash_page.dart';
 import 'package:repairservice/utils/ui/animations/slide_fade_route.dart';
 import 'package:repairservice/utils/ui/reponsive.dart';
@@ -49,14 +49,15 @@ class PostDetailPerfectPage extends StatelessWidget {
         }
       }, builder: (context, state) {
         return BlocBuilder<PostdetailperfectBloc, PostdetailperfectState>(
-            buildWhen: (previousState, state) {
-          if (previousState.status == PostPerfectStatus.loading)
-            Navigator.pop(context, true);
-          return true;
-        }, builder: (context, state) {
+        //     buildWhen: (previousState, state) {
+        //   if (previousState.status == PostPerfectStatus.loading)
+        //     Navigator.pop(context, true);
+        //   return true;
+        // }, 
+        builder: (context, state) {
           switch (state.status) {
             case PostPerfectStatus.loading:
-              return Loading();
+              return SplashPage();
               break;
             case PostPerfectStatus.failure:
               return Center(
